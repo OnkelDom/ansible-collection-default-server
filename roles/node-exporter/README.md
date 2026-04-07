@@ -59,7 +59,7 @@ node_exporter_webconfig: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.node-exporter
+    - role: lenmail.default_server.node-exporter
 ```
 
 ## Testing

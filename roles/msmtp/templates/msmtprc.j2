@@ -6,12 +6,18 @@
 defaults
 auth            {{ msmtp_auth }}
 tls             {{ msmtp_tls }}
-tls_starttls    {{ msmtp_tls_starttls  }}
+tls_starttls    {{ msmtp_tls_starttls }}
+{% if msmtp_tls == 'on' %}
 tls_trust_file  {{ msmtp_tls_trust_file }}
+{% endif %}
 set_from_header {{ msmtp_set_from_header }}
 syslog          {{ msmtp_syslog }}
-logfile         /var/log/msmtp.log
-aliases         /etc/aliases
+{% if msmtp_logfile %}
+logfile         {{ msmtp_logfile }}
+{% endif %}
+{% if msmtp_aliases_enabled | bool %}
+aliases         {{ msmtp_aliases_file }}
+{% endif %}
 
 {% for account in msmtp_accounts %}
 # Account {{ account.name }}
@@ -25,11 +31,18 @@ from {{ account.from }}
 {% else %}
 from {{ ansible_hostname ~ '@' ~ ansible_domain if ansible_domain is defined and ansible_domain != '' else ansible_hostname }}
 {% endif %}
-{% if account.user is defined %}
+auth {{ account.auth | default('on' if (account.user is defined and account.user | string | length > 0) else msmtp_auth) }}
+tls {{ account.tls | default(msmtp_tls) }}
+tls_starttls {{ account.tls_starttls | default(msmtp_tls_starttls) }}
+{% if account.tls | default(msmtp_tls) == 'on' %}
+tls_trust_file {{ account.tls_trust_file | default(msmtp_tls_trust_file) }}
+{% endif %}
+{% if account.user is defined and account.user | string | length > 0 %}
 user {{ account.user }}
 {% endif %}
-{% if account.password is defined %}
+{% if account.password is defined and account.password | string | length > 0 %}
 password {{ account.password }}
 {% endif %}
 
 {% endfor %}
+account default : {{ msmtp_default_account }}

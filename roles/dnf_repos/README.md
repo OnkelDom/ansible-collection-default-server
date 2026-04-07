@@ -53,7 +53,7 @@ dnf_repos_list:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.dnf_repos
+    - role: lenmail.default_server.dnf_repos
 ```
 
 ## Testing

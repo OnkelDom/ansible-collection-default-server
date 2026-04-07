@@ -35,7 +35,9 @@
     mode: '0644'
     owner: "{{ msmtp_user }}"
     group: "{{ msmtp_group }}"
-  when: msmtp_aliases | length > 0
+  when:
+  - msmtp_aliases_enabled | bool
+  - msmtp_aliases | length > 0
   become: true
   tags: msmtp
 

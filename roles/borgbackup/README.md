@@ -35,7 +35,7 @@ borgbackup_cron_hour: '2'
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.borgbackup
+    - role: lenmail.default_server.borgbackup
 ```
 
 ## Testing

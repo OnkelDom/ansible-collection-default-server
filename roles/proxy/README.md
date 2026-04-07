@@ -24,7 +24,7 @@ proxy_env: {}
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.proxy
+    - role: lenmail.default_server.proxy
 ```
 
 ## Testing

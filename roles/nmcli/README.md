@@ -33,7 +33,7 @@ nmcli_interfaces:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.nmcli
+    - role: lenmail.default_server.nmcli
 ```
 
 ## Testing

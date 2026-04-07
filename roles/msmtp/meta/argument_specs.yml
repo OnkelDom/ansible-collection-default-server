@@ -35,6 +35,16 @@ argument_specs:
         - Controls `msmtp_default_account` for the `msmtp` role.
         required: false
         type: str
+      msmtp_logfile:
+        description:
+        - Controls `msmtp_logfile` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_aliases_enabled:
+        description:
+        - Controls `msmtp_aliases_enabled` for the `msmtp` role.
+        required: false
+        type: bool
       msmtp_accounts:
         description:
         - Controls `msmtp_accounts` for the `msmtp` role.

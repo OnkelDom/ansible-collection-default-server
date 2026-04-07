@@ -66,7 +66,7 @@ sshd_server_defaults:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.sshd
+    - role: lenmail.default_server.sshd
 ```
 
 ## Testing

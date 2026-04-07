@@ -24,7 +24,7 @@ lvm_config_defaults: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.lvm
+    - role: lenmail.default_server.lvm
 ```
 
 ## Testing

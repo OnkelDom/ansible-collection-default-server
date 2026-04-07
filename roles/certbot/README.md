@@ -33,7 +33,7 @@ certbot_certs:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.certbot
+    - role: lenmail.default_server.certbot
 ```
 
 ## Testing

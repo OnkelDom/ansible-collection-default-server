@@ -24,7 +24,7 @@ users_defaults: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.users
+    - role: lenmail.default_server.users
 ```
 
 ## Testing

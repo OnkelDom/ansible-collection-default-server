@@ -34,7 +34,7 @@ firewalld_defaults_services: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.firewalld
+    - role: lenmail.default_server.firewalld
 ```
 
 ## Testing

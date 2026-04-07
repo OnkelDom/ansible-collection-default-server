@@ -21,7 +21,7 @@ This role does not define defaults in `defaults/main.yml`.
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.motd
+    - role: lenmail.default_server.motd
 ```
 
 ## Testing

@@ -1,5 +1,5 @@
 ---
-collection_namespace: inframonks
+collection_namespace: lenmail
 collection_name: default_server
 min_ansible_version: "2.16"
 common_platforms:
@@ -39,7 +39,6 @@ role_descriptions:
   nmcli: Manage NetworkManager connections with community.general.nmcli.
   node-exporter: Install and configure Prometheus node_exporter.
   packages: Install and remove packages from aggregated package lists.
-  postfix_mta: Configure Postfix as a relay or local MTA.
   proxy: Configure proxy environment files for system tools.
   qemu_guest_agent: Install the QEMU guest agent package.
   resolvconf: Manage resolver nameservers and search domains.

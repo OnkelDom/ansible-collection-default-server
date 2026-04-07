@@ -28,7 +28,7 @@ resolvconf_search_domains: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.resolvconf
+    - role: lenmail.default_server.resolvconf
 ```
 
 ## Testing

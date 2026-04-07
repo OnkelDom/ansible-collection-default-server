@@ -28,7 +28,7 @@ sysctl_defaults:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.sysctl
+    - role: lenmail.default_server.sysctl
 ```
 
 ## Testing

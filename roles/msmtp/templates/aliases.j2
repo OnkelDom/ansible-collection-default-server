@@ -2,6 +2,6 @@
 
 # /etc/aliases file
 
-{% for alias in msmtp_aliases %}
-{{ alias.name }}: {{ alias.recipient }}
+{% for name, recipient in msmtp_aliases.items() %}
+{{ name }}: {{ recipient }}
 {% endfor %}

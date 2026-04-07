@@ -29,7 +29,7 @@ hosts_entrys: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.hosts
+    - role: lenmail.default_server.hosts
 ```
 
 ## Testing

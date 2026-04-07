@@ -25,7 +25,7 @@ packages_manage_cache: true
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.packages
+    - role: lenmail.default_server.packages
 ```
 
 ## Testing

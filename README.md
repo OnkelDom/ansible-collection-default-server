@@ -1,4 +1,4 @@
-# Ansible Collection: `inframonks.default_server`
+# Ansible Collection: `lenmail.default_server`
 
 Diese Collection bundelt Basisrollen fuer Linux-Server und ist auf eine saubere, wiederholbare Rollenstruktur ausgelegt.
 Jede Rolle erhaelt ein einheitliches Geruest mit:
@@ -25,20 +25,20 @@ Die Collection enthaelt unter anderem Rollen fuer:
 - Basis-Systemeinstellungen: `chrony`, `hosts`, `motd`, `packages`, `sysctl`, `users`
 - Netzwerk: `firewalld`, `ifcfg`, `interfaces`, `netplan`, `nmcli`, `resolvconf`, `ufw`
 - Security: `auditd`, `fail2ban`, `sshd`, `sssd`
-- Dienste und Tools: `borgbackup`, `certbot`, `nginx`, `node-exporter`, `postfix_mta`, `telegraf`
+- Dienste und Tools: `borgbackup`, `certbot`, `msmtp`, `nginx`, `node-exporter`, `telegraf`
 - Plattform-spezifische Helfer: `dnf_automatic`, `dnf_repos`, `qemu_guest_agent`, `vmware_tools`
 
 ## Installation
 
 ```bash
-ansible-galaxy collection install git+https://github.com/inframonks/ansible-collection-default-server.git
+ansible-galaxy collection install git+https://github.com/lenmail/ansible-collection-default-server.git
 ```
 
 Oder ueber eine `requirements.yml`:
 
 ```yaml
 collections:
-  - name: git+https://github.com/inframonks/ansible-collection-default-server.git
+  - name: git+https://github.com/lenmail/ansible-collection-default-server.git
 ```
 
 ## Verwendung
@@ -48,8 +48,8 @@ collections:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.chrony
-    - role: inframonks.default_server.users
+    - role: lenmail.default_server.chrony
+    - role: lenmail.default_server.users
 ```
 
 ## Entwicklung

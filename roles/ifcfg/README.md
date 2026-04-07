@@ -26,7 +26,7 @@ ifcfg_interfaces:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.ifcfg
+    - role: lenmail.default_server.ifcfg
 ```
 
 ## Testing

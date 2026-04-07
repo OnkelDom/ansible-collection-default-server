@@ -24,7 +24,7 @@ auditd_extra_rules: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.auditd
+    - role: lenmail.default_server.auditd
 ```
 
 ## Testing

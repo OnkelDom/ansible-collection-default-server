@@ -29,7 +29,7 @@ sssd_bind_password: ''
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.sssd
+    - role: lenmail.default_server.sssd
 ```
 
 ## Testing

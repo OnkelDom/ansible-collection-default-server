@@ -34,7 +34,7 @@ dnf_automatic_reboot: when-needed
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.dnf_automatic
+    - role: lenmail.default_server.dnf_automatic
 ```
 
 ## Testing

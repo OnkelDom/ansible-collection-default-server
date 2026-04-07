@@ -33,7 +33,7 @@ chrony_allowed:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.chrony
+    - role: lenmail.default_server.chrony
 ```
 
 ## Testing

@@ -14,20 +14,24 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
-msmtp_auth: on
+msmtp_auth: off
 msmtp_tls: on
 msmtp_tls_starttls: on
 msmtp_set_from_header: on
 msmtp_syslog: on
 msmtp_default_account: default
+msmtp_logfile: /var/log/msmtp.log
+msmtp_aliases_enabled: true
 msmtp_accounts:
 - name: default
   host: smtp.example.com
-  port: '587'
+  port: 587
   from: user@example.com
+  auth: on
   user: user@example.com
   password: password
-msmtp_aliases: {}
+msmtp_aliases:
+  root: root
 ```
 
 ## Example Playbook
@@ -37,7 +41,7 @@ msmtp_aliases: {}
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.msmtp
+    - role: lenmail.default_server.msmtp
 ```
 
 ## Testing

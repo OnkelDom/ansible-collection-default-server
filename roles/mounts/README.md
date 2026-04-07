@@ -24,7 +24,7 @@ mounts_defaults: []
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.mounts
+    - role: lenmail.default_server.mounts
 ```
 
 ## Testing

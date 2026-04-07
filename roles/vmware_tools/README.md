@@ -24,7 +24,7 @@ vmware_tools_package_state: present
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.vmware_tools
+    - role: lenmail.default_server.vmware_tools
 ```
 
 ## Testing

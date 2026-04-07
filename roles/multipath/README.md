@@ -26,7 +26,7 @@ multipath_pathes: {}
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.multipath
+    - role: lenmail.default_server.multipath
 ```
 
 ## Testing

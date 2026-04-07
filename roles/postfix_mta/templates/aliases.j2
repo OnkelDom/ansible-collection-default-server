@@ -1,8 +1,0 @@
-{{ ansible_managed | comment }}
-
-root: {{ postfix_mta_root_mail }}
-{% if postfix_mta_aliases is defined %}
-{% for key, value in postfix_mta_aliases.items() %}
-{{ key }}: {{ value }}
-{% endfor %}
-{% endif %}

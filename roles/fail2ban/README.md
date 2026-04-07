@@ -52,7 +52,7 @@ fail2ban_jails:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.fail2ban
+    - role: lenmail.default_server.fail2ban
 ```
 
 ## Testing

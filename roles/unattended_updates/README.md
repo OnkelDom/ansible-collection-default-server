@@ -51,7 +51,7 @@ unattended_updates_only_on_ac_power: false
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.unattended_updates
+    - role: lenmail.default_server.unattended_updates
 ```
 
 ## Testing

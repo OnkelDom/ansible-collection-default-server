@@ -54,7 +54,7 @@ nginx_log_format: "'$remote_addr - $remote_user [$time_local] \"$request\" '\n'$
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.nginx
+    - role: lenmail.default_server.nginx
 ```
 
 ## Testing

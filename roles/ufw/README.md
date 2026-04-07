@@ -37,7 +37,7 @@ ufw_config:
   hosts: all
   become: true
   roles:
-    - role: inframonks.default_server.ufw
+    - role: lenmail.default_server.ufw
 ```
 
 ## Testing
