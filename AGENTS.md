@@ -56,6 +56,8 @@ Dieses Repository enthaelt die Ansible Collection `lenmail.default_server`.
 - `netplan`, `interfaces`, `ufw` nur Debian-Familie
 - `ifcfg`, `firewalld` nur RedHat-Familie
 - Rollen mit distributionsspezifischem Verhalten sollen das frueh validieren
+- Facts werden auf Play-Ebene gesammelt, nicht per `setup` pauschal in jeder Rolle
+- Rollen duerfen `ansible_*` Facts voraussetzen, muessen aber Syntax-/Beispiel-Playbooks mit `gather_facts: true` haben
 - Wenn eine Rolle nicht sinnvoll plattformuebergreifend ist, lieber klar eingrenzen als implizit brechen
 
 ## Doku- und Namespace-Regeln
