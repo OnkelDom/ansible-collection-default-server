@@ -1,4 +1,11 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family == "Debian"
+    fail_msg: "The interfaces role supports Debian-family systems only."
+  tags: interfaces
+
 - name: Ensure packages installed
   ansible.builtin.apt:
     update_cache: true

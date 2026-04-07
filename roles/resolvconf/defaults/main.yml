@@ -1,4 +1,5 @@
 ---
+resolvconf_manage_systemd_resolved: true
 resolvconf_nameservers:
 - 1.0.0.1
 - 1.1.1.1

@@ -1,4 +1,11 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family == "Debian"
+    fail_msg: "The netplan role supports Debian-family systems only."
+  tags: netplan
+
 - name: Install packages
   ansible.builtin.package:
     name: "{{ netplan_packages }}"
@@ -36,6 +43,8 @@
     src: config.yaml.j2
     dest: "{{ netplan_path }}/{{ netplan_file }}"
     mode: '0644'
+    owner: root
+    group: root
   when: netplan_config != {}
   notify: Generate netplan config
   become: true

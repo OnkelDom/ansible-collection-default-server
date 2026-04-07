@@ -14,6 +14,7 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+resolvconf_manage_systemd_resolved: true
 resolvconf_nameservers:
 - 1.0.0.1
 - 1.1.1.1

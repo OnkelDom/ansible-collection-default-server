@@ -1,4 +1,11 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family == "Debian"
+    fail_msg: "The ufw role supports Debian-family systems only."
+  tags: ufw
+
 - name: Combine rules
   ansible.builtin.set_fact:
     ufw_rules: >-
@@ -65,8 +72,8 @@
 
 - name: Enable with default deny policy
   community.general.ufw:
-    state: "enabled"
-    policy: "deny"
+    state: "{{ 'enabled' if ufw_enabled | bool else 'disabled' }}"
+    policy: "{{ ufw_policy }}"
   notify: Reload ufw
   become: true
   tags: ufw

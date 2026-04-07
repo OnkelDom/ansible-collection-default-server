@@ -16,6 +16,8 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ufw_rules_defaults:
 - name: OpenSSH
   rule: allow
+ufw_enabled: true
+ufw_policy: deny
 ufw_manage_config: true
 ufw_config:
   IPV6: yes

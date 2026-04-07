@@ -1,4 +1,5 @@
 ---
 interfaces_packages:
+- ifupdown
 - bridge-utils
 - ifenslave

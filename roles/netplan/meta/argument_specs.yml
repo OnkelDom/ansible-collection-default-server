@@ -25,6 +25,11 @@ argument_specs:
         - Controls `netplan_enabled` for the `netplan` role.
         required: false
         type: bool
+      netplan_manage_service:
+        description:
+        - Controls `netplan_manage_service` for the `netplan` role.
+        required: false
+        type: bool
       netplan_packages:
         description:
         - Controls `netplan_packages` for the `netplan` role.

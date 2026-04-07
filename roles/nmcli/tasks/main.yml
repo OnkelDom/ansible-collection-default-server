@@ -1,18 +1,25 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The nmcli role supports Debian and RedHat families only."
+  tags: nmcli
+
+- name: Load distribution-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family | lower }}.yml"
+  tags: nmcli
+
 - name: Ensure packages are installed
   ansible.builtin.package:
-    name:
-    - NetworkManager-libnm
-    - nm-connection-editor
-    - python3-libsemanage
-    - python3-policycoreutils
+    name: "{{ nmcli_packages }}"
     state: present
   become: true
   tags: nmcli
 
 - name: Ensure NetworkManager is running and enabled
   ansible.builtin.service:
-    name: NetworkManager
+    name: "{{ nmcli_service_name }}"
     state: started
     enabled: true
   become: true
@@ -25,6 +32,8 @@
     type: "{{ item.type | default('ethernet') }}"
     state: "{{ item.state | default('up') }}"
     autoconnect: "{{ item.autoconnect | default(true) }}"
+    method4: "{{ item.method4 | default(omit) }}"
+    method6: "{{ item.method6 | default(omit) }}"
     ip4: "{{ item.method4 == 'static' and item.ip4 | default(omit) or omit }}"
     gw4: "{{ item.method4 == 'static' and item.gw4 | default(omit) or omit }}"
     dns4: "{{ item.dns4 | default(omit) }}"
@@ -48,13 +57,14 @@
     route2: "{{ item.route2 | default(omit) }}"
     route3: "{{ item.route3 | default(omit) }}"
   loop: "{{ nmcli_interfaces }}"
+  when: item.state | default('up') != 'absent'
   notify: Reload nmcli
   become: true
   tags: nmcli
 
 - name: Remove old connections
   community.general.nmcli:
-    conn_name: "{{ item.iface }}"
+    conn_name: "{{ item.conn_name | default(item.iface) }}"
     state: absent
   loop: "{{ nmcli_interfaces }}"
   when: item.state == 'absent'

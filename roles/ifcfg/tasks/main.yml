@@ -1,4 +1,11 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family == "RedHat"
+    fail_msg: "The ifcfg role supports RedHat-family systems only."
+  tags: network
+
 - name: Configure network interfaces
   ansible.builtin.template:
     src: ifcfg-eth.j2

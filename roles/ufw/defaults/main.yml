@@ -3,6 +3,9 @@ ufw_rules_defaults:
 - name: OpenSSH
   rule: allow
 
+ufw_enabled: true
+ufw_policy: deny
+
 # Manage the configuration file
 ufw_manage_config: true
 # Configuration object passed to the configuration file

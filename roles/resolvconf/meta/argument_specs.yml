@@ -5,6 +5,11 @@ argument_specs:
     description:
     - Validate variables for the `resolvconf` role.
     options:
+      resolvconf_manage_systemd_resolved:
+        description:
+        - Controls `resolvconf_manage_systemd_resolved` for the `resolvconf` role.
+        required: false
+        type: bool
       resolvconf_nameservers:
         description:
         - Controls `resolvconf_nameservers` for the `resolvconf` role.

@@ -1,4 +1,11 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family == "RedHat"
+    fail_msg: "The firewalld role supports RedHat-family systems only."
+  tags: firewalld
+
 - name: Firewalld | Combine firewalld_services
   ansible.builtin.set_fact:
     firewalld_services: >-

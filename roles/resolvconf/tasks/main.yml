@@ -1,17 +1,18 @@
 ---
-- name: Stop and disable
+- name: Stop and disable systemd-resolved
   ansible.builtin.service:
     name: systemd-resolved
     state: stopped
     enabled: false
   failed_when: false
+  when: resolvconf_manage_systemd_resolved | bool
   become: true
   tags: resolvconf
 
 - name: Check if /etc/resolvconf is a symlink to /run/systemd/resolve/resolv.conf
   ansible.builtin.stat:
     path: /etc/resolv.conf
-  register: resolvconf
+  register: resolvconf_resolv_conf
   become: true
   tags: resolvconf
 
@@ -19,7 +20,7 @@
   ansible.builtin.file:
     path: /etc/resolv.conf
     state: absent
-  when: resolvconf.stat.islnk
+  when: resolvconf_resolv_conf.stat.islnk
   become: true
   tags: resolvconf
 

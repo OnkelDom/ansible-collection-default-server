@@ -17,6 +17,7 @@ netplan_file: 01-netcfg.yaml
 netplan_path: /etc/netplan
 netplan_config: {}
 netplan_enabled: true
+netplan_manage_service: true
 netplan_packages:
 - netplan.io
 netplan_renderer: networkd
