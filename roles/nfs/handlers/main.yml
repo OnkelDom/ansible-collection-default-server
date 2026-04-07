@@ -1,4 +1,4 @@
 ---
-# handlers file for lae.nfs
 - name: reload nfs
-  command: exportfs -ra
+  ansible.builtin.command: exportfs -ra
+  changed_when: true
