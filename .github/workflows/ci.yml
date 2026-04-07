@@ -32,7 +32,7 @@ jobs:
     - name: Build and install collection artifact
       run: |
         ansible-galaxy collection build --force
-        ansible-galaxy collection install inframonks-default_server-*.tar.gz --force
+        ansible-galaxy collection install lenmail-default_server-*.tar.gz --force
 
     - name: Verify generated role scaffolding
       run: python tools/generate_role_scaffold.py --check
