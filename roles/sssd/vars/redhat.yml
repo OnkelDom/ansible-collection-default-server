@@ -1,2 +1,16 @@
 ---
 sssd_sshd_service_name: sshd
+sssd_packages:
+- realmd
+- sssd
+- sssd-tools
+- samba-common-tools
+- krb5-workstation
+- authselect-compat
+- adcli
+- chrony
+- python3-pexpect
+- oddjob
+- oddjob-mkhomedir
+sssd_realm_binary: /usr/sbin/realm
+sssd_oddjob_service_name: oddjobd

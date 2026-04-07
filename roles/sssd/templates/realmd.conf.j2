@@ -14,4 +14,6 @@ fully-qualified-names = no
 automatic-id-mapping = yes
 user-principal = yes
 manage-system = no
+{% if sssd_ou_to_join_servers | length > 0 %}
 computer-ou={{ sssd_ou_to_join_servers }}
+{% endif %}

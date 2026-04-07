@@ -1,5 +1,7 @@
 ---
 users_defaults: []
+users_manage_root_dotfiles: true
+users_copy_msmtp_config: true
 
 # users_defaults:
 #   - name: "litsadmin"

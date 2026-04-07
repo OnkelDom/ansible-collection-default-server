@@ -10,3 +10,13 @@ argument_specs:
         - Controls `users_defaults` for the `users` role.
         required: false
         type: list
+      users_manage_root_dotfiles:
+        description:
+        - Controls `users_manage_root_dotfiles` for the `users` role.
+        required: false
+        type: bool
+      users_copy_msmtp_config:
+        description:
+        - Controls `users_copy_msmtp_config` for the `users` role.
+        required: false
+        type: bool

@@ -52,13 +52,16 @@
     cmd: timedatectl show -p Timezone --value
   register: __chrony_current_timezone
   changed_when: false
+  when: chrony_set_time_zone | bool
   become: true
   tags: chrony
 
 - name: Configure timezone if not set
   community.general.timezone:
     name: "{{ chrony_timezone }}"
-  when: __chrony_current_timezone.stdout != chrony_timezone
+  when:
+  - chrony_set_time_zone | bool
+  - __chrony_current_timezone.stdout != chrony_timezone
   become: true
   tags: chrony
 
@@ -67,14 +70,20 @@
     cmd: timedatectl show -p NTP --value
   register: __chrony_ntp_status
   changed_when: false
+  when:
+  - chrony_manage_ntp | bool
+  - ansible_service_mgr == "systemd"
   become: true
   tags: chrony
 
 - name: Set timedatectl ntp true if not enabled
   ansible.builtin.command:
     cmd: timedatectl set-ntp true
-  when: __chrony_ntp_status.stdout != "yes"
-  changed_when: false
+  when:
+  - chrony_manage_ntp | bool
+  - ansible_service_mgr == "systemd"
+  - __chrony_ntp_status.stdout != "yes"
+  changed_when: true
   become: true
   tags: chrony
 

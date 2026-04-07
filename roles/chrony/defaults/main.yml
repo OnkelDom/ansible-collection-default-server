@@ -1,11 +1,12 @@
 ---
 chrony_set_time_zone: true
 chrony_timezone: 'Europe/Berlin'
+chrony_manage_ntp: true
 chrony_servers:
-- 0.de.pool.ntp.org iburst
-- 1.de.pool.ntp.org iburst
-- 2.de.pool.ntp.org iburst
-- 3.de.pool.ntp.org iburst
+- 0.de.pool.ntp.org
+- 1.de.pool.ntp.org
+- 2.de.pool.ntp.org
+- 3.de.pool.ntp.org
 chrony_allowed:
 - 127.0.0.1
 - ::1

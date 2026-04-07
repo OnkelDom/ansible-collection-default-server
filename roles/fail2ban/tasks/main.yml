@@ -51,7 +51,7 @@
 
 - name: Create filter configurations
   ansible.builtin.template:
-    src: filter.d.j2
+    src: filters.d.j2
     dest: "/etc/fail2ban/filter.d/{{ item.name }}.conf"
     owner: root
     group: root
@@ -64,7 +64,7 @@
 
 - name: Create action configurations
   ansible.builtin.template:
-    src: action.local.j2
+    src: action.d.j2
     dest: "/etc/fail2ban/action.d/{{ item.name }}.conf"
     owner: root
     group: root

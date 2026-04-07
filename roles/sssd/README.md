@@ -14,10 +14,15 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
-sssd_domain_name: ads.krz.-uni-heidelberg.de
-sssd_ad_group_allowd_ssh_and_sudo: Linux-Admins
-sssd_ad_group_allowd_ssh_and_sudo_extra: []
-sssd_ou_to_join_servers: OU=Linux Server,DC=domain,DC=intra
+sssd_domain_name: example.com
+sssd_join_domain: true
+sssd_restrict_access: true
+sssd_manage_mkhomedir: true
+sssd_ad_group_allowed_ssh_and_sudo: Linux-Admins
+sssd_ad_group_allowed_ssh_and_sudo_extra: []
+sssd_ad_group_allowd_ssh_and_sudo: '{{ sssd_ad_group_allowed_ssh_and_sudo }}'
+sssd_ad_group_allowd_ssh_and_sudo_extra: '{{ sssd_ad_group_allowed_ssh_and_sudo_extra }}'
+sssd_ou_to_join_servers: ''
 sssd_bind_user: ''
 sssd_bind_password: ''
 ```

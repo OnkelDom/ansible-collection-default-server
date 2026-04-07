@@ -10,6 +10,31 @@ argument_specs:
         - Controls `sssd_domain_name` for the `sssd` role.
         required: false
         type: str
+      sssd_join_domain:
+        description:
+        - Controls `sssd_join_domain` for the `sssd` role.
+        required: false
+        type: bool
+      sssd_restrict_access:
+        description:
+        - Controls `sssd_restrict_access` for the `sssd` role.
+        required: false
+        type: bool
+      sssd_manage_mkhomedir:
+        description:
+        - Controls `sssd_manage_mkhomedir` for the `sssd` role.
+        required: false
+        type: bool
+      sssd_ad_group_allowed_ssh_and_sudo:
+        description:
+        - Controls `sssd_ad_group_allowed_ssh_and_sudo` for the `sssd` role.
+        required: false
+        type: str
+      sssd_ad_group_allowed_ssh_and_sudo_extra:
+        description:
+        - Controls `sssd_ad_group_allowed_ssh_and_sudo_extra` for the `sssd` role.
+        required: false
+        type: list
       sssd_ad_group_allowd_ssh_and_sudo:
         description:
         - Controls `sssd_ad_group_allowd_ssh_and_sudo` for the `sssd` role.
@@ -19,7 +44,7 @@ argument_specs:
         description:
         - Controls `sssd_ad_group_allowd_ssh_and_sudo_extra` for the `sssd` role.
         required: false
-        type: list
+        type: str
       sssd_ou_to_join_servers:
         description:
         - Controls `sssd_ou_to_join_servers` for the `sssd` role.

@@ -1,19 +1,38 @@
 ---
+- name: Gather operating system variables
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+  - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+  - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_distribution_file_variety | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_distribution | lower }}.yml"
+  - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  - "{{ ansible_os_family | lower }}.yml"
+  tags: sssd
+
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The sssd role supports Debian and RedHat families only."
+  tags: sssd
+
 - name: Install packages
   ansible.builtin.package:
     state: present
-    name:
-    - realmd
-    - sssd
-    - sssd-tools
-    - samba-common
-    - krb5-user
-    - packagekit
-    - samba-common-bin
-    - samba-libs
-    - adcli
-    - chrony
-    - python3-pexpect
+    name: "{{ sssd_packages }}"
+  become: true
+  tags: sssd
+
+- name: Ensure oddjobd is enabled on RedHat
+  ansible.builtin.service:
+    name: "{{ sssd_oddjob_service_name }}"
+    state: started
+    enabled: true
+  when:
+  - ansible_os_family == "RedHat"
+  - sssd_manage_mkhomedir | bool
   become: true
   tags: sssd
 
@@ -27,28 +46,38 @@
   become: true
   tags: sssd
 
-- name: Check if machine is joined the AD
-  ansible.builtin.shell:
-    cmd: '/bin/bash -c "realm list | grep sssd"'
-  register: realmd_bound
+- name: Check joined realms
+  ansible.builtin.command:
+    cmd: "{{ sssd_realm_binary }} list --name-only"
+  register: __sssd_realm_list
   changed_when: false
-  ignore_errors: true
+  failed_when: false
   become: true
   tags: sssd
 
-- name: Join system to AD and put the computer object defined OU
+- name: Fail when domain join credentials are missing
+  ansible.builtin.fail:
+    msg: "sssd_bind_user and sssd_bind_password are required to join {{ sssd_domain_name }}."
+  when:
+  - sssd_join_domain | bool
+  - sssd_domain_name not in (__sssd_realm_list.stdout_lines | default([]))
+  - sssd_bind_user | length == 0 or sssd_bind_password | length == 0
+  tags: sssd
+
+- name: Join system to AD
   ansible.builtin.expect:
-    command: '/usr/sbin/realm --verbose join {{ sssd_domain_name }} -U {{ sssd_bind_user }}'
+    command: >-
+      {{ sssd_realm_binary }} --verbose join {{ sssd_domain_name }}
+      --user {{ sssd_bind_user }}
+      {% if sssd_ou_to_join_servers | length > 0 %}--computer-ou '{{ sssd_ou_to_join_servers }}'{% endif %}
     responses:
       Password for *: "{{ sssd_bind_password }}"
-  when: realmd_bound is failed
-  register: debug_join_domain
-  become: true
-  tags: sssd
-
-- name: Debug Join Domain Output
-  ansible.builtin.debug:
-    var: debug_join_domain.stdout_lines
+  no_log: true
+  when:
+  - sssd_join_domain | bool
+  - sssd_domain_name not in (__sssd_realm_list.stdout_lines | default([]))
+  - sssd_bind_user | length > 0
+  - sssd_bind_password | length > 0
   become: true
   tags: sssd
 
@@ -63,17 +92,14 @@
 
 - name: Restrict access based on specific ad group
   ansible.builtin.command:
-    cmd: "/usr/sbin/realm -v permit -g {{ item }}"
-  register: debug_permit_groups
+    cmd: "{{ sssd_realm_binary }} -v permit -g {{ item }}"
   changed_when: false
-  loop: "{{ [sssd_ad_group_allowd_ssh_and_sudo] + (sssd_ad_group_allowd_ssh_and_sudo_extra | default([])) }}"
-  when: item | length > 0
+  loop: "{{ [sssd_ad_group_allowed_ssh_and_sudo] + (sssd_ad_group_allowed_ssh_and_sudo_extra | default([])) }}"
+  when:
+  - sssd_restrict_access | bool
+  - sssd_domain_name in (__sssd_realm_list.stdout_lines | default([]))
+  - item | length > 0
   become: true
-  tags: sssd
-
-- name: Debug debug_permit_groups
-  ansible.builtin.debug:
-    var: debug_permit_groups.results | map(attribute='stdout_lines') | list
   tags: sssd
 
 - name: Configure sudoers file
@@ -90,6 +116,27 @@
     path: /etc/pam.d/common-session
     insertafter: 'pam_unix.so'
     line: 'session required    pam_mkhomedir.so skel=/etc/skel/ umask=0077'
-  when: ansible_os_family == "Debian"
+  when:
+  - ansible_os_family == "Debian"
+  - sssd_manage_mkhomedir | bool
+  become: true
+  tags: sssd
+
+- name: Enable mkhomedir through authselect on RedHat
+  ansible.builtin.command:
+    cmd: authselect select sssd with-mkhomedir --force
+  when:
+  - ansible_os_family == "RedHat"
+  - sssd_manage_mkhomedir | bool
+  changed_when: true
+  failed_when: false
+  become: true
+  tags: sssd
+
+- name: Ensure sssd service is started and enabled
+  ansible.builtin.service:
+    name: sssd
+    state: started
+    enabled: true
   become: true
   tags: sssd

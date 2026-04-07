@@ -16,5 +16,9 @@ leapsectz right/UTC
 allow {{ allowd_ip }}
 {% endfor %}
 {% for ntp_server in chrony_servers %}
+{% if ' ' in ntp_server %}
+server {{ ntp_server }}
+{% else %}
 server {{ ntp_server }} iburst
+{% endif %}
 {% endfor %}

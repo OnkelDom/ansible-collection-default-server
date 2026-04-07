@@ -11,11 +11,6 @@
       }}
   tags: users
 
-- name: Debug users_list
-  ansible.builtin.debug:
-    var: users_list
-  tags: users
-
 - name: Install package sudo
   ansible.builtin.package:
     name: sudo
@@ -49,6 +44,7 @@
     system: "{{ user_item.system_account | default(false) }}"
     password: "{{ user_item.password | default(omit) if user_item.password is defined else omit }}"
     update_password: on_create
+    remove: "{{ user_item.state | default('present') == 'absent' }}"
   loop: "{{ users_list }}"
   loop_control:
     loop_var: user_item
@@ -80,9 +76,9 @@
   ansible.builtin.lineinfile:
     path: "/etc/sudoers.d/user_{{ sudo_item.name }}"
     line: "{{ sudo_item.name }} {{ sudo_item.cmd | default('ALL=(ALL) NOEXEC: /bin/false') }}"
-    state: "{{ sudo_item.sudo | default(false) | ternary('present', 'absent') }}"
+    state: "{{ (sudo_item.state | default('present') == 'present' and sudo_item.sudo | default(false)) | ternary('present', 'absent') }}"
     mode: "0440"
-    create: true
+    create: "{{ sudo_item.state | default('present') == 'present' and sudo_item.sudo | default(false) }}"
     validate: 'visudo -cf %s'
   loop: "{{ users_list }}"
   loop_control:
@@ -91,7 +87,6 @@
   - users_list is defined
   - users_list | length > 0
   - sudo_item.name is defined
-  - sudo_item.state | default('present') == 'present'
   become: true
   tags: users
 
@@ -153,6 +148,7 @@
   - source: gitconfig
     dest: "/root/.gitconfig"
     mode: "0644"
+  when: users_manage_root_dotfiles | bool
   become: true
   tags: users
 
@@ -160,6 +156,7 @@
   ansible.builtin.stat:
     path: /etc/msmtprc
   register: msmtprc_stat
+  when: users_copy_msmtp_config | bool
   tags: users
 
 - name: Copy /etc/msmtprc to users home directories
@@ -179,6 +176,7 @@
   - users_list | length > 0
   - msmtp_user.name != 'root'
   - msmtp_user.state | default('present') == 'present'
+  - users_copy_msmtp_config | bool
   - msmtprc_stat.stat.exists
   tags: users
 
@@ -196,5 +194,6 @@
   - users_list | length > 0
   - msmtp_replace_user.name != 'root'
   - msmtp_replace_user.state | default('present') == 'present'
+  - users_copy_msmtp_config | bool
   - msmtprc_stat.stat.exists
   tags: users
