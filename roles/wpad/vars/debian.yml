@@ -1,0 +1,10 @@
+---
+wpad_webserver_map:
+  apache:
+    service_name: apache2
+    config_path: /etc/apache2/sites-available/wpad.conf
+    enabled_path: /etc/apache2/sites-enabled/wpad.conf
+  nginx:
+    service_name: nginx
+    config_path: /etc/nginx/sites-enabled/wpad.conf
+    enabled_path: ""

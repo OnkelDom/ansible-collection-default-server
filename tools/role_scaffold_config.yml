@@ -62,6 +62,7 @@ role_descriptions:
   unattended_updates: Configure unattended upgrades on Debian and Ubuntu.
   users: Manage local users, SSH keys, and shell dotfiles.
   vmware_tools: Install open-vm-tools on supported Linux systems.
+  wpad: Manage a proxy auto-configuration file and publish it through Apache or NGINX.
 role_platform_overrides:
   certbot:
   - name: Ubuntu

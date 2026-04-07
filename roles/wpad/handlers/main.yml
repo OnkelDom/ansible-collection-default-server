@@ -1,0 +1,6 @@
+---
+- name: Reload wpad webserver
+  ansible.builtin.service:
+    name: "{{ _wpad_webserver.service_name }}"
+    state: reloaded
+  when: wpad_manage_service | bool

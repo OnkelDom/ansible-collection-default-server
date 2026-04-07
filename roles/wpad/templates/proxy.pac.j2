@@ -1,0 +1,57 @@
+{% set ns = namespace(default_routes=[]) %}
+{% if wpad_return_string %}
+{% set default_return = wpad_return_string %}
+{% else %}
+{% for target in wpad_proxy_targets %}
+{% set _ = ns.default_routes.append(target.type ~ ' ' ~ target.host ~ ':' ~ (target.port | string)) %}
+{% endfor %}
+{% if wpad_direct_fallback %}
+{% set _ = ns.default_routes.append('DIRECT') %}
+{% endif %}
+{% set default_return = ns.default_routes | join('; ') %}
+{% endif %}
+/* {{ ansible_managed | default('Managed by Ansible') }} */
+function FindProxyForURL(url, host) {
+  var hostLower = host.toLowerCase();
+
+{% if wpad_bypass_plain_hostnames %}
+  if (isPlainHostName(host)) {
+    return "DIRECT";
+  }
+{% endif %}
+{% if wpad_bypass_localhost %}
+  if (hostLower == "localhost" || host == "127.0.0.1" || host == "::1") {
+    return "DIRECT";
+  }
+{% endif %}
+{% for item in wpad_bypass_exact_hosts %}
+  if (hostLower == "{{ item | lower }}") {
+    return "DIRECT";
+  }
+{% endfor %}
+{% for suffix in wpad_bypass_domain_suffixes %}
+{% set normalized_suffix = suffix[1:] if suffix.startswith('.') else suffix %}
+  if (hostLower == "{{ normalized_suffix | lower }}" || dnsDomainIs(hostLower, "{{ suffix | lower }}")) {
+    return "DIRECT";
+  }
+{% endfor %}
+{% for pattern in wpad_bypass_host_globs %}
+  if (shExpMatch(hostLower, "{{ pattern | lower }}")) {
+    return "DIRECT";
+  }
+{% endfor %}
+{% for network in wpad_bypass_networks %}
+  if (isInNet(dnsResolve(host), "{{ network.network }}", "{{ network.netmask }}")) {
+    return "DIRECT";
+  }
+{% endfor %}
+{% for rule in wpad_custom_rules %}
+  if ({{ rule.condition }}) {
+    return "{{ rule.return }}";
+  }
+{% endfor %}
+{% if wpad_extra_pac_logic %}
+{{ wpad_extra_pac_logic | indent(2, true) }}
+{% endif %}
+  return "{{ default_return }}";
+}

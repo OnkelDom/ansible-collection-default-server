@@ -1,0 +1,125 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the wpad role.
+    description:
+    - Validate variables for the `wpad` role.
+    options:
+      proxy_env:
+        description:
+        - Controls `proxy_env` for the `wpad` role.
+        required: false
+        type: dict
+      wpad_state:
+        description:
+        - Controls `wpad_state` for the `wpad` role.
+        required: false
+        type: str
+      wpad_webserver:
+        description:
+        - Controls `wpad_webserver` for the `wpad` role.
+        required: false
+        type: str
+      wpad_manage_webserver_config:
+        description:
+        - Controls `wpad_manage_webserver_config` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_manage_service:
+        description:
+        - Controls `wpad_manage_service` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_document_root:
+        description:
+        - Controls `wpad_document_root` for the `wpad` role.
+        required: false
+        type: str
+      wpad_pac_filename:
+        description:
+        - Controls `wpad_pac_filename` for the `wpad` role.
+        required: false
+        type: str
+      wpad_enable_wpad_dat:
+        description:
+        - Controls `wpad_enable_wpad_dat` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_server_names:
+        description:
+        - Controls `wpad_server_names` for the `wpad` role.
+        required: false
+        type: list
+        elements: str
+      wpad_listen_port:
+        description:
+        - Controls `wpad_listen_port` for the `wpad` role.
+        required: false
+        type: int
+      wpad_listen_ipv6:
+        description:
+        - Controls `wpad_listen_ipv6` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_cache_control_header:
+        description:
+        - Controls `wpad_cache_control_header` for the `wpad` role.
+        required: false
+        type: str
+      wpad_return_string:
+        description:
+        - Controls `wpad_return_string` for the `wpad` role.
+        required: false
+        type: str
+      wpad_proxy_targets:
+        description:
+        - Controls `wpad_proxy_targets` for the `wpad` role.
+        required: false
+        type: list
+      wpad_direct_fallback:
+        description:
+        - Controls `wpad_direct_fallback` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_bypass_plain_hostnames:
+        description:
+        - Controls `wpad_bypass_plain_hostnames` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_bypass_localhost:
+        description:
+        - Controls `wpad_bypass_localhost` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_bypass_exact_hosts:
+        description:
+        - Controls `wpad_bypass_exact_hosts` for the `wpad` role.
+        required: false
+        type: list
+        elements: str
+      wpad_bypass_domain_suffixes:
+        description:
+        - Controls `wpad_bypass_domain_suffixes` for the `wpad` role.
+        required: false
+        type: list
+        elements: str
+      wpad_bypass_host_globs:
+        description:
+        - Controls `wpad_bypass_host_globs` for the `wpad` role.
+        required: false
+        type: list
+      wpad_bypass_networks:
+        description:
+        - Controls `wpad_bypass_networks` for the `wpad` role.
+        required: false
+        type: list
+      wpad_custom_rules:
+        description:
+        - Controls `wpad_custom_rules` for the `wpad` role.
+        required: false
+        type: list
+      wpad_extra_pac_logic:
+        description:
+        - Controls `wpad_extra_pac_logic` for the `wpad` role.
+        required: false
+        type: str

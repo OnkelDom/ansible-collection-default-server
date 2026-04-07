@@ -1,0 +1,27 @@
+server {
+    listen {{ wpad_listen_port }};
+{% if wpad_listen_ipv6 %}
+    listen [::]:{{ wpad_listen_port }};
+{% endif %}
+    server_name {{ wpad_server_names | join(' ') }};
+
+    root {{ wpad_document_root }};
+    access_log off;
+
+    location = /{{ wpad_pac_filename }} {
+        alias {{ wpad_document_root }}/{{ wpad_pac_filename }};
+        default_type application/x-ns-proxy-autoconfig;
+        add_header Cache-Control "{{ wpad_cache_control_header }}";
+    }
+{% if wpad_enable_wpad_dat %}
+    location = /wpad.dat {
+        alias {{ wpad_document_root }}/{{ wpad_pac_filename }};
+        default_type application/x-ns-proxy-autoconfig;
+        add_header Cache-Control "{{ wpad_cache_control_header }}";
+    }
+{% endif %}
+
+    location / {
+        try_files $uri =404;
+    }
+}

@@ -1,0 +1,29 @@
+<VirtualHost *:{{ wpad_listen_port }}>
+    ServerName {{ wpad_server_names[0] }}
+{% if wpad_server_names | length > 1 %}
+    ServerAlias {{ wpad_server_names[1:] | join(' ') }}
+{% endif %}
+    DocumentRoot "{{ wpad_document_root }}"
+
+    <Directory "{{ wpad_document_root }}">
+        AllowOverride None
+        Options -Indexes
+        Require all granted
+    </Directory>
+
+    Alias /{{ wpad_pac_filename }} "{{ wpad_document_root }}/{{ wpad_pac_filename }}"
+{% if wpad_enable_wpad_dat %}
+    Alias /wpad.dat "{{ wpad_document_root }}/{{ wpad_pac_filename }}"
+{% endif %}
+
+    <Location "/{{ wpad_pac_filename }}">
+        ForceType application/x-ns-proxy-autoconfig
+        Header set Cache-Control "{{ wpad_cache_control_header }}"
+    </Location>
+{% if wpad_enable_wpad_dat %}
+    <Location "/wpad.dat">
+        ForceType application/x-ns-proxy-autoconfig
+        Header set Cache-Control "{{ wpad_cache_control_header }}"
+    </Location>
+{% endif %}
+</VirtualHost>
