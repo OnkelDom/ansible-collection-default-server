@@ -17,6 +17,7 @@ common_platforms:
   versions:
   - "9"
 role_descriptions:
+  alloy: Install and configure Grafana Alloy as a client-side telemetry agent.
   apache: Install and configure Apache HTTP Server and virtual hosts.
   auditd: Manage additional auditd rules.
   borgbackup: Install and configure BorgBackup jobs and defaults.

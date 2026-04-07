@@ -1,0 +1,78 @@
+---
+# Service-Konfiguration
+alloy_service_enabled: true
+alloy_service_state: started
+
+# Konfigurationsdatei-Pfad
+alloy_config_file: /etc/alloy/config.alloy
+
+# Benutzer und Gruppe (werden normalerweise automatisch beim Paket-Installation erstellt)
+alloy_user: alloy
+alloy_group: alloy
+
+# Log-Level
+alloy_log_level: info
+
+# Default Loki-Endpoints (müssen angepasst werden)
+alloy_loki_endpoint: "http://localhost:3100/loki/api/v1/push"
+alloy_normal_logs_tenant: "normal-logs"
+alloy_audit_logs_tenant: "audit-logs"
+
+# Standard Alloy-Konfiguration
+alloy_config:
+  logging:
+    level: "{{ alloy_log_level }}"
+    format: logfmt
+
+  # Loki-Ausgabe für verschiedene Log-Typen
+  loki:
+    write:
+      # Normal logs endpoint
+    - endpoint: "{{ alloy_loki_endpoint }}"
+      tenant_id: "{{ alloy_normal_logs_tenant }}"
+      # Audit logs endpoint  
+    - endpoint: "{{ alloy_loki_endpoint }}"
+      tenant_id: "{{ alloy_audit_logs_tenant }}"
+    source:
+      file:
+        # Normale System-Logs
+      - targets:
+        - __path__: "/var/log/syslog"
+          job: "syslog"
+          log_type: "system"
+          host: "{{ ansible_hostname }}"
+        - __path__: "/var/log/messages"
+          job: "messages"
+          log_type: "system"
+          host: "{{ ansible_hostname }}"
+        - __path__: "/var/log/daemon.log"
+          job: "daemon"
+          log_type: "system"
+          host: "{{ ansible_hostname }}"
+        forward_to: ["loki_0"]    # Normal logs tenant
+        # Audit-Logs
+      - targets:
+        - __path__: "/var/log/audit/audit.log"
+          job: "audit"
+          log_type: "security"
+          host: "{{ ansible_hostname }}"
+        - __path__: "/var/log/auth.log"
+          job: "auth"
+          log_type: "security"
+          host: "{{ ansible_hostname }}"
+        - __path__: "/var/log/secure"
+          job: "secure"
+          log_type: "security"
+          host: "{{ ansible_hostname }}"
+        forward_to: ["loki_1"]    # Audit logs tenant
+
+# Firewall-Konfiguration (falls erforderlich)
+alloy_firewall_enabled: false
+alloy_firewall_ports: []
+
+# Systemd-Service-Optionen
+alloy_service_override: {}
+  # Environment:
+  #   - "CUSTOM_VAR=value"
+  # ExecStartPre:
+  #   - "/usr/bin/test -f /etc/alloy/config.alloy"
