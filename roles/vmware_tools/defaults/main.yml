@@ -1,2 +1,2 @@
 ---
-vmware_tools_package_state: latest
+vmware_tools_package_state: present

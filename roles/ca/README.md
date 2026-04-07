@@ -1,19 +1,31 @@
-# Ansible Role: CA
+# ca
 
-[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
+Deploy custom certificate authorities.
 
-## Description
+## Supported platforms
 
-This role copies the CA certificates to the system trust stores and reloads them.
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
 ## Role Variables
 
-The variables that can be overridden are defined in [defaults/main.yml](defaults/main.yml) and [vars](vars) directory. Below are the key variables:
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
-| Name                     | Default Value                | Description                                      |
-| ------------------------ | ---------------------------- | ------------------------------------------------ |
-| `ca_source_path`         | `../files/ca`                | Path to fileglob ab certs                        |
+```yaml
+ca_source_path: ca/*
+```
 
-## Dependencies
+## Example Playbook
 
-None.
+```yaml
+- name: Apply ca
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.ca
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/ca/tests/test.yml`.

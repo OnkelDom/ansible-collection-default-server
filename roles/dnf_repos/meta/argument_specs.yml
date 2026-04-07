@@ -1,0 +1,18 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the dnf_repos role.
+    description:
+    - Validate variables for the `dnf_repos` role.
+    options:
+      dnf_repos_remove_original:
+        description:
+        - Controls `dnf_repos_remove_original` for the `dnf_repos` role.
+        required: false
+        type: bool
+      dnf_repos_list:
+        description:
+        - Controls `dnf_repos_list` for the `dnf_repos` role.
+        required: false
+        type: list
+        elements: dict

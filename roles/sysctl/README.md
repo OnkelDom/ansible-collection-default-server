@@ -1,37 +1,35 @@
-## Die sysctl-Einträge können in mehreren Ebenen definiert werden:
+# sysctl
+
+Manage sysctl kernel parameters.
+
+## Supported platforms
+
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
+
+## Role Variables
+
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-# Defaults (defaults/main.yml):
-defaults_sysctl_entries:
+sysctl_defaults:
   net.ipv4.ip_forward: 1
   net.ipv4.conf.all.rp_filter: 1
-
-# group_vars_sysctl_entries:
-group_vars_sysctl_entries:
-  net.ipv4.ip_forward: 0
-  kernel.randomize_va_space: 2
-
-# Hostvariablen (host_vars/my_host.yml):
-host_vars_sysctl_entries:
   vm.swappiness: 10
-  net.ipv4.conf.default.rp_filter: 0
-
-# Playbook (playbook.yml):
-vars:
-  playbook_sysctl_entries:
-    kernel.randomize_va_space: 1
-    net.ipv4.tcp_syncookies: 1
+  vm.vfs_cache_pressure: 50
 ```
 
-## Beispiel für kombinierte Einträge
-Nach der Kombination ergibt sich eine konsolidierte Liste der sysctl-Einträge, wobei spätere Quellen frühere überschreiben:
+## Example Playbook
 
 ```yaml
-sysctl_entries:
-  net.ipv4.ip_forward: 0
-  net.ipv4.conf.all.rp_filter: 1
-  kernel.randomize_va_space: 1
-  vm.swappiness: 10
-  net.ipv4.conf.default.rp_filter: 0
-  net.ipv4.tcp_syncookies: 1
+- name: Apply sysctl
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.sysctl
 ```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/sysctl/tests/test.yml`.

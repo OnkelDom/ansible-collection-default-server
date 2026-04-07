@@ -1,26 +1,40 @@
-# Ansible Role: Chrony
+# chrony
 
-[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
+Install and configure Chrony for time synchronization.
 
-## Description
+## Supported platforms
 
-This Ansible role installs and configures Chrony, a versatile implementation of the Network Time Protocol (NTP). It ensures accurate timekeeping on your systems by synchronizing the system clock with NTP servers.
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
 ## Role Variables
 
-The variables that can be overridden are defined in [defaults/main.yml](defaults/main.yml) and [vars](vars) directory. Below are the key variables:
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
-| Name                     | Default Value                | Description                                      |
-| ------------------------ | ---------------------------- | ------------------------------------------------ |
-| `chrony_set_time_zone`   | `true`                       | Whether to set the timezone                      |
-| `chrony_timezone`        | `Europe/Berlin`              | Timezone to set                                  |
-| `chrony_servers`         | `['0.de.pool.ntp.org iburst', '1.de.pool.ntp.org iburst', '2.de.pool.ntp.org iburst', '3.de.pool.ntp.org iburst']` | List of NTP servers to use |
-| `chrony_allowed`         | `['127.0.0.1', '::1']`       | List of allowed IPs                              |
-| `chrony_config_file`     | `/etc/chrony/chrony.conf`    | Path to the Chrony configuration file            |
-| `chrony_service_name`    | `chrony`                     | Name of the Chrony service                       |
-| `chrony_package_name`    | `chrony`                     | Name of the Chrony package                       |
-| `chrony_uninstall_packages` | `['ntp', 'ntpdate', 'systemd-timesyncd']` | List of packages to uninstall                    |
+```yaml
+chrony_set_time_zone: true
+chrony_timezone: Europe/Berlin
+chrony_servers:
+- 0.de.pool.ntp.org iburst
+- 1.de.pool.ntp.org iburst
+- 2.de.pool.ntp.org iburst
+- 3.de.pool.ntp.org iburst
+chrony_allowed:
+- 127.0.0.1
+- ::1
+```
 
-## Dependencies
+## Example Playbook
 
-None.
+```yaml
+- name: Apply chrony
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.chrony
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/chrony/tests/test.yml`.

@@ -1,6 +1,6 @@
 ---
 - name: Gather distribution facts
-  setup:
+  ansible.builtin.setup:
     gather_subset:
       - '!all'
       - '!any'
@@ -8,64 +8,91 @@
   tags: certbot
 
 - name: Load distribution-specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags: certbot
 
 - name: Fail for unsupported distributions
-  fail:
+  ansible.builtin.fail:
     msg: "Distribution {{ ansible_os_family }} ({{ ansible_distribution }}) is not supported by this role. Supported: Debian, Ubuntu, RedHat, Rocky"
   when: ansible_os_family not in ['Debian', 'RedHat']
   tags: certbot
 
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when:
+    - ansible_os_family == "Debian"
+    - certbot_update_cache | default(false)
+  changed_when: false
+  become: true
+  tags: certbot
+
 - name: Enable EPEL repository (RedHat family)
-  package:
+  ansible.builtin.package:
     name: epel-release
     state: present
   when: 
     - ansible_os_family == "RedHat"
     - certbot_enable_epel | default(false)
+  become: true
   tags: certbot
 
 - name: Install Certbot and dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ certbot_packages }}"
     state: present
-    update_cache: "{{ certbot_update_cache | default(false) }}"
+  become: true
   tags: certbot
 
 - name: Create Cloudflare credentials directory
-  file:
+  ansible.builtin.file:
     path: /etc/letsencrypt
     state: directory
     mode: '0700'
+  become: true
   tags: certbot
 
 - name: Create certbot deploy hook log file
-  file:
+  ansible.builtin.file:
     path: /var/log/certbot-deployhook.log
     state: touch
     mode: '0644'
     owner: root
     group: root
+  become: true
+  tags: certbot
+
+- name: Create deploy hook directory
+  ansible.builtin.file:
+    path: /etc/letsencrypt/renewal-hooks/deploy
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
   tags: certbot
 
 - name: Create Cloudflare INI file
-  template:
+  ansible.builtin.template:
     src: cloudflare.ini.j2
     dest: "{{ certbot_cloudflare_credentials_path }}"
     mode: '0600'
+  become: true
   tags: certbot
 
 - name: Copy deployhook from template
-  template:
+  ansible.builtin.template:
     src: deployhook.sh.j2
     dest: /etc/letsencrypt/renewal-hooks/deploy/deployhook.sh
     mode: '0755'
-  loop: "{{ certbot_certs }}"
+    owner: root
+    group: root
+  become: true
   tags: certbot
 
 - name: Run Certbot to generate certificate
-  command: >
+  ansible.builtin.command: >
     certbot certonly --dns-cloudflare
     --dns-cloudflare-credentials {{ certbot_cloudflare_credentials_path }}
     --dns-cloudflare-propagation-seconds 30
@@ -78,13 +105,14 @@
   loop: "{{ certbot_certs }}"
   tags: certbot
   register: certbot_output
-  changed_when: "'Certificate deployed' in certbot_output.stdout"
+  become: true
 
 - name: Modify Certbot renewal configuration file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "/etc/letsencrypt/renewal/{{ item.domains | first }}.conf"
     regexp: '^renew_hook'
     line: renew_hook = /etc/letsencrypt/renewal-hooks/deploy/deployhook.sh
     state: present
   loop: "{{ certbot_certs }}"
+  become: true
   tags: certbot

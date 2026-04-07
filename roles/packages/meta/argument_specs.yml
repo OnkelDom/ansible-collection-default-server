@@ -1,0 +1,17 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the packages role.
+    description:
+    - Validate variables for the `packages` role.
+    options:
+      packages_epel_release:
+        description:
+        - Controls `packages_epel_release` for the `packages` role.
+        required: false
+        type: bool
+      packages_manage_cache:
+        description:
+        - Controls `packages_manage_cache` for the `packages` role.
+        required: false
+        type: bool

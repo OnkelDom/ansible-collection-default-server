@@ -1,0 +1,18 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the resolvconf role.
+    description:
+    - Validate variables for the `resolvconf` role.
+    options:
+      resolvconf_nameservers:
+        description:
+        - Controls `resolvconf_nameservers` for the `resolvconf` role.
+        required: false
+        type: list
+        elements: str
+      resolvconf_search_domains:
+        description:
+        - Controls `resolvconf_search_domains` for the `resolvconf` role.
+        required: false
+        type: list

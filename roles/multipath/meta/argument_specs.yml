@@ -1,0 +1,22 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the multipath role.
+    description:
+    - Validate variables for the `multipath` role.
+    options:
+      multipath_friendly_names:
+        description:
+        - Controls `multipath_friendly_names` for the `multipath` role.
+        required: false
+        type: str
+      multipath_blackbist:
+        description:
+        - Controls `multipath_blackbist` for the `multipath` role.
+        required: false
+        type: str
+      multipath_pathes:
+        description:
+        - Controls `multipath_pathes` for the `multipath` role.
+        required: false
+        type: dict

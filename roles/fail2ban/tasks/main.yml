@@ -3,7 +3,7 @@
   ansible.builtin.package:
     name: epel-release
     state: present
-  when: ansible_distribution == "RedHat"
+  when: ansible_os_family == "RedHat"
   become: true
   tags: fail2ban
 
@@ -72,6 +72,7 @@
   loop: "{{ fail2ban_jails }}"
   when: item.action_options is defined
   notify: Restart fail2ban
+  become: true
   tags: fail2ban
 
 - name: Ensure service is started and enabled

@@ -1,0 +1,37 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the hosts role.
+    description:
+    - Validate variables for the `hosts` role.
+    options:
+      hosts_hostname:
+        description:
+        - Controls `hosts_hostname` for the `hosts` role.
+        required: false
+        type: str
+      hosts_domain:
+        description:
+        - Controls `hosts_domain` for the `hosts` role.
+        required: false
+        type: str
+      hosts_ipv4:
+        description:
+        - Controls `hosts_ipv4` for the `hosts` role.
+        required: false
+        type: str
+      hosts_ipv6:
+        description:
+        - Controls `hosts_ipv6` for the `hosts` role.
+        required: false
+        type: str
+      hosts_alias:
+        description:
+        - Controls `hosts_alias` for the `hosts` role.
+        required: false
+        type: list
+      hosts_entrys:
+        description:
+        - Controls `hosts_entrys` for the `hosts` role.
+        required: false
+        type: list

@@ -1,0 +1,33 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the certbot role.
+    description:
+    - Validate variables for the `certbot` role.
+    options:
+      certbot_cloudflare_api_email:
+        description:
+        - Controls `certbot_cloudflare_api_email` for the `certbot` role.
+        required: false
+        type: str
+      certbot_cloudflare_api_key:
+        description:
+        - Controls `certbot_cloudflare_api_key` for the `certbot` role.
+        required: false
+        type: str
+      certbot_cloudflare_credentials_path:
+        description:
+        - Controls `certbot_cloudflare_credentials_path` for the `certbot` role.
+        required: false
+        type: str
+      certbot_renew_hook:
+        description:
+        - Controls `certbot_renew_hook` for the `certbot` role.
+        required: false
+        type: str
+      certbot_certs:
+        description:
+        - Controls `certbot_certs` for the `certbot` role.
+        required: false
+        type: list
+        elements: dict

@@ -1,0 +1,162 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the nginx role.
+    description:
+    - Validate variables for the `nginx` role.
+    options:
+      nginx_default_release:
+        description:
+        - Controls `nginx_default_release` for the `nginx` role.
+        required: false
+        type: str
+      nginx_yum_repo_enabled:
+        description:
+        - Controls `nginx_yum_repo_enabled` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_zypper_repo_enabled:
+        description:
+        - Controls `nginx_zypper_repo_enabled` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_ppa_use:
+        description:
+        - Controls `nginx_ppa_use` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_ppa_version:
+        description:
+        - Controls `nginx_ppa_version` for the `nginx` role.
+        required: false
+        type: str
+      nginx_package_name:
+        description:
+        - Controls `nginx_package_name` for the `nginx` role.
+        required: false
+        type: str
+      nginx_service_state:
+        description:
+        - Controls `nginx_service_state` for the `nginx` role.
+        required: false
+        type: str
+      nginx_service_enabled:
+        description:
+        - Controls `nginx_service_enabled` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_conf_template:
+        description:
+        - Controls `nginx_conf_template` for the `nginx` role.
+        required: false
+        type: str
+      nginx_vhost_template:
+        description:
+        - Controls `nginx_vhost_template` for the `nginx` role.
+        required: false
+        type: str
+      nginx_worker_processes:
+        description:
+        - Controls `nginx_worker_processes` for the `nginx` role.
+        required: false
+        type: str
+      nginx_worker_connections:
+        description:
+        - Controls `nginx_worker_connections` for the `nginx` role.
+        required: false
+        type: str
+      nginx_multi_accept:
+        description:
+        - Controls `nginx_multi_accept` for the `nginx` role.
+        required: false
+        type: str
+      nginx_error_log:
+        description:
+        - Controls `nginx_error_log` for the `nginx` role.
+        required: false
+        type: str
+      nginx_access_log:
+        description:
+        - Controls `nginx_access_log` for the `nginx` role.
+        required: false
+        type: str
+      nginx_sendfile:
+        description:
+        - Controls `nginx_sendfile` for the `nginx` role.
+        required: false
+        type: str
+      nginx_tcp_nopush:
+        description:
+        - Controls `nginx_tcp_nopush` for the `nginx` role.
+        required: false
+        type: str
+      nginx_tcp_nodelay:
+        description:
+        - Controls `nginx_tcp_nodelay` for the `nginx` role.
+        required: false
+        type: str
+      nginx_keepalive_timeout:
+        description:
+        - Controls `nginx_keepalive_timeout` for the `nginx` role.
+        required: false
+        type: str
+      nginx_keepalive_requests:
+        description:
+        - Controls `nginx_keepalive_requests` for the `nginx` role.
+        required: false
+        type: str
+      nginx_server_tokens:
+        description:
+        - Controls `nginx_server_tokens` for the `nginx` role.
+        required: false
+        type: str
+      nginx_client_max_body_size:
+        description:
+        - Controls `nginx_client_max_body_size` for the `nginx` role.
+        required: false
+        type: str
+      nginx_server_names_hash_bucket_size:
+        description:
+        - Controls `nginx_server_names_hash_bucket_size` for the `nginx` role.
+        required: false
+        type: str
+      nginx_proxy_cache_path:
+        description:
+        - Controls `nginx_proxy_cache_path` for the `nginx` role.
+        required: false
+        type: str
+      nginx_extra_conf_options:
+        description:
+        - Controls `nginx_extra_conf_options` for the `nginx` role.
+        required: false
+        type: str
+      nginx_extra_http_options:
+        description:
+        - Controls `nginx_extra_http_options` for the `nginx` role.
+        required: false
+        type: str
+      nginx_remove_default_vhost:
+        description:
+        - Controls `nginx_remove_default_vhost` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_listen_ipv6:
+        description:
+        - Controls `nginx_listen_ipv6` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_vhosts:
+        description:
+        - Controls `nginx_vhosts` for the `nginx` role.
+        required: false
+        type: list
+      nginx_upstreams:
+        description:
+        - Controls `nginx_upstreams` for the `nginx` role.
+        required: false
+        type: list
+      nginx_log_format:
+        description:
+        - Controls `nginx_log_format` for the `nginx` role.
+        required: false
+        type: str

@@ -1,0 +1,72 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the dnf_automatic role.
+    description:
+    - Validate variables for the `dnf_automatic` role.
+    options:
+      dnf_automatic_apply_updates:
+        description:
+        - Controls `dnf_automatic_apply_updates` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_emit_via:
+        description:
+        - Controls `dnf_automatic_emit_via` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_email_from:
+        description:
+        - Controls `dnf_automatic_email_from` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_email_to:
+        description:
+        - Controls `dnf_automatic_email_to` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_email_host:
+        description:
+        - Controls `dnf_automatic_email_host` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_email_tls:
+        description:
+        - Controls `dnf_automatic_email_tls` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_email_port:
+        description:
+        - Controls `dnf_automatic_email_port` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_download_updates:
+        description:
+        - Controls `dnf_automatic_download_updates` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_download_updates_command:
+        description:
+        - Controls `dnf_automatic_download_updates_command` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_random_sleep:
+        description:
+        - Controls `dnf_automatic_random_sleep` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_system_package_cache:
+        description:
+        - Controls `dnf_automatic_system_package_cache` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_upgrade_type:
+        description:
+        - Controls `dnf_automatic_upgrade_type` for the `dnf_automatic` role.
+        required: false
+        type: str
+      dnf_automatic_reboot:
+        description:
+        - Controls `dnf_automatic_reboot` for the `dnf_automatic` role.
+        required: false
+        type: str

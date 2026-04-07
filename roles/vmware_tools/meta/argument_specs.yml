@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the vmware_tools role.
+    description:
+    - Validate variables for the `vmware_tools` role.
+    options:
+      vmware_tools_package_state:
+        description:
+        - Controls `vmware_tools_package_state` for the `vmware_tools` role.
+        required: false
+        type: str

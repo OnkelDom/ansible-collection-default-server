@@ -3,12 +3,14 @@
     url: "{{ telegraf_gpg_key_url }}"
     dest: /etc/apt/trusted.gpg.d/influxdb.gpg
   when: ansible_os_family == 'Debian'
+  become: true
   tags: telegraf
 
 - name: Add Telegraf repository (Debian)
   ansible.builtin.apt_repository:
     repo: "deb {{ telegraf_repo_url }}"
   when: ansible_os_family == 'Debian'
+  become: true
   tags: telegraf
 
 - name: Add Telegraf repository (RedHat)
@@ -18,12 +20,14 @@
     gpgcheck: yes
     gpgkey: "{{ telegraf_gpg_key_url }}"
   when: ansible_os_family == 'RedHat'
+  become: true
   tags: telegraf
 
 - name: Install Telegraf
   ansible.builtin.package:
     name: telegraf
     state: present
+  become: true
   tags: telegraf
 
 - name: Create plugins directory
@@ -33,6 +37,7 @@
     owner: root
     group: root
     mode: '0755'
+  become: true
   tags: telegraf
 
 - name: Deploy Telegraf main configuration
@@ -43,11 +48,12 @@
     group: root
     mode: '0644'
   notify: Restart Telegraf
+  become: true
   tags: telegraf
 
 - name: Deploy Telegraf plugin configurations
   ansible.builtin.template:
-    src: plugin.conf.j2
+    src: plugins.conf.j2
     dest: "{{ telegraf_plugins_path }}/{{ item.type }}.conf"
     owner: root
     group: root
@@ -56,6 +62,7 @@
   loop_control:
     label: "{{ item.type }}"
   notify: Restart Telegraf
+  become: true
   tags: telegraf
 
 - name: Start and enable Telegraf
@@ -64,4 +71,5 @@
     name: "{{ telegraf_service_name }}"
     enabled: true
     state: started
+  become: true
   tags: telegraf

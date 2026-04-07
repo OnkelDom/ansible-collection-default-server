@@ -14,7 +14,6 @@
       - adcli
       - chrony
       - python3-pexpect
-      - python-pexpect
   become: true
   tags: sssd
 
@@ -39,10 +38,10 @@
 
 - name: Join system to AD and put the computer object defined OU
   ansible.builtin.expect:
-    command: '/bin/bash -c "/usr/sbin/realm --verbose join {{ domain_name }} -U {{ bind_user }}"'
+    command: '/usr/sbin/realm --verbose join {{ sssd_domain_name }} -U {{ sssd_bind_user }}'
     responses:
-      Password for *: "{{ bind_password }}"
-  when: realmd_bound is failed and not squid_is_installed.stat.exists
+      Password for *: "{{ sssd_bind_password }}"
+  when: realmd_bound is failed
   register: debug_join_domain
   become: true
   tags: sssd
@@ -58,25 +57,23 @@
     path: /etc/sssd/sssd.conf
     regexp: '^services ='
     line: services = nss, pam, sudo, ssh
-  notify: restart sssd
+  notify: Restart sssd
   become: true
   tags: sssd
 
 - name: Restrict access based on specific ad group
   ansible.builtin.command:
-    cmd: >
-      /bin/bash -c "/usr/sbin/realm -v deny --all && /usr/sbin/realm -v permit -g '{{ ad_group_allowd_ssh_and_sudo }}'
-      {% if ad_group_allowd_ssh_and_sudo_extra is defined %}'{{ ad_group_allowd_ssh_and_sudo_extra }}'{% endif %}
-      {% if ad_group_allowd_ssh is defined %}'{{ ad_group_allowd_ssh }}'{% endif %}"
-    creates: /etc/sssd/sssd.conf  # Replace with a file or condition that indicates the command has already been executed
+    cmd: "/usr/sbin/realm -v permit -g {{ item }}"
   register: debug_permit_groups
-  when: not squid_is_installed.stat.exists
+  changed_when: false
+  loop: "{{ [sssd_ad_group_allowd_ssh_and_sudo] + (sssd_ad_group_allowd_ssh_and_sudo_extra | default([])) }}"
+  when: item | length > 0
   become: true
   tags: sssd
 
 - name: Debug debug_permit_groups
   ansible.builtin.debug:
-    var: debug_permit_groups.stdout_lines
+    var: debug_permit_groups.results | map(attribute='stdout_lines') | list
   tags: sssd
 
 - name: Configure sudoers file
@@ -93,5 +90,6 @@
     path: /etc/pam.d/common-session
     insertafter: 'pam_unix.so'
     line: 'session required    pam_mkhomedir.so skel=/etc/skel/ umask=0077'
+  when: ansible_os_family == "Debian"
   become: true
   tags: sssd

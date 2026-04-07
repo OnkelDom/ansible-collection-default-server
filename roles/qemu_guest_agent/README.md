@@ -1,16 +1,29 @@
-# QEMU Guest Agent Role
+# qemu_guest_agent
 
-This Ansible role installs and configures the `qemu-guest-agent` on Debian, RedHat, SUSE, and OpenBSD systems.
+Install the QEMU guest agent package.
 
-## Variables
+## Supported platforms
 
-- `qemu_guest_agent_packages`: List of packages required for qemu-guest-agent on the specific OS.
-- `qemu_guest_agent_service`: Name of the qemu-guest-agent service to manage.
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
+
+## Role Variables
+
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
+
+This role does not define defaults in `defaults/main.yml`.
 
 ## Example Playbook
 
 ```yaml
-- hosts: all
-  become: yes
+- name: Apply qemu_guest_agent
+  hosts: all
+  become: true
   roles:
-    - qemu_guest_agent
+    - role: inframonks.default_server.qemu_guest_agent
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/qemu_guest_agent/tests/test.yml`.

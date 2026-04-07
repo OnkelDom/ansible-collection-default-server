@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the auditd role.
+    description:
+    - Validate variables for the `auditd` role.
+    options:
+      auditd_extra_rules:
+        description:
+        - Controls `auditd_extra_rules` for the `auditd` role.
+        required: false
+        type: list

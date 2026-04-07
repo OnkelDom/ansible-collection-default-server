@@ -1,0 +1,37 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the sssd role.
+    description:
+    - Validate variables for the `sssd` role.
+    options:
+      sssd_domain_name:
+        description:
+        - Controls `sssd_domain_name` for the `sssd` role.
+        required: false
+        type: str
+      sssd_ad_group_allowd_ssh_and_sudo:
+        description:
+        - Controls `sssd_ad_group_allowd_ssh_and_sudo` for the `sssd` role.
+        required: false
+        type: str
+      sssd_ad_group_allowd_ssh_and_sudo_extra:
+        description:
+        - Controls `sssd_ad_group_allowd_ssh_and_sudo_extra` for the `sssd` role.
+        required: false
+        type: list
+      sssd_ou_to_join_servers:
+        description:
+        - Controls `sssd_ou_to_join_servers` for the `sssd` role.
+        required: false
+        type: str
+      sssd_bind_user:
+        description:
+        - Controls `sssd_bind_user` for the `sssd` role.
+        required: false
+        type: str
+      sssd_bind_password:
+        description:
+        - Controls `sssd_bind_password` for the `sssd` role.
+        required: false
+        type: str

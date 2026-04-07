@@ -1,9 +1,17 @@
 ---
 - name: Ensure packages installed
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+  become: true
+  changed_when: false
+  tags: interfaces
+
+- name: Ensure packages installed
   ansible.builtin.package:
     name: "{{ interfaces_packages }}"
     state: present
-    update_cache: true
   become: true
   tags: interfaces
 

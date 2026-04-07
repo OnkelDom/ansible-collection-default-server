@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the lvm role.
+    description:
+    - Validate variables for the `lvm` role.
+    options:
+      lvm_config_defaults:
+        description:
+        - Controls `lvm_config_defaults` for the `lvm` role.
+        required: false
+        type: list

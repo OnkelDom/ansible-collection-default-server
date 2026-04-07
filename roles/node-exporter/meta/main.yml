@@ -1,25 +1,22 @@
 ---
 galaxy_info:
-  role_name: node_exporter
   author: Dominik Lenhardt
-  description: Ansible role for installing and configuring node_exporter
-  license: "MIT"
-  min_ansible_version: 2.9
+  description: Install and configure Prometheus node_exporter.
+  license: MIT
+  min_ansible_version: '2.16'
   platforms:
-    - name: Debian
-      versions:
-        - buster
-        - stretch
-    - name: Ubuntu
-      versions:
-        - focal
-        - bionic
+  - name: Ubuntu
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    versions:
+    - bookworm
+  - name: EL
+    versions:
+    - '9'
   galaxy_tags:
-  - system
-  - network
   - linux
-  - monitoring
-  - prometheus
-  - node
-  - exporter
+  - system
+  - infrastructure
 dependencies: []

@@ -1,36 +1,31 @@
-# SSH Keys Role
+# users
+
+Manage local users, SSH keys, and shell dotfiles.
+
+## Supported platforms
+
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
 ## Role Variables
 
-```yaml
-users:
-  - name: "litsadmin"
-    fullname: "LITS Admin"
-    authorized_keys:
-      - "{{ lookup('file', 'files/sshkeys/id_rsa_litsadmin.pub') }}"
-    cmd: "ALL=(ALL) NOPASSWD:ALL"
-    state: present
-    sudo: true
-    system_account: false
-    password: "{{ vc_admin_password }}"
-    bash_files:
-      - name: ms.sh
-        mode: '0755'
-      - name: tmux.conf
-        mode: '0644'
-      - name: vimrc
-        mode: '0644'
-      - name: curlrc
-        mode: '0644'
-      - name: wgetrc
-        mode: '0644'
-```
-In order to authorize SSH public keys you need to edit the variable
-`ssh_user_list` and add a list entry containing the `name` of the user, a
-list of `authorized_keys` and optionally the `create_user_account` flag if you
-want the role to take care of creating the account. Each list entry corresponds
-to one user account.
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-ssh_authorized_keys_exclusive: true
+users_defaults: []
 ```
+
+## Example Playbook
+
+```yaml
+- name: Apply users
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.users
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/users/tests/test.yml`.

@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the ca role.
+    description:
+    - Validate variables for the `ca` role.
+    options:
+      ca_source_path:
+        description:
+        - Controls `ca_source_path` for the `ca` role.
+        required: false
+        type: str

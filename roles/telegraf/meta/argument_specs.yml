@@ -1,0 +1,42 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the telegraf role.
+    description:
+    - Validate variables for the `telegraf` role.
+    options:
+      telegraf_repo_url:
+        description:
+        - Controls `telegraf_repo_url` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_gpg_key_url:
+        description:
+        - Controls `telegraf_gpg_key_url` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_config_path:
+        description:
+        - Controls `telegraf_config_path` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_plugins_path:
+        description:
+        - Controls `telegraf_plugins_path` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_service_name:
+        description:
+        - Controls `telegraf_service_name` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_plugins:
+        description:
+        - Controls `telegraf_plugins` for the `telegraf` role.
+        required: false
+        type: list
+      telegraf_config:
+        description:
+        - Controls `telegraf_config` for the `telegraf` role.
+        required: false
+        type: dict

@@ -1,23 +1,22 @@
 #!/bin/bash
 
-# BorgBackup Script
+set -euo pipefail
 
-# Variables
-BORG_REPO="{{ borg_repo }}"
-BORG_PASSPHRASE="{{ borg_passphrase }}"
-BACKUP_SOURCE="{{ backup_source }}"
-BACKUP_TARGET="{{ backup_target }}"
+BORG_REPO="{{ borgbackup_repository }}"
+BORG_PASSPHRASE="{{ borgbackup_encryption_passphrase }}"
+ARCHIVE_NAME="{{ inventory_hostname }}-{{ borgbackup_archive_name }}"
 
-# Export passphrase for Borg
 export BORG_PASSPHRASE
 
-# Create backup
 borg create --verbose --stats --progress \
-    $BORG_REPO::$BACKUP_TARGET \
-    $BACKUP_SOURCE
+    "${BORG_REPO}::${ARCHIVE_NAME}" \
+{% for source_path in borgbackup_source_paths %}
+    {{ source_path }}{{ ' \\' if not loop.last else '' }}
+{% endfor %}
 
-# Prune old backups
-borg prune --list $BORG_REPO --keep-daily=7 --keep-weekly=4 --keep-monthly=6
+borg prune --list "${BORG_REPO}" \
+    --keep-daily={{ borgbackup_keep_daily }} \
+    --keep-weekly={{ borgbackup_keep_weekly }} \
+    --keep-monthly={{ borgbackup_keep_monthly }}
 
-# Unset passphrase
 unset BORG_PASSPHRASE

@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+{% if sssd_ad_group_allowd_ssh_and_sudo is defined and sssd_ad_group_allowd_ssh_and_sudo | length > 0 %}
+%{{ sssd_ad_group_allowd_ssh_and_sudo }} ALL=(ALL:ALL) NOPASSWD:ALL
+{% endif %}
+
+{% for group in sssd_ad_group_allowd_ssh_and_sudo_extra | default([]) %}
+%{{ group }} ALL=(ALL:ALL) NOPASSWD:ALL
+{% endfor %}

@@ -1,0 +1,32 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the postfix_mta role.
+    description:
+    - Validate variables for the `postfix_mta` role.
+    options:
+      postfix_mta_hostname:
+        description:
+        - Controls `postfix_mta_hostname` for the `postfix_mta` role.
+        required: false
+        type: str
+      postfix_mta_domain:
+        description:
+        - Controls `postfix_mta_domain` for the `postfix_mta` role.
+        required: false
+        type: str
+      postfix_mta_relayhost:
+        description:
+        - Controls `postfix_mta_relayhost` for the `postfix_mta` role.
+        required: false
+        type: str
+      postfix_mta_root_mail:
+        description:
+        - Controls `postfix_mta_root_mail` for the `postfix_mta` role.
+        required: false
+        type: str
+      postfix_mta_aliases:
+        description:
+        - Controls `postfix_mta_aliases` for the `postfix_mta` role.
+        required: false
+        type: dict

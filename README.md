@@ -1,70 +1,86 @@
-# Ansible Collection: inframonks.default_server
+# Ansible Collection: `inframonks.default_server`
 
-Diese Ansible Collection stellt standardisierte Rollen für die Serverbereitstellung innerhalb von **inframonks** bereit. Sie dient der effizienten und konsistenten Konfiguration von Servern in verschiedenen Linux-Umgebungen.
+Diese Collection bundelt Basisrollen fuer Linux-Server und ist auf eine saubere, wiederholbare Rollenstruktur ausgelegt.
+Jede Rolle erhaelt ein einheitliches Geruest mit:
 
-## Inhalt
+- `README.md`
+- `meta/main.yml`
+- `meta/argument_specs.yml`
+- `tests/test.yml`
 
-- `roles/`: Enthält die spezifischen Ansible-Rollen dieser Collection.
-- `plugins/`: Beinhaltet benutzerdefinierte Plugins (falls vorhanden).
+## Zielplattformen
 
-## Unterstützte Plattformen
+Die Collection ist auf folgende Baseline ausgerichtet:
 
-Diese Rollen wurden getestet und sind kompatibel mit:
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
-- Red Hat Enterprise Linux 8 und 9
-  * CentOS 8 und 9
-  * AlmaLinux 8 und 9
-  * Rocky Linux 8 und 9
-- Debian 11 und 12
-- Ubuntu 22.04 und 24.04
+Nicht jede Rolle ist auf jeder Plattform sinnvoll. Netzwerk- und Firewall-Rollen dokumentieren ihren effektiven Support jeweils im rollenlokalen `README.md` und in `meta/main.yml`.
 
-## Voraussetzungen
+## Rollen
 
-- Ansible Version 2.9 oder höher [docs.ansible.com](https://docs.ansible.com/ansible/2.9/installation_guide/intro_installation.html)
-- Python 3.6 oder höher auf den Zielsystemen
+Die Collection enthaelt unter anderem Rollen fuer:
 
-Stelle sicher, dass die Zielsysteme über SSH erreichbar sind und der Ansible-Controller die entsprechenden Berechtigungen besitzt.
+- Basis-Systemeinstellungen: `chrony`, `hosts`, `motd`, `packages`, `sysctl`, `users`
+- Netzwerk: `firewalld`, `ifcfg`, `interfaces`, `netplan`, `nmcli`, `resolvconf`, `ufw`
+- Security: `auditd`, `fail2ban`, `sshd`, `sssd`
+- Dienste und Tools: `borgbackup`, `certbot`, `nginx`, `node-exporter`, `postfix_mta`, `telegraf`
+- Plattform-spezifische Helfer: `dnf_automatic`, `dnf_repos`, `qemu_guest_agent`, `vmware_tools`
 
 ## Installation
 
-Um diese Collection zu installieren, verwende folgenden Befehl:
-
 ```bash
-ansible-galaxy collection install git+https://github.com/inframonks/default_server.git
-````
+ansible-galaxy collection install git+https://github.com/inframonks/ansible-collection-default-server.git
+```
 
-## Alternativ kannst du sie in einer requirements.yml definieren:
+Oder ueber eine `requirements.yml`:
 
 ```yaml
 collections:
-  - name: git+https://github.com/inframonks/default_server.git
-````
-
-Und dann installieren mit:
-
-```bash
-ansible-galaxy collection install -r requirements.yml
+  - name: git+https://github.com/inframonks/ansible-collection-default-server.git
 ```
 
-## Nutzung
+## Verwendung
 
-In deinem Playbook kannst du die Rollen dieser Collection wie folgt einbinden:
-
-```bash
-- name: Server Setup
+```yaml
+- name: Default server baseline
   hosts: all
+  become: true
   roles:
-    - role: inframonks.default_server.ROLLE_NAME
+    - role: inframonks.default_server.chrony
+    - role: inframonks.default_server.users
 ```
 
-Ersetze ROLLE_NAME durch den Namen der spezifischen Rolle, die du verwenden möchtest.
+## Entwicklung
 
-## Beiträge und Support
+Lokale Hilfsmittel:
 
-Beiträge zu dieser Collection sind willkommen. Bitte erstelle einen Pull-Request oder ein Issue im [GitHub-Repository](https://github.com/inframonks/default_server).
+- Collection-Abhaengigkeiten: `requirements.yml`
+- Test-Abhaengigkeiten: `requirements-test.txt`
+- Rollen-Generator: `tools/generate_role_scaffold.py`
 
-Für Support oder Fragen kontaktiere bitte das DevOps-Team von inframonks.
+Generator ausfuehren:
+
+```bash
+python3 tools/generate_role_scaffold.py
+```
+
+Drift pruefen:
+
+```bash
+python3 tools/generate_role_scaffold.py --check
+```
+
+## CI
+
+GitHub Actions prueft automatisiert:
+
+- `ansible-lint`
+- `ansible-test sanity`
+- Rollen-Geruest per `pytest`
+- Syntax-Checks fuer jede Rolle
 
 ## Lizenz
 
-Diese Collection steht unter der MIT-Lizenz. Details findest du in der Datei LICENSE im Repository.
+MIT

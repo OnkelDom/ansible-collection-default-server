@@ -33,7 +33,7 @@
 
 - name: Configure netplan
   ansible.builtin.template:
-    src: templates/config.yaml.j2
+    src: config.yaml.j2
     dest: "{{ netplan_path }}/{{ netplan_file }}"
     mode: '0644'
   when: netplan_config != {}

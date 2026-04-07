@@ -1,34 +1,33 @@
-# IfCFG
+# ifcfg
 
-Exmaple for RedHat based Systems
+Manage legacy ifcfg-based network configuration on EL systems.
 
-```bash
+## Supported platforms
+
+- RHEL 9+
+
+## Role Variables
+
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
+
+```yaml
 ifcfg_interfaces:
-  - name: eth0
-    bootproto: static
-    ipaddr: 192.168.1.100
-    netmask: 255.255.255.0
-    gateway: 192.168.1.1
-    dns1: 8.8.8.8
-    dns2: 8.8.4.4
-    macaddr: "00:1A:2B:3C:4D:5E"
-    ipv6addr: "2001:db8::1/64"
-    ipv6gateway: "2001:db8::fffe"
-    dns1_ipv6: "2001:4860:4860::8888"
-    dns2_ipv6: "2001:4860:4860::8844"
-    routes:
-      - address: 10.0.0.0
-        netmask: 255.255.255.0
-        gateway: 192.168.1.1
-      - address: 10.0.1.0
-        netmask: 255.255.255.0
-        gateway: 192.168.1.1
-    routes6:
-      - address: 2001:db8:1::/64
-        prefix: 64
-        gateway: 2001:db8::fffe
-  - name: eth1
-    bootproto: dhcp
-    onboot: yes
-    macaddr: "00:1A:2B:3C:4D:5F"
+- device: '{{ ansible_default_ipv4.interface }}'
+  bootproto: dhcp
+  onboot: 'yes'
+  macaddr: '{{ ansible_default_ipv4.macaddress }}'
 ```
+
+## Example Playbook
+
+```yaml
+- name: Apply ifcfg
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.ifcfg
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/ifcfg/tests/test.yml`.

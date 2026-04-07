@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the mounts role.
+    description:
+    - Validate variables for the `mounts` role.
+    options:
+      mounts_defaults:
+        description:
+        - Controls `mounts_defaults` for the `mounts` role.
+        required: false
+        type: list

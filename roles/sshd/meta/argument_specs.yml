@@ -1,0 +1,22 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the sshd role.
+    description:
+    - Validate variables for the `sshd` role.
+    options:
+      sshd_bind_ips:
+        description:
+        - Controls `sshd_bind_ips` for the `sshd` role.
+        required: false
+        type: bool
+      sshd_client_defaults:
+        description:
+        - Controls `sshd_client_defaults` for the `sshd` role.
+        required: false
+        type: dict
+      sshd_server_defaults:
+        description:
+        - Controls `sshd_server_defaults` for the `sshd` role.
+        required: false
+        type: dict

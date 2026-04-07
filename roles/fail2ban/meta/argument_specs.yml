@@ -1,0 +1,89 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the fail2ban role.
+    description:
+    - Validate variables for the `fail2ban` role.
+    options:
+      fail2ban_mail_recipient:
+        description:
+        - Controls `fail2ban_mail_recipient` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_loglevel:
+        description:
+        - Controls `fail2ban_loglevel` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_logtarget:
+        description:
+        - Controls `fail2ban_logtarget` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_syslog_target:
+        description:
+        - Controls `fail2ban_syslog_target` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_syslog_facility:
+        description:
+        - Controls `fail2ban_syslog_facility` for the `fail2ban` role.
+        required: false
+        type: int
+      fail2ban_socket:
+        description:
+        - Controls `fail2ban_socket` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_pidfile:
+        description:
+        - Controls `fail2ban_pidfile` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_sendername:
+        description:
+        - Controls `fail2ban_sendername` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_ignoreips:
+        description:
+        - Controls `fail2ban_ignoreips` for the `fail2ban` role.
+        required: false
+        type: list
+        elements: str
+      fail2ban_bantime:
+        description:
+        - Controls `fail2ban_bantime` for the `fail2ban` role.
+        required: false
+        type: int
+      fail2ban_maxretry:
+        description:
+        - Controls `fail2ban_maxretry` for the `fail2ban` role.
+        required: false
+        type: int
+      fail2ban_findtime:
+        description:
+        - Controls `fail2ban_findtime` for the `fail2ban` role.
+        required: false
+        type: int
+      fail2ban_backend:
+        description:
+        - Controls `fail2ban_backend` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_destemail:
+        description:
+        - Controls `fail2ban_destemail` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_banaction:
+        description:
+        - Controls `fail2ban_banaction` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_jails:
+        description:
+        - Controls `fail2ban_jails` for the `fail2ban` role.
+        required: false
+        type: list
+        elements: dict

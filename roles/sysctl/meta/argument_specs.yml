@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the sysctl role.
+    description:
+    - Validate variables for the `sysctl` role.
+    options:
+      sysctl_defaults:
+        description:
+        - Controls `sysctl_defaults` for the `sysctl` role.
+        required: false
+        type: dict

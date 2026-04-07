@@ -1,67 +1,42 @@
-# UFW Tasks und Variablen
+# ufw
 
-Diese Rolle konfiguriert und verwaltet UFW (Uncomplicated Firewall) unter Linux. Die Konfiguration basiert auf folgenden Tasks:
+Manage UFW rules and defaults on Debian and Ubuntu.
 
-## Aufgabenübersicht
+## Supported platforms
 
-1. **Installation**: Installiert das UFW-Paket, wenn es nicht vorhanden ist.
-2. **Service-Management**: Aktiviert und startet den UFW-Dienst.
-3. **Standardkonfiguration**: Konfiguriert die Datei `/etc/default/ufw` über eine Jinja2-Template.
-4. **Regel-Anwendung**: Setzt Firewall-Regeln basierend auf einer zentralen Variablen `ufw_rules`.
-5. **Standardrichtlinie**: Aktiviert UFW mit einer `deny`-Standardrichtlinie.
+- Ubuntu 22.04+
+- Debian 12+
 
----
+## Role Variables
 
-## Wichtige Variablen
-
-### Allgemein
-
-| Variable          | Beschreibung                                              | Beispiel                       | Standardwert |
-|--------------------|----------------------------------------------------------|--------------------------------|--------------|
-| `proxy_env`        | Proxy-Umgebungsvariablen, die für die Installation genutzt werden. | `{ http_proxy: ... }`         | Keine        |
-| `ufw_manage_config`| Gibt an, ob `/etc/default/ufw` über ein Template verwaltet wird. | `true`                        | `false`      |
-
-### UFW Regeln (`ufw_rules`)
-
-Die UFW-Regeln werden über die Variable `ufw_rules` definiert. Jede Regel ist ein Dictionary mit folgenden Feldern:
-
-| Feld                  | Beschreibung                                              | Beispiel                         |
-|------------------------|----------------------------------------------------------|----------------------------------|
-| `comment`             | Kommentar zu der Regel                                    | `"Allow SSH"`                   |
-| `default`             | Setzt Standardrichtlinien (`allow`, `deny`, `reject`)     | `"deny"`                        |
-| `delete`              | Entfernt die Regel, wenn `true`                          | `true`                          |
-| `direction`           | Richtung der Regel (`in`, `out`, `routed`)               | `"in"`                          |
-| `from_ip`             | Quell-IP der Regel                                       | `"192.168.1.0/24"`              |
-| `from_port`           | Quell-Port der Regel                                     | `22`                            |
-| `to_ip`               | Ziel-IP der Regel                                        | `"192.168.1.10"`                |
-| `to_port`             | Ziel-Port der Regel                                      | `80`                            |
-| `proto`               | Protokoll (`tcp`, `udp`)                                 | `"tcp"`                         |
-| `rule`                | Aktion der Regel (`allow`, `deny`, `reject`)             | `"allow"`                       |
-| `interface_in`        | Eingangs-Interface                                       | `"eth0"`                        |
-| `interface_out`       | Ausgangs-Interface                                       | `"eth1"`                        |
-
----
-
-## Beispiel für Variablenkonfiguration
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-proxy_env:
-  http_proxy: "http://proxy.example.com:3128"
-  https_proxy: "http://proxy.example.com:3128"
-
+ufw_rules_defaults:
+- name: OpenSSH
+  rule: allow
 ufw_manage_config: true
-
-ufw_rules:
-  - comment: "Allow SSH"
-    rule: "allow"
-    proto: "tcp"
-    from_port: 22
-  - comment: "Allow HTTP"
-    rule: "allow"
-    proto: "tcp"
-    from_port: 80
-    to_port: 80
-  - comment: "Block outbound traffic"
-    rule: "deny"
-    direction: "out"
+ufw_config:
+  IPV6: 'yes'
+  DEFAULT_INPUT_POLICY: DROP
+  DEFAULT_OUTPUT_POLICY: ACCEPT
+  DEFAULT_FORWARD_POLICY: DROP
+  DEFAULT_APPLICATION_POLICY: SKIP
+  MANAGE_BUILTINS: 'no'
+  IPT_SYSCTL: /etc/ufw/sysctl.conf
+  IPT_MODULES: ''
 ```
+
+## Example Playbook
+
+```yaml
+- name: Apply ufw
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.ufw
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/ufw/tests/test.yml`.

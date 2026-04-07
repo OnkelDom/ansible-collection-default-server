@@ -1,0 +1,29 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the chrony role.
+    description:
+    - Validate variables for the `chrony` role.
+    options:
+      chrony_set_time_zone:
+        description:
+        - Controls `chrony_set_time_zone` for the `chrony` role.
+        required: false
+        type: bool
+      chrony_timezone:
+        description:
+        - Controls `chrony_timezone` for the `chrony` role.
+        required: false
+        type: str
+      chrony_servers:
+        description:
+        - Controls `chrony_servers` for the `chrony` role.
+        required: false
+        type: list
+        elements: str
+      chrony_allowed:
+        description:
+        - Controls `chrony_allowed` for the `chrony` role.
+        required: false
+        type: list
+        elements: str

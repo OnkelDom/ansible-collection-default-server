@@ -1,5 +1,13 @@
-default_variables: 
-  borgbackup_version: "1.2.3"
-  borgbackup_repository: "/path/to/repo"
-  borgbackup_encryption_passphrase: "your_passphrase"
-  borgbackup_retention_policy: "7d"
+---
+borgbackup_repository: /var/backups/borg
+borgbackup_source_paths:
+  - /etc
+borgbackup_archive_name: "{{ ansible_date_time.iso8601_basic_short }}"
+borgbackup_encryption_mode: repokey
+borgbackup_encryption_passphrase: ""
+borgbackup_keep_daily: 7
+borgbackup_keep_weekly: 4
+borgbackup_keep_monthly: 6
+borgbackup_script_path: /usr/local/bin/borgbackup.sh
+borgbackup_cron_minute: "0"
+borgbackup_cron_hour: "2"

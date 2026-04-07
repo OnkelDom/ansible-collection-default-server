@@ -1,30 +1,31 @@
-# Ansible Rolle: Auditd
+# auditd
 
-[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
+Manage additional auditd rules.
 
-## Description
+## Supported platforms
 
-Manages auditd logging.
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
 ## Role Variables
 
-The variables that can be overridden are defined in [defaults/main.yml](defaults/main.yml) and [vars](vars) directory. Below are the key variables:
-
-## Variablen
-
-| Name                     | Default Value                | Description                                      |
-| ------------------------ | ---------------------------- | ------------------------------------------------ |
-| auditd_extra_rules       | `[]`                         | Liste zusätzlicher Audit-Regeln                  |
-
-
-## Dependencies
-
-None.
-
-## Additional rules
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-auditd_extra_rules:
-  - "-w /etc/shadow -p r -k shadow-file-read"
+auditd_extra_rules: []
 ```
 
+## Example Playbook
+
+```yaml
+- name: Apply auditd
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.auditd
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/auditd/tests/test.yml`.

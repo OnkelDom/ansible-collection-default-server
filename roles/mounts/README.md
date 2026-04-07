@@ -1,27 +1,31 @@
-# Mounts
+# mounts
 
-## Exmpales:
+Manage filesystem and network mounts.
+
+## Supported platforms
+
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
+
+## Role Variables
+
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-mounts:
-  - mount: "/"
-    src: "/dev/system/root"
-    fstype: "xfs"
-    opts: "defaults"
-  - mount: "/var/log"
-    src: "/dev/system/log"
-    fstype: "xfs"
-    opts: "noatime"
-  - mount: "/data"
-    src: "192.168.1.100:/shared/data"
-    fstype: "nfs"
-    opts: "rw,sync"
-  - mount: "/mnt/backup"
-    src: "//192.168.1.101/backup"
-    fstype: "cifs"
-    opts: "username=user,password=pass,iocharset=utf8"
-  - mount: "/mnt/ceph"
-    src: "10.0.0.1:/volumes/cephfs"
-    fstype: "ceph"
-    opts: "_netdev"
+mounts_defaults: []
 ```
+
+## Example Playbook
+
+```yaml
+- name: Apply mounts
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.mounts
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/mounts/tests/test.yml`.

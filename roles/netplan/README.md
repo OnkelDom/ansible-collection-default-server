@@ -1,28 +1,38 @@
-# Netplan
+# netplan
 
-Exmaple for Ubuntu
+Manage netplan configuration on Debian and Ubuntu.
 
-```bash
-netplan_config:
-  network:
-    ethernets:
-      match:
-        macaddress: BC:50:56:7e:14:8f
-      dhcp4: false
-      accept-ra: no
-      addresses:
-        - 10.10.10.3/24
-        - 2a02:b207:6893:3324::1/64
-      routes:
-        - to: default
-          via: 10.10.10.1
-        - to: fe80::1
-          scope: link
-      gateway6: fe80::1
-      nameservers:
-        addresses:
-          - 1.0.0.2
-          - 2606:4700:4700::1002
-          - 1.1.1.2
-          - 2606:4700:4700::1112
+## Supported platforms
+
+- Ubuntu 22.04+
+- Debian 12+
+
+## Role Variables
+
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
+
+```yaml
+netplan_file: 01-netcfg.yaml
+netplan_path: /etc/netplan
+netplan_config: {}
+netplan_enabled: true
+netplan_packages:
+- netplan.io
+netplan_renderer: networkd
+netplan_version: 2
+netplan_wipe: true
 ```
+
+## Example Playbook
+
+```yaml
+- name: Apply netplan
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.netplan
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/netplan/tests/test.yml`.

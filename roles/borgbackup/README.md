@@ -1,36 +1,42 @@
-# BorgBackup Ansible Role
+# borgbackup
 
-This Ansible role installs and configures BorgBackup, a deduplicating backup program.
+Install and configure BorgBackup jobs and defaults.
 
-## Requirements
+## Supported platforms
 
-- Ansible 2.9 or higher
-- Supported operating systems: Ubuntu, Debian, CentOS, and other Linux distributions.
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
 ## Role Variables
 
-The following variables can be defined in `vars/main.yml` or overridden in your playbook:
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
-- `borgbackup_version`: The version of BorgBackup to install (default: latest).
-- `borgbackup_repo`: The repository location for backups.
-- `borgbackup_passphrase`: The passphrase for the Borg repository.
-
-## Dependencies
-
-This role has no dependencies on other roles.
+```yaml
+borgbackup_repository: /var/backups/borg
+borgbackup_source_paths:
+- /etc
+borgbackup_archive_name: '{{ ansible_date_time.iso8601_basic_short }}'
+borgbackup_encryption_mode: repokey
+borgbackup_encryption_passphrase: ''
+borgbackup_keep_daily: 7
+borgbackup_keep_weekly: 4
+borgbackup_keep_monthly: 6
+borgbackup_script_path: /usr/local/bin/borgbackup.sh
+borgbackup_cron_minute: '0'
+borgbackup_cron_hour: '2'
+```
 
 ## Example Playbook
 
 ```yaml
-- hosts: all
+- name: Apply borgbackup
+  hosts: all
+  become: true
   roles:
-    - borgbackup
+    - role: inframonks.default_server.borgbackup
 ```
 
-## License
+## Testing
 
-MIT
-
-## Author Information
-
-This role was created in 2023 by [Your Name].
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/borgbackup/tests/test.yml`.

@@ -1,7 +1,7 @@
 ---
 - name: Configure proxy in /etc/environment
   ansible.builtin.template:
-    src: "templates/environment.j2"
+    src: environment.j2
     dest: "/etc/environment"
     owner: root
     group: root
@@ -11,7 +11,7 @@
 
 - name: Configure apt proxy
   ansible.builtin.template:
-    src: "templates/apt_proxy.j2"
+    src: apt_proxy.j2
     dest: "/etc/apt/apt.conf.d/90curtin-aptproxy"
     owner: root
     group: root

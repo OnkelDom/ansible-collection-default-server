@@ -53,12 +53,10 @@
 
 - name: Install packages
   ansible.builtin.package:
-    name: "{{ item }}"
+    name:
+      - firewalld
+      - python3-firewall
     state: "present"
-  with_items:
-    - 'firewall-config'
-    - 'firewalld'
-    - 'python3-firewall'
   become: true
   tags: firewalld
 
@@ -93,7 +91,7 @@
     source: "{{ item['source'] | default(omit) }}"
     state: "{{ item['state'] | default(omit) }}"
     zone: "{{ item['zone'] }}"
-  with_items: '{{ firewalld_zones }}'
+  loop: "{{ firewalld_zones }}"
   when: firewalld_zones is defined
   notify: Reload firewalld
   become: true
@@ -113,7 +111,7 @@
   ansible.builtin.command:
     cmd: "firewall-cmd --permanent --delete-zone={{ item['zone'] }}"
   register: "_firewalld_custom_zone_deleted"
-  with_items: '{{ firewalld_custom_zones }}'
+  loop: "{{ firewalld_custom_zones }}"
   when: >
         item['zone'] in _firewalld_get_zones['stdout'] and
         not item['present'] and
@@ -124,9 +122,9 @@
 
 - name: Create custom zones
   ansible.builtin.command:
-    cmd: "firewall-cmd --permanent --new-zone {{ item['zone'] }}"
+    cmd: "firewall-cmd --permanent --new-zone={{ item['zone'] }}"
   register: "_firewalld_custom_zone_created"
-  with_items: '{{ firewalld_custom_zones }}'
+  loop: "{{ firewalld_custom_zones }}"
   when: >
         item['zone'] not in _firewalld_get_zones['stdout'] and
         item['present'] and
@@ -158,7 +156,7 @@
     source: "{{ item['source'] | default(omit) }}"
     state: "{{ item['state'] | default(omit) }}"
     zone: "{{ item['zone'] | default(omit) }}"
-  with_items: '{{ firewalld_rules }}'
+  loop: "{{ firewalld_rules }}"
   when: firewalld_rules is defined
   notify: Reload firewalld
   become: true

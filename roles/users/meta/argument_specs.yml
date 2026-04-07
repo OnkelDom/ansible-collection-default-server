@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the users role.
+    description:
+    - Validate variables for the `users` role.
+    options:
+      users_defaults:
+        description:
+        - Controls `users_defaults` for the `users` role.
+        required: false
+        type: list

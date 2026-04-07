@@ -1,0 +1,156 @@
+---
+collection_namespace: inframonks
+collection_name: default_server
+min_ansible_version: "2.16"
+common_platforms:
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+      - jammy
+      - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+      - bookworm
+  - name: EL
+    display: RHEL 9+
+    versions:
+      - "9"
+role_descriptions:
+  auditd: Manage additional auditd rules.
+  borgbackup: Install and configure BorgBackup jobs and defaults.
+  ca: Deploy custom certificate authorities.
+  certbot: Request and renew TLS certificates with Certbot.
+  chrony: Install and configure Chrony for time synchronization.
+  dnf_automatic: Configure automatic package updates on EL systems.
+  dnf_repos: Manage DNF repository definitions on EL systems.
+  fail2ban: Install and configure Fail2ban jails and actions.
+  firewalld: Manage firewalld services, zones, and rules on EL systems.
+  hosts: Manage hostname-related entries in /etc/hosts.
+  ifcfg: Manage legacy ifcfg-based network configuration on EL systems.
+  interfaces: Manage /etc/network/interfaces based network configuration.
+  lvm: Create and manage LVM volume groups and logical volumes.
+  motd: Configure the login message of the day.
+  mounts: Manage filesystem and network mounts.
+  msmtp: Configure msmtp relay accounts and aliases.
+  multipath: Configure device-mapper multipath on supported Linux systems.
+  netplan: Manage netplan configuration on Debian and Ubuntu.
+  nginx: Install and configure NGINX and virtual hosts.
+  nmcli: Manage NetworkManager connections with community.general.nmcli.
+  node-exporter: Install and configure Prometheus node_exporter.
+  packages: Install and remove packages from aggregated package lists.
+  postfix_mta: Configure Postfix as a relay or local MTA.
+  proxy: Configure proxy environment files for system tools.
+  qemu_guest_agent: Install the QEMU guest agent package.
+  resolvconf: Manage resolver nameservers and search domains.
+  sshd: Configure OpenSSH client and server settings.
+  sssd: Configure SSSD for directory integration.
+  sysctl: Manage sysctl kernel parameters.
+  telegraf: Install and configure Telegraf with plugin definitions.
+  ufw: Manage UFW rules and defaults on Debian and Ubuntu.
+  unattended_updates: Configure unattended upgrades on Debian and Ubuntu.
+  users: Manage local users, SSH keys, and shell dotfiles.
+  vmware_tools: Install open-vm-tools on supported Linux systems.
+role_platform_overrides:
+  certbot:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  dnf_automatic:
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  dnf_repos:
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  firewalld:
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  ifcfg:
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  interfaces:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm
+  netplan:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm
+  nmcli:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  qemu_guest_agent:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm
+    - name: EL
+      display: RHEL 9+
+      versions:
+        - "9"
+  ufw:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm
+  unattended_updates:
+    - name: Ubuntu
+      display: Ubuntu 22.04+
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      display: Debian 12+
+      versions:
+        - bookworm

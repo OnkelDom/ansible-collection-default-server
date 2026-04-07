@@ -1,0 +1,28 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the firewalld role.
+    description:
+    - Validate variables for the `firewalld` role.
+    options:
+      firewalld_defaults_rules:
+        description:
+        - Controls `firewalld_defaults_rules` for the `firewalld` role.
+        required: false
+        type: list
+        elements: dict
+      firewalld_defaults_custom_zones:
+        description:
+        - Controls `firewalld_defaults_custom_zones` for the `firewalld` role.
+        required: false
+        type: list
+      firewalld_defaults_zones:
+        description:
+        - Controls `firewalld_defaults_zones` for the `firewalld` role.
+        required: false
+        type: list
+      firewalld_defaults_services:
+        description:
+        - Controls `firewalld_defaults_services` for the `firewalld` role.
+        required: false
+        type: list

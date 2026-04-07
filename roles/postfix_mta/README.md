@@ -1,48 +1,36 @@
-# Ansible Role: Postfix-MTA
+# postfix_mta
 
-## Description
+Configure Postfix as a relay or local MTA.
 
-This Ansible role installs and configures Postfix as a Mail Transfer Agent (MTA) on your servers. It ensures that your mail server is properly set up and secure.
+## Supported platforms
 
-## Requirements
-
-- Ansible 2.9 or higher
-- Supported platforms: Debian, Ubuntu, CentOS, RedHat
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
 
 ## Role Variables
 
-| Variable                   | Description                                      | Default Value            |
-|----------------------------|--------------------------------------------------|--------------------------|
-| `postfix_mta_hostname`     | The hostname to be used by Postfix               | `{{ ansible_hostname }}` |
-| `postfix_mta_domain`       | The domain name to be used by Postfix            | `{{ ansible_domain }}`   |
-| `postfix_mta_relayhost`    | The relay host to forward emails to              | ``                       |
-| `postfix_mta_root_mail`    | The Root mailadresse                             | `root`                   |
-| `postfix_mta_aliases`      | Additial mailaliases in key: value               | ``                       |
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
-
-## Dependencies
-
-None.
+```yaml
+postfix_mta_hostname: '{{ ansible_hostname }}'
+postfix_mta_domain: '{{ ansible_domain }}'
+postfix_mta_relayhost: ''
+postfix_mta_root_mail: root
+postfix_mta_aliases:
+  support: root
+```
 
 ## Example Playbook
 
 ```yaml
-- hosts: all
-    roles:
-        - role: postfix-mta
-            vars:
-                postfix_mta_hostname: "srv01"
-                postfix_mta_domain: "lenhardt.cc"
-                postfix_mta_relayhost: "mail.lenhardt.cc"
-                postfix_mta_root_mail: "support@lenhardt.cc"
-                postfix_mta_aliases:
-                  support: support@lenhardt.cc
+- name: Apply postfix_mta
+  hosts: all
+  become: true
+  roles:
+    - role: inframonks.default_server.postfix_mta
 ```
 
-## License
+## Testing
 
-MIT
-
-## Author Information
-
-This role was created by Dominik Lenhardt.
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/postfix_mta/tests/test.yml`.

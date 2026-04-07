@@ -1,9 +1,22 @@
-description: Ansible role for BorgBackup
-author: Your Name
-license: MIT
+---
+galaxy_info:
+  author: Dominik Lenhardt
+  description: Install and configure BorgBackup jobs and defaults.
+  license: MIT
+  min_ansible_version: '2.16'
+  platforms:
+  - name: Ubuntu
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    versions:
+    - bookworm
+  - name: EL
+    versions:
+    - '9'
+  galaxy_tags:
+  - linux
+  - system
+  - infrastructure
 dependencies: []
-tags:
-  - backup
-  - borgbackup
-  - ansible
-version: 1.0.0

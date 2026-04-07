@@ -1,0 +1,23 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the ufw role.
+    description:
+    - Validate variables for the `ufw` role.
+    options:
+      ufw_rules_defaults:
+        description:
+        - Controls `ufw_rules_defaults` for the `ufw` role.
+        required: false
+        type: list
+        elements: dict
+      ufw_manage_config:
+        description:
+        - Controls `ufw_manage_config` for the `ufw` role.
+        required: false
+        type: bool
+      ufw_config:
+        description:
+        - Controls `ufw_config` for the `ufw` role.
+        required: false
+        type: dict

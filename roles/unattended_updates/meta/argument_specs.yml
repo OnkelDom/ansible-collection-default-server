@@ -1,0 +1,133 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the unattended_updates role.
+    description:
+    - Validate variables for the `unattended_updates` role.
+    options:
+      unattended_updates_updates_cache_valid_time:
+        description:
+        - Controls `unattended_updates_updates_cache_valid_time` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_origins_patterns:
+        description:
+        - Controls `unattended_updates_origins_patterns` for the `unattended_updates` role.
+        required: false
+        type: list
+        elements: str
+      unattended_updates_package_blacklist:
+        description:
+        - Controls `unattended_updates_package_blacklist` for the `unattended_updates` role.
+        required: false
+        type: list
+      unattended_updates_autofix_interrupted_dpkg:
+        description:
+        - Controls `unattended_updates_autofix_interrupted_dpkg` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_minimal_steps:
+        description:
+        - Controls `unattended_updates_minimal_steps` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_install_on_shutdown:
+        description:
+        - Controls `unattended_updates_install_on_shutdown` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_mail:
+        description:
+        - Controls `unattended_updates_mail` for the `unattended_updates` role.
+        required: false
+        type: str
+      unattended_updates_mail_only_on_error:
+        description:
+        - Controls `unattended_updates_mail_only_on_error` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_mail_report:
+        description:
+        - Controls `unattended_updates_mail_report` for the `unattended_updates` role.
+        required: false
+        type: str
+      unattended_updates_remove_unused_dependencies:
+        description:
+        - Controls `unattended_updates_remove_unused_dependencies` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_remove_new_unused_dependencies:
+        description:
+        - Controls `unattended_updates_remove_new_unused_dependencies` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_remove_unused_kernel_packages:
+        description:
+        - Controls `unattended_updates_remove_unused_kernel_packages` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_automatic_reboot:
+        description:
+        - Controls `unattended_updates_automatic_reboot` for the `unattended_updates` role.
+        required: false
+        type: str
+      unattended_updates_automatic_reboot_time:
+        description:
+        - Controls `unattended_updates_automatic_reboot_time` for the `unattended_updates` role.
+        required: false
+        type: str
+      unattended_updates_ignore_apps_require_restart:
+        description:
+        - Controls `unattended_updates_ignore_apps_require_restart` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_syslog_enable:
+        description:
+        - Controls `unattended_updates_syslog_enable` for the `unattended_updates` role.
+        required: false
+        type: bool
+      unattended_updates_syslog_facility:
+        description:
+        - Controls `unattended_updates_syslog_facility` for the `unattended_updates` role.
+        required: false
+        type: str
+      unattended_updates_update_package_list:
+        description:
+        - Controls `unattended_updates_update_package_list` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_autoclean_interval:
+        description:
+        - Controls `unattended_updates_autoclean_interval` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_clean_interval:
+        description:
+        - Controls `unattended_updates_clean_interval` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_verbose:
+        description:
+        - Controls `unattended_updates_verbose` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_random_sleep:
+        description:
+        - Controls `unattended_updates_random_sleep` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_dpkg_options:
+        description:
+        - Controls `unattended_updates_dpkg_options` for the `unattended_updates` role.
+        required: false
+        type: list
+      unattended_updates_dl_limit:
+        description:
+        - Controls `unattended_updates_dl_limit` for the `unattended_updates` role.
+        required: false
+        type: int
+      unattended_updates_only_on_ac_power:
+        description:
+        - Controls `unattended_updates_only_on_ac_power` for the `unattended_updates` role.
+        required: false
+        type: bool

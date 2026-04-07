@@ -1,0 +1,12 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the proxy role.
+    description:
+    - Validate variables for the `proxy` role.
+    options:
+      proxy_env:
+        description:
+        - Controls `proxy_env` for the `proxy` role.
+        required: false
+        type: dict

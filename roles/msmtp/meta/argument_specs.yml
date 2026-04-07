@@ -1,0 +1,48 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the msmtp role.
+    description:
+    - Validate variables for the `msmtp` role.
+    options:
+      msmtp_auth:
+        description:
+        - Controls `msmtp_auth` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_tls:
+        description:
+        - Controls `msmtp_tls` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_tls_starttls:
+        description:
+        - Controls `msmtp_tls_starttls` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_set_from_header:
+        description:
+        - Controls `msmtp_set_from_header` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_syslog:
+        description:
+        - Controls `msmtp_syslog` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_default_account:
+        description:
+        - Controls `msmtp_default_account` for the `msmtp` role.
+        required: false
+        type: str
+      msmtp_accounts:
+        description:
+        - Controls `msmtp_accounts` for the `msmtp` role.
+        required: false
+        type: list
+        elements: dict
+      msmtp_aliases:
+        description:
+        - Controls `msmtp_aliases` for the `msmtp` role.
+        required: false
+        type: dict

@@ -1,0 +1,63 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the borgbackup role.
+    description:
+    - Validate variables for the `borgbackup` role.
+    options:
+      borgbackup_repository:
+        description:
+        - Controls `borgbackup_repository` for the `borgbackup` role.
+        required: false
+        type: str
+      borgbackup_source_paths:
+        description:
+        - Controls `borgbackup_source_paths` for the `borgbackup` role.
+        required: false
+        type: list
+        elements: str
+      borgbackup_archive_name:
+        description:
+        - Controls `borgbackup_archive_name` for the `borgbackup` role.
+        required: false
+        type: str
+      borgbackup_encryption_mode:
+        description:
+        - Controls `borgbackup_encryption_mode` for the `borgbackup` role.
+        required: false
+        type: str
+      borgbackup_encryption_passphrase:
+        description:
+        - Controls `borgbackup_encryption_passphrase` for the `borgbackup` role.
+        required: false
+        type: str
+      borgbackup_keep_daily:
+        description:
+        - Controls `borgbackup_keep_daily` for the `borgbackup` role.
+        required: false
+        type: int
+      borgbackup_keep_weekly:
+        description:
+        - Controls `borgbackup_keep_weekly` for the `borgbackup` role.
+        required: false
+        type: int
+      borgbackup_keep_monthly:
+        description:
+        - Controls `borgbackup_keep_monthly` for the `borgbackup` role.
+        required: false
+        type: int
+      borgbackup_script_path:
+        description:
+        - Controls `borgbackup_script_path` for the `borgbackup` role.
+        required: false
+        type: str
+      borgbackup_cron_minute:
+        description:
+        - Controls `borgbackup_cron_minute` for the `borgbackup` role.
+        required: false
+        type: str
+      borgbackup_cron_hour:
+        description:
+        - Controls `borgbackup_cron_hour` for the `borgbackup` role.
+        required: false
+        type: str
