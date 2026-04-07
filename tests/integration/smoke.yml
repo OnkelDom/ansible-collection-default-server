@@ -4,10 +4,15 @@
   connection: local
   gather_facts: true
   vars:
-    packages_defaults_install:
-    - ca-certificates
-    - curl
-    - sudo
+    smoke_packages_install_map:
+      Debian:
+      - ca-certificates
+      - curl
+      - sudo
+      RedHat:
+      - ca-certificates
+      - sudo
+    packages_defaults_install: "{{ smoke_packages_install_map[ansible_os_family] | default(['sudo']) }}"
     packages_defaults_install_epel: []
     packages_defaults_remove: []
     proxy_env:

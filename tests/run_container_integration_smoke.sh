@@ -16,7 +16,7 @@ docker run --rm -d --name "${CONTAINER_NAME}" "${IMAGE}" sh -c 'trap "exit 0" TE
 if docker exec "${CONTAINER_NAME}" test -f /etc/debian_version; then
   docker exec "${CONTAINER_NAME}" sh -lc 'apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-venv python3-pip sudo ca-certificates curl'
 else
-  docker exec "${CONTAINER_NAME}" sh -lc 'dnf install -y python3 python3-pip sudo ca-certificates curl findutils which tar gzip shadow-utils'
+  docker exec "${CONTAINER_NAME}" sh -lc 'dnf install -y python3 python3-pip sudo ca-certificates findutils which tar gzip shadow-utils'
 fi
 
 docker exec "${CONTAINER_NAME}" mkdir -p /tmp/ansible_collections/lenmail
@@ -24,7 +24,8 @@ docker cp . "${CONTAINER_NAME}:${COLLECTION_ROOT}"
 
 docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -r requirements-test.txt"
 docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && .venv/bin/ansible-galaxy collection install -r requirements.yml"
-docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && .venv/bin/ansible-playbook tests/integration/smoke.yml -i localhost, -c local"
+docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && .venv/bin/ansible-galaxy collection build --force && .venv/bin/ansible-galaxy collection install lenmail-default_server-*.tar.gz --force"
+docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && ANSIBLE_COLLECTIONS_PATH=/root/.ansible/collections .venv/bin/ansible-playbook tests/integration/smoke.yml -i localhost, -c local"
 
-docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && .venv/bin/ansible-playbook tests/integration/smoke.yml -i localhost, -c local | tee /tmp/lenmail-smoke-second-run.log"
+docker exec "${CONTAINER_NAME}" sh -lc "cd ${COLLECTION_ROOT} && ANSIBLE_COLLECTIONS_PATH=/root/.ansible/collections .venv/bin/ansible-playbook tests/integration/smoke.yml -i localhost, -c local | tee /tmp/lenmail-smoke-second-run.log"
 docker exec "${CONTAINER_NAME}" sh -lc "grep -E 'changed=0 .*failed=0' /tmp/lenmail-smoke-second-run.log >/dev/null"

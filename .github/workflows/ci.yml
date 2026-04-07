@@ -49,8 +49,9 @@ jobs:
         ln -s "${GITHUB_WORKSPACE}" "${RUNNER_TEMP}/ansible_collections/lenmail/default_server"
 
     - name: Run ansible-test sanity
-      working-directory: ${{ runner.temp }}/ansible_collections/lenmail/default_server
-      run: ansible-test sanity --python 3.12
+      run: |
+        cd "${RUNNER_TEMP}/ansible_collections/lenmail/default_server"
+        ansible-test sanity --python 3.12
 
     - name: Run syntax checks for all roles
       env:
