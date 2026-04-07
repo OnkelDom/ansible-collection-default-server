@@ -1,6 +1,6 @@
 ---
 - name: Gather operating system variables
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
   - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
   - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
@@ -11,60 +11,57 @@
   - "{{ ansible_os_family | lower }}.yml"
   tags: nginx
 
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The nginx role supports Debian and RedHat families only."
+  tags: nginx
+
 - name: Define nginx_user.
-  set_fact:
+  ansible.builtin.set_fact:
     nginx_user: "{{ __nginx_user }}"
   when: nginx_user is not defined
   tags: nginx
 
 # Setup/install tasks.
-- include_tasks: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky' or ansible_os_family == 'AlmaLinux'
+- name: Setup nginx on RedHat
+  ansible.builtin.include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
   tags: nginx
 
-- include_tasks: setup-Ubuntu.yml
+- name: Setup nginx on Ubuntu
+  ansible.builtin.include_tasks: setup-Ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
   tags: nginx
 
-- include_tasks: setup-Debian.yml
+- name: Setup nginx package on Debian family
+  ansible.builtin.include_tasks: setup-Debian.yml
   when: ansible_os_family == 'Debian'
   tags: nginx
 
-- include_tasks: setup-FreeBSD.yml
-  when: ansible_os_family == 'FreeBSD'
-  tags: nginx
-
-- include_tasks: setup-OpenBSD.yml
-  when: ansible_os_family == 'OpenBSD'
-  tags: nginx
-
-- include_tasks: setup-Archlinux.yml
-  when: ansible_os_family == 'Archlinux'
-  tags: nginx
-
-- include_tasks: setup-Suse.yml
-  when: ansible_os_family == 'Suse'
-  tags: nginx
-
 # Vhost configuration.
-- import_tasks: vhosts.yml
+- name: Manage nginx vhosts
+  ansible.builtin.import_tasks: vhosts.yml
   tags: nginx
 
 # Nginx setup.
 - name: Copy nginx configuration in place.
-  template:
+  ansible.builtin.template:
     src: "{{ nginx_conf_template }}"
     dest: "{{ nginx_conf_file_path }}"
     owner: root
     group: "{{ root_group }}"
-    mode: 0644
+    mode: "0644"
   notify:
   - Reload nginx
+  become: true
   tags: nginx
 
 - name: Ensure nginx service is running as configured.
-  service:
-    name: nginx
+  ansible.builtin.service:
+    name: "{{ nginx_service_name | default('nginx') }}"
     state: "{{ nginx_service_state }}"
     enabled: "{{ nginx_service_enabled }}"
+  become: true
   tags: nginx

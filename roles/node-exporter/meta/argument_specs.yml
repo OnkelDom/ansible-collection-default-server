@@ -25,6 +25,11 @@ argument_specs:
         - Controls `node_exporter_binary_install_dir` for the `node-exporter` role.
         required: false
         type: str
+      node_exporter_binary_path:
+        description:
+        - Controls `node_exporter_binary_path` for the `node-exporter` role.
+        required: false
+        type: str
       node_exporter_web_listen_port:
         description:
         - Controls `node_exporter_web_listen_port` for the `node-exporter` role.

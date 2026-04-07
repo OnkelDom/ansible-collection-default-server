@@ -20,6 +20,21 @@ argument_specs:
         - Controls `certbot_cloudflare_credentials_path` for the `certbot` role.
         required: false
         type: str
+      certbot_dns_propagation_seconds:
+        description:
+        - Controls `certbot_dns_propagation_seconds` for the `certbot` role.
+        required: false
+        type: int
+      certbot_copy_to_ssl:
+        description:
+        - Controls `certbot_copy_to_ssl` for the `certbot` role.
+        required: false
+        type: bool
+      certbot_copy_destination_dir:
+        description:
+        - Controls `certbot_copy_destination_dir` for the `certbot` role.
+        required: false
+        type: str
       certbot_renew_hook:
         description:
         - Controls `certbot_renew_hook` for the `certbot` role.

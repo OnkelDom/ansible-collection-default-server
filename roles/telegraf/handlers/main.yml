@@ -1,0 +1,7 @@
+---
+- name: Restart Telegraf
+  ansible.builtin.service:
+    name: "{{ telegraf_service_name }}"
+    state: restarted
+  become: true
+  tags: telegraf

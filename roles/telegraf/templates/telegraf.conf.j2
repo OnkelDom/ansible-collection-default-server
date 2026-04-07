@@ -1,20 +1,35 @@
 {{ ansible_managed | comment }}
+{% macro toml_value(value) -%}
+{%- if value is sameas true -%}true
+{%- elif value is sameas false -%}false
+{%- elif value is number -%}{{ value }}
+{%- elif value is string -%}{{ value | to_json }}
+{%- elif value is mapping -%}{ {{ toml_inline_table(value) }} }
+{%- elif value is iterable and value is not string -%}[{{ value | map('to_json') | join(', ') }}]
+{%- else -%}{{ value | to_json }}
+{%- endif -%}
+{%- endmacro %}
+{% macro toml_inline_table(mapping) -%}
+{%- for key, value in mapping.items() -%}
+{{ key }} = {{ toml_value(value) }}{% if not loop.last %}, {% endif %}
+{%- endfor -%}
+{%- endmacro %}
 
 [agent]
 {% for key, value in telegraf_config.agent.items() %}
-  {{ key }} = {{ value | to_nice_yaml(indent=2) }}
+  {{ key }} = {{ toml_value(value) }}
 {% endfor %}
 
 {% for output in telegraf_config.outputs %}
 [[outputs.{{ output.type }}]]
 {% for key, value in output.config.items() %}
-  {{ key }} = {{ value | to_nice_yaml(indent=2) }}
+  {{ key }} = {{ toml_value(value) }}
 {% endfor %}
 {% endfor %}
 
 {% for input in telegraf_config.inputs %}
 [[inputs.{{ input.type }}]]
 {% for key, value in input.config.items() %}
-  {{ key }} = {{ value | to_nice_yaml(indent=2) }}
+  {{ key }} = {{ toml_value(value) }}
 {% endfor %}
 {% endfor %}

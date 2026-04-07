@@ -8,7 +8,10 @@
   tags: certbot
 
 - name: Load distribution-specific variables
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+  - "{{ ansible_distribution }}.yml"
+  - "{{ ansible_os_family }}.yml"
   tags: certbot
 
 - name: Fail for unsupported distributions
@@ -26,6 +29,15 @@
   - certbot_update_cache | default(false)
   changed_when: false
   become: true
+  tags: certbot
+
+- name: Validate Cloudflare credentials
+  ansible.builtin.assert:
+    that:
+    - certbot_cloudflare_api_email | length > 0
+    - certbot_cloudflare_api_key | length > 0
+    fail_msg: "certbot_cloudflare_api_email and certbot_cloudflare_api_key must be set."
+  when: certbot_certs | length > 0
   tags: certbot
 
 - name: Enable EPEL repository (RedHat family)
@@ -73,6 +85,17 @@
   become: true
   tags: certbot
 
+- name: Ensure certificate copy destination exists
+  ansible.builtin.file:
+    path: "{{ certbot_copy_destination_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: certbot_copy_to_ssl | bool
+  become: true
+  tags: certbot
+
 - name: Create Cloudflare INI file
   ansible.builtin.template:
     src: cloudflare.ini.j2
@@ -95,7 +118,7 @@
   ansible.builtin.command: >
     certbot certonly --dns-cloudflare
     --dns-cloudflare-credentials {{ certbot_cloudflare_credentials_path }}
-    --dns-cloudflare-propagation-seconds 30
+    --dns-cloudflare-propagation-seconds {{ certbot_dns_propagation_seconds }}
     --non-interactive --agree-tos
     --email {{ certbot_cloudflare_api_email }}
     --cert-name "{{ item.domains | first }}"
@@ -106,8 +129,8 @@
   tags: certbot
   register: certbot_output
   changed_when: >
-    'not yet due for renewal' not in (certbot_output.stdout | default('') | lower) and
-    'no action taken' not in (certbot_output.stdout | default('') | lower)
+    'not yet due for renewal' not in (((certbot_output.stdout | default('')) ~ (certbot_output.stderr | default(''))) | lower) and
+    'no action taken' not in (((certbot_output.stdout | default('')) ~ (certbot_output.stderr | default(''))) | lower)
   become: true
 
 - name: Modify Certbot renewal configuration file

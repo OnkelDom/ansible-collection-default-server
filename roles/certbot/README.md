@@ -14,9 +14,12 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
-certbot_cloudflare_api_email: '{{ cloudflare_api_email}}'
-certbot_cloudflare_api_key: '{{ encrypted_cloudflare_api_key}}'
+certbot_cloudflare_api_email: ''
+certbot_cloudflare_api_key: ''
 certbot_cloudflare_credentials_path: /etc/letsencrypt/cloudflare.ini
+certbot_dns_propagation_seconds: 30
+certbot_copy_to_ssl: true
+certbot_copy_destination_dir: /etc/ssl
 certbot_renew_hook: ''
 certbot_certs:
 - domains:

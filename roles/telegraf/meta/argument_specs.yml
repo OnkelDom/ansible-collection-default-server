@@ -5,9 +5,19 @@ argument_specs:
     description:
     - Validate variables for the `telegraf` role.
     options:
-      telegraf_repo_url:
+      telegraf_manage_repository:
         description:
-        - Controls `telegraf_repo_url` for the `telegraf` role.
+        - Controls `telegraf_manage_repository` for the `telegraf` role.
+        required: false
+        type: bool
+      telegraf_apt_repo:
+        description:
+        - Controls `telegraf_apt_repo` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_yum_repo_baseurl:
+        description:
+        - Controls `telegraf_yum_repo_baseurl` for the `telegraf` role.
         required: false
         type: str
       telegraf_gpg_key_url:
@@ -28,6 +38,11 @@ argument_specs:
       telegraf_service_name:
         description:
         - Controls `telegraf_service_name` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_package_name:
+        description:
+        - Controls `telegraf_package_name` for the `telegraf` role.
         required: false
         type: str
       telegraf_plugins:

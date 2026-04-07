@@ -18,6 +18,7 @@ proxy_env: {}
 node_exporter_version: 1.8.2
 node_exporter_web_listen_address: 0.0.0.0
 node_exporter_binary_install_dir: /usr/local/bin
+node_exporter_binary_path: '{{ node_exporter_binary_install_dir }}/node_exporter'
 node_exporter_web_listen_port: 9100
 node_exporter_system_user: "{{ prometheus_user | default('node_exporter') }}"
 node_exporter_system_group: "{{ prometheus_group | default('node_exporter') }}"

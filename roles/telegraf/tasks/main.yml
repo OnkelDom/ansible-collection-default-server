@@ -1,17 +1,39 @@
 ---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The telegraf role supports Debian and RedHat families only."
+  tags: telegraf
+
+- name: Ensure apt keyring directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when:
+  - telegraf_manage_repository | bool
+  - ansible_os_family == 'Debian'
+  become: true
+  tags: telegraf
+
 - name: Install GPG key
   ansible.builtin.get_url:
     url: "{{ telegraf_gpg_key_url }}"
-    dest: /etc/apt/trusted.gpg.d/influxdb.gpg
+    dest: "{{ '/etc/apt/keyrings/influxdata.gpg' if ansible_os_family == 'Debian' else '/etc/pki/rpm-gpg/RPM-GPG-KEY-influxdata' }}"
     mode: '0644'
-  when: ansible_os_family == 'Debian'
+  when: telegraf_manage_repository | bool
   become: true
   tags: telegraf
 
 - name: Add Telegraf repository (Debian)
   ansible.builtin.apt_repository:
-    repo: "deb {{ telegraf_repo_url }}"
-  when: ansible_os_family == 'Debian'
+    repo: "{{ telegraf_apt_repo }}"
+  when:
+  - telegraf_manage_repository | bool
+  - ansible_os_family == 'Debian'
   become: true
   tags: telegraf
 
@@ -19,16 +41,19 @@
   ansible.builtin.yum_repository:
     name: influxdata
     description: InfluxData Telegraf repository
-    baseurl: "{{ telegraf_repo_url }}"
+    baseurl: "{{ telegraf_yum_repo_baseurl }}"
+    enabled: true
     gpgcheck: true
     gpgkey: "{{ telegraf_gpg_key_url }}"
-  when: ansible_os_family == 'RedHat'
+  when:
+  - telegraf_manage_repository | bool
+  - ansible_os_family == 'RedHat'
   become: true
   tags: telegraf
 
 - name: Install Telegraf
   ansible.builtin.package:
-    name: telegraf
+    name: "{{ telegraf_package_name }}"
     state: present
   become: true
   tags: telegraf

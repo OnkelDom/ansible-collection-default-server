@@ -14,11 +14,14 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
-telegraf_repo_url: "{{ 'https://repos.influxdata.com/debian stable main' if ansible_os_family == 'Debian' else 'https://repos.influxdata.com/rhel/9/x86_64/stable/' }}"
-telegraf_gpg_key_url: "{{ 'https://repos.influxdata.com/influxdb.key' }}"
+telegraf_manage_repository: true
+telegraf_apt_repo: deb [signed-by=/etc/apt/keyrings/influxdata.gpg] https://repos.influxdata.com/debian stable main
+telegraf_yum_repo_baseurl: https://repos.influxdata.com/rhel/$releasever/$basearch/stable
+telegraf_gpg_key_url: https://repos.influxdata.com/influxdb.key
 telegraf_config_path: /etc/telegraf/telegraf.conf
 telegraf_plugins_path: /etc/telegraf/telegraf.d
 telegraf_service_name: telegraf
+telegraf_package_name: telegraf
 telegraf_plugins: []
 telegraf_config:
   agent:

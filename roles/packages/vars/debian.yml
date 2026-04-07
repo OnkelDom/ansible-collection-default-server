@@ -1,5 +1,5 @@
 ---
-packages_defaults_nstall:
+packages_defaults_install:
 - python3
 - python3-pip
 - netcat-traditional

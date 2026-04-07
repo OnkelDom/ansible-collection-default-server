@@ -1,6 +1,6 @@
 ---
 - name: create system group
-  group:
+  ansible.builtin.group:
     name: "{{ node_exporter_system_group }}"
     system: true
     state: present
@@ -9,43 +9,53 @@
   tags: node_exporter
 
 - name: create system user
-  user:
+  ansible.builtin.user:
     name: "{{ node_exporter_system_user }}"
     system: true
     shell: "/sbin/nologin"
     group: "{{ node_exporter_system_group }}"
-    createhome: false
+    create_home: false
     groups: "{{ node_exporter_user_additional_groups }}"
     home: /
   when: node_exporter_system_user != "root"
   become: true
   tags: node_exporter
 
+- name: create binary install directory
+  ansible.builtin.file:
+    path: "{{ node_exporter_binary_install_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  tags: node_exporter
+
 - block:
   - name: check for "/etc/crontab"
-    stat:
+    ansible.builtin.stat:
       path: "/etc/crontab"
     register: __node_exportert_etc_crontab
 
   - name: assert /etc/crontab exists when using textfile collector scripts
-    assert:
+    ansible.builtin.assert:
       that: __node_exportert_etc_crontab.stat.exists
 
   - name: assert node_exporter_textfile_dir is not empty when using collector scripts
-    assert:
+    ansible.builtin.assert:
       that:
       - node_exporter_textfile_dir | length != 0
   when: node_exporter_textfile_collectors | length != 0
 
 - name: check if node_exporter is installed
-  stat:
-    path: "/usr/local/bin/node_exporter"
+  ansible.builtin.stat:
+    path: "{{ node_exporter_binary_path }}"
   register: __node_exporter_is_installed
   become: true
   tags: node_exporter
 
 - name: gather currently installed node_exporter version (if any)
-  command: "/usr/local/bin/node_exporter --version"
+  ansible.builtin.command: "{{ node_exporter_binary_path }} --version"
   changed_when: false
   register: __node_exporter_current_version_output
   when: __node_exporter_is_installed.stat.exists
@@ -70,7 +80,7 @@
     retries: 5
 
   - name: "set node_exporter version to {{ _latest_release.json.tag_name[1:] }}"
-    set_fact:
+    ansible.builtin.set_fact:
       node_exporter_version: "{{ _latest_release.json.tag_name[1:] }}"
   when: node_exporter_version == "latest"
   delegate_to: localhost
@@ -80,7 +90,7 @@
 
 - block:
   - name: get checksum list from github
-    set_fact:
+    ansible.builtin.set_fact:
       _checksums: "{{ lookup('url', 'https://github.com/prometheus/node_exporter/releases/download/v' + node_exporter_version + '/sha256sums.txt', wantlist=True) | list }}"
     environment: "{{ proxy_env }}"
     run_once: true
@@ -88,7 +98,7 @@
     tags: node_exporter
 
   - name: "get checksum for {{ go_arch }} architecture"
-    set_fact:
+    ansible.builtin.set_fact:
       node_exporter_checksum: "{{ item.split(' ')[0] }}"
     with_items: "{{ _checksums }}"
     when: "('linux-' + go_arch + '.tar.gz') in item"
@@ -122,9 +132,9 @@
     tags: node_exporter
 
   - name: propagate binaries
-    copy:
+    ansible.builtin.copy:
       src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ go_arch }}/node_exporter"
-      dest: "{{ node_exporter_binary_install_dir }}/node_exporter"
+      dest: "{{ node_exporter_binary_path }}"
       mode: 0755
       owner: root
       group: root
@@ -135,7 +145,7 @@
   when: (not __node_exporter_is_installed.stat.exists) or (__node_exporter_current_version_output.stdout_lines[0].split(" ")[2] != node_exporter_version)
 
 - name: assert collectors are not both disabled and enabled at the same time
-  assert:
+  ansible.builtin.assert:
     that:
     - "item not in node_exporter_enabled_collectors"
   with_items: "{{ node_exporter_disabled_collectors }}"
@@ -144,7 +154,7 @@
 
 - block:
   - name: create config directory
-    file:
+    ansible.builtin.file:
       path: "{{ node_exporter_config_dir }}"
       state: directory
       owner: root
@@ -154,7 +164,7 @@
     tags: node_exporter
 
   - name: copy config file
-    template:
+    ansible.builtin.template:
       src: node_exporter.config.yml.j2
       dest: "{{ node_exporter_config_dir }}/config.yml"
       owner: root
@@ -169,7 +179,7 @@
 
 - block:
   - name: create textfile collector dir
-    file:
+    ansible.builtin.file:
       path: "{{ node_exporter_textfile_dir }}"
       state: directory
       owner: "{{ node_exporter_system_user }}"
@@ -179,7 +189,7 @@
     tags: node_exporter
 
   - name: download textfile collector scripts
-    copy:
+    ansible.builtin.copy:
       src: "{{ item.src }}"
       dest: "{{ node_exporter_binary_install_dir }}/textfile_collector_{{ item.src | basename }}"
       owner: root
@@ -189,7 +199,7 @@
     tags: node_exporter
 
   - name: setup textfile collector script systemd cron service
-    template:
+    ansible.builtin.template:
       src: "cron.service.j2"
       dest: "/etc/systemd/system/textfile-collector-{{ item.src | basename }}.service"
       owner: root
@@ -200,7 +210,7 @@
     tags: node_exporter
 
   - name: setup textfile collector script systemd cron timer
-    template:
+    ansible.builtin.template:
       src: "cron.timer.j2"
       dest: "/etc/systemd/system/textfile-collector-{{ item.src | basename }}.timer"
       owner: root
@@ -211,7 +221,7 @@
     tags: node_exporter
 
   - name: enable textfile collector
-    systemd:
+    ansible.builtin.systemd:
       daemon_reload: true
       name: "textfile-collector-{{ item.src | basename }}.timer"
       enabled: true
@@ -221,7 +231,7 @@
   tags: node_exporter
 
 - name: configure web
-  copy:
+  ansible.builtin.copy:
     content: "{{ node_exporter_webconfig | to_nice_yaml(indent=2) }}"
     dest: "{{ node_exporter_config_dir }}/web.yml"
     force: true
@@ -234,7 +244,7 @@
   tags: node_exporter
 
 - name: create systemd service unit
-  template:
+  ansible.builtin.template:
     src: node_exporter.service.j2
     dest: /etc/systemd/system/node_exporter.service
     owner: root
@@ -245,7 +255,7 @@
   tags: node_exporter
 
 - name: start and enable node_exporter
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
     name: node_exporter
     enabled: true
