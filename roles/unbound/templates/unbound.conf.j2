@@ -1,12 +1,18 @@
 {{ ansible_managed | comment }}
+{% macro unbound_value(value) -%}
+{%- if value is sameas true -%}yes
+{%- elif value is sameas false -%}no
+{%- else -%}{{ value }}
+{%- endif -%}
+{%- endmacro %}
 server:
 {% for key, value in unbound_config.server.items() %}
 {% if value is iterable and value is not string and value is not mapping %}
 {% for item in value %}
-  {{ key }}: {{ item }}
+  {{ key }}: {{ unbound_value(item) }}
 {% endfor %}
 {% else %}
-  {{ key }}: {{ value }}
+  {{ key }}: {{ unbound_value(value) }}
 {% endif %}
 {% endfor %}
 {% if unbound_auth_zones | length > 0 %}
@@ -25,6 +31,6 @@ include: "/etc/unbound/unbound.block.conf"
 {% if unbound_config['remote-control'] is defined %}
 remote-control:
 {% for key, value in unbound_config['remote-control'].items() %}
-  {{ key }}: {{ value }}
+  {{ key }}: {{ unbound_value(value) }}
 {% endfor %}
 {% endif %}

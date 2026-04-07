@@ -29,6 +29,14 @@
       }}
   tags: keepalived
 
+- name: Validate keepalived service settings
+  ansible.builtin.assert:
+    that:
+    - keepalived_service_state in ["started", "stopped"]
+    - not (keepalived_service_state == "started" and (keepalived_config.vrrp_instances | default([]) | length == 0))
+    fail_msg: "keepalived_service_state=start requires at least one keepalived_config.vrrp_instances entry."
+  tags: keepalived
+
 - name: Install keepalived packages
   ansible.builtin.package:
     name: "{{ keepalived_packages }}"

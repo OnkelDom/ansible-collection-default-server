@@ -17,8 +17,8 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 keepalived_packages:
 - keepalived
 - iproute
-keepalived_service_enabled: true
-keepalived_service_state: started
+keepalived_service_enabled: false
+keepalived_service_state: stopped
 keepalived_config_group_vars: {}
 keepalived_config_host_vars: {}
 keepalived_config_playbook: {}

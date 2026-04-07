@@ -25,7 +25,7 @@ Die Collection enthaelt unter anderem Rollen fuer:
 - Basis-Systemeinstellungen: `chrony`, `hosts`, `motd`, `packages`, `sysctl`, `users`
 - Netzwerk: `firewalld`, `ifcfg`, `interfaces`, `netplan`, `nmcli`, `resolvconf`, `ufw`
 - Security: `auditd`, `fail2ban`, `sshd`, `sssd`
-- Dienste und Tools: `borgbackup`, `certbot`, `msmtp`, `nginx`, `node-exporter`, `telegraf`
+- Dienste und Tools: `borgbackup`, `certbot`, `haproxy`, `keepalived`, `msmtp`, `nginx`, `node-exporter`, `telegraf`, `traefik`, `unbound`
 - Plattform-spezifische Helfer: `dnf_automatic`, `dnf_repos`, `qemu_guest_agent`, `vmware_tools`
 
 ## Installation

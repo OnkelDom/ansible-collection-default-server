@@ -17,6 +17,16 @@ Dieses Repository enthaelt die Ansible Collection `lenmail.default_server`.
 - Plattform-Support explizit dokumentieren
 - keine impliziten Distribution-Annahmen ohne `assert` oder klares `when`
 
+## Rollen-Standard
+
+- Defaults muessen sicher und ohne versteckte Fremdvariablen nutzbar sein
+- Rollen mit Diensten sollen Konfiguration vor Restart oder Enable validieren, wenn ein Validator verfuegbar ist
+- Plattformspezifische Paketnamen, Pfade und Services gehoeren in `vars/`
+- Neue Rollen sollen moeglichst `ansible.builtin.*` verwenden
+- Secrets gehoeren nicht in Defaults, sondern muessen leer oder optional sein
+- Service-, Firewall- und Netzwerkrrollen sollen offensichtliche Schalter wie `*_manage_firewall`, `*_service_enabled` oder gleichwertige Steuerung haben
+- Rollen mit generierten Dateien sollen idempotent bleiben und veraltete Artefakte nach Moeglichkeit bereinigen
+
 ## Scaffold und Formatierung
 
 - Rollen-Geruest wird ueber `tools/generate_role_scaffold.py` gepflegt

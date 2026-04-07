@@ -16,6 +16,6 @@ $TTL {{ zone.minimum | default(86400) }}
 {% elif record.type == 'SRV' %}
 {{ record.name }}.{{ zone.name }}. IN SRV {{ record.priority | default(10) }} {{ record.weight | default(0) }} {{ record.port }} {{ record.value }}
 {% else %}
-{{ record.name if record.name != '@' else zone.name }}.{{ '' if record.name == '@' else '.' ~ zone.name }} IN {{ record.type }} {{ record.value }}
+{{ zone.name ~ '.' if record.name == '@' else record.name ~ '.' ~ zone.name ~ '.' }} IN {{ record.type }} {{ record.value }}
 {% endif %}
 {% endfor %}
