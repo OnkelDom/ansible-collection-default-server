@@ -1,0 +1,97 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the haproxy role.
+    description:
+    - Validate variables for the `haproxy` role.
+    options:
+      haproxy_package_name:
+        description:
+        - Controls `haproxy_package_name` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_service_name:
+        description:
+        - Controls `haproxy_service_name` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_service_enabled:
+        description:
+        - Controls `haproxy_service_enabled` for the `haproxy` role.
+        required: false
+        type: bool
+      haproxy_service_state:
+        description:
+        - Controls `haproxy_service_state` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_server_user:
+        description:
+        - Controls `haproxy_server_user` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_server_group:
+        description:
+        - Controls `haproxy_server_group` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_server_fqdns:
+        description:
+        - Controls `haproxy_server_fqdns` for the `haproxy` role.
+        required: false
+        type: list
+      haproxy_server_tls_certs_dir:
+        description:
+        - Controls `haproxy_server_tls_certs_dir` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_server_tls_crt_list_path:
+        description:
+        - Controls `haproxy_server_tls_crt_list_path` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_manage_letsencrypt_certs:
+        description:
+        - Controls `haproxy_manage_letsencrypt_certs` for the `haproxy` role.
+        required: false
+        type: bool
+      haproxy_manage_firewall:
+        description:
+        - Controls `haproxy_manage_firewall` for the `haproxy` role.
+        required: false
+        type: bool
+      haproxy_firewall_zone:
+        description:
+        - Controls `haproxy_firewall_zone` for the `haproxy` role.
+        required: false
+        type: str
+      haproxy_frontends_list:
+        description:
+        - Controls `haproxy_frontends_list` for the `haproxy` role.
+        required: false
+        type: list
+      haproxy_backends_list:
+        description:
+        - Controls `haproxy_backends_list` for the `haproxy` role.
+        required: false
+        type: list
+      haproxy_listens_list:
+        description:
+        - Controls `haproxy_listens_list` for the `haproxy` role.
+        required: false
+        type: list
+      haproxy_userlists_list:
+        description:
+        - Controls `haproxy_userlists_list` for the `haproxy` role.
+        required: false
+        type: list
+      haproxy_global_config:
+        description:
+        - Controls `haproxy_global_config` for the `haproxy` role.
+        required: false
+        type: dict
+      haproxy_defaults_config:
+        description:
+        - Controls `haproxy_defaults_config` for the `haproxy` role.
+        required: false
+        type: dict

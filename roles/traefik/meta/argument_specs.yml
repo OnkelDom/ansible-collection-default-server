@@ -1,0 +1,87 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the traefik role.
+    description:
+    - Validate variables for the `traefik` role.
+    options:
+      proxy_env:
+        description:
+        - Controls `proxy_env` for the `traefik` role.
+        required: false
+        type: dict
+      traefik_version:
+        description:
+        - Controls `traefik_version` for the `traefik` role.
+        required: false
+        type: str
+      traefik_binary_install_dir:
+        description:
+        - Controls `traefik_binary_install_dir` for the `traefik` role.
+        required: false
+        type: str
+      traefik_binary_path:
+        description:
+        - Controls `traefik_binary_path` for the `traefik` role.
+        required: false
+        type: str
+      traefik_limit_nofile:
+        description:
+        - Controls `traefik_limit_nofile` for the `traefik` role.
+        required: false
+        type: int
+      traefik_service_name:
+        description:
+        - Controls `traefik_service_name` for the `traefik` role.
+        required: false
+        type: str
+      traefik_user:
+        description:
+        - Controls `traefik_user` for the `traefik` role.
+        required: false
+        type: str
+      traefik_group:
+        description:
+        - Controls `traefik_group` for the `traefik` role.
+        required: false
+        type: str
+      traefik_external_domain:
+        description:
+        - Controls `traefik_external_domain` for the `traefik` role.
+        required: false
+        type: str
+      traefik_acme_email:
+        description:
+        - Controls `traefik_acme_email` for the `traefik` role.
+        required: false
+        type: str
+      traefik_http_proxy:
+        description:
+        - Controls `traefik_http_proxy` for the `traefik` role.
+        required: false
+        type: str
+      traefik_https_proxy:
+        description:
+        - Controls `traefik_https_proxy` for the `traefik` role.
+        required: false
+        type: str
+      traefik_rules_files:
+        description:
+        - Controls `traefik_rules_files` for the `traefik` role.
+        required: false
+        type: list
+      traefik_custom_cert_files:
+        description:
+        - Controls `traefik_custom_cert_files` for the `traefik` role.
+        required: false
+        type: list
+      traefik_config:
+        description:
+        - Controls `traefik_config` for the `traefik` role.
+        required: false
+        type: dict
+      traefik_rules_config:
+        description:
+        - Controls `traefik_rules_config` for the `traefik` role.
+        required: false
+        type: dict

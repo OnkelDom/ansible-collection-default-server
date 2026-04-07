@@ -1,0 +1,7 @@
+---
+unbound_packages:
+- unbound
+- python3-cryptography
+unbound_service_name: unbound
+unbound_group: unbound
+unbound_checkconf_binary: /usr/sbin/unbound-checkconf

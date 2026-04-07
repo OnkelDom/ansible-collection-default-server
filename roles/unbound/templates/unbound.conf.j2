@@ -1,0 +1,30 @@
+{{ ansible_managed | comment }}
+server:
+{% for key, value in unbound_config.server.items() %}
+{% if value is iterable and value is not string and value is not mapping %}
+{% for item in value %}
+  {{ key }}: {{ item }}
+{% endfor %}
+{% else %}
+  {{ key }}: {{ value }}
+{% endif %}
+{% endfor %}
+{% if unbound_auth_zones | length > 0 %}
+{% for zone in unbound_auth_zones %}
+auth-zone:
+  name: "{{ zone.name }}"
+  zonefile: "{{ unbound_zones_dir }}/{{ zone.name }}.zone"
+{% endfor %}
+{% endif %}
+{% if unbound_local_zones | length > 0 %}
+include: "/etc/unbound/local-zones.conf"
+{% endif %}
+{% if unbound_use_blocklist | bool %}
+include: "/etc/unbound/unbound.block.conf"
+{% endif %}
+{% if unbound_config['remote-control'] is defined %}
+remote-control:
+{% for key, value in unbound_config['remote-control'].items() %}
+  {{ key }}: {{ value }}
+{% endfor %}
+{% endif %}

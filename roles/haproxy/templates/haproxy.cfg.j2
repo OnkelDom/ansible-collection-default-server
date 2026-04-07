@@ -1,0 +1,70 @@
+{{ ansible_managed | comment }}
+global
+{% for key, value in haproxy_global_config.items() %}
+{% if value is iterable and value is not string and value is not mapping %}
+{% for item in value %}
+    {{ key }} {{ item }}
+{% endfor %}
+{% else %}
+    {{ key }} {{ 'enabled' if value is sameas true else value }}
+{% endif %}
+{% endfor %}
+
+defaults
+{% for key, value in haproxy_defaults_config.items() %}
+{% if key == 'timeout' %}
+{% for timeout_key, timeout_value in value.items() %}
+    timeout {{ timeout_key }} {{ timeout_value }}
+{% endfor %}
+{% elif value is iterable and value is not string and value is not mapping %}
+{% for item in value %}
+    {{ key }} {{ item }}
+{% endfor %}
+{% else %}
+    {{ key }} {{ value }}
+{% endif %}
+{% endfor %}
+
+{% for userlist in haproxy_userlists_list %}
+userlist {{ userlist.name }}
+{% for user in userlist.users %}
+    user {{ user.username }} {{ 'insecure-password' if user.insecure_password | default(false) else 'password' }} {{ user.password }}
+{% endfor %}
+{% endfor %}
+
+{% for frontend in haproxy_frontends_list %}
+frontend {{ frontend.name }}
+{% for bind in frontend.bind if frontend.bind is iterable and frontend.bind is not mapping %}
+    bind {{ bind.address | default('') }}:{{ bind.port }}{% if bind.ssl | default(false) %} ssl crt-list {{ bind.crt_list | default(haproxy_server_tls_crt_list_path) }}{% endif %}
+{% endfor %}
+{% if frontend.bind is mapping %}
+    bind {{ frontend.bind.address | default('') }}:{{ frontend.bind.port }}{% if frontend.bind.ssl | default(false) %} ssl crt-list {{ frontend.bind.crt_list | default(haproxy_server_tls_crt_list_path) }}{% endif %}
+{% endif %}
+{% if frontend.mode is defined %}    mode {{ frontend.mode }}
+{% endif %}
+{% for option in frontend.options | default([]) %}    option {{ option }}
+{% endfor %}
+{% for acl in frontend.acl | default([]) %}    acl {{ acl }}
+{% endfor %}
+{% for redirect in frontend.redirect | default([]) %}    redirect {{ redirect }}
+{% endfor %}
+{% for use_backend in frontend.use_backend | default([]) %}    use_backend {{ use_backend }}
+{% endfor %}
+{% if frontend.default_backend is defined %}    default_backend {{ frontend.default_backend }}
+{% endif %}
+{% endfor %}
+
+{% for backend in haproxy_backends_list %}
+backend {{ backend.name }}
+{% if backend.mode is defined %}    mode {{ backend.mode }}
+{% endif %}
+{% if backend.balance is defined %}    balance {{ backend.balance }}
+{% endif %}
+{% for option in backend.options | default([]) %}    option {{ option }}
+{% endfor %}
+{% for custom in backend.custom | default([]) %}    {{ custom }}
+{% endfor %}
+{% for server in backend.backend_server_list | default([]) %}
+    server {{ server.name }} {{ server.address }}:{{ server.port }}{% if server.maxconn is defined %} maxconn {{ server.maxconn }}{% endif %}{% if server.weight is defined %} weight {{ server.weight }}{% endif %}{% if server.check | default(backend.check_all_servers | default(false)) %} check{% endif %}{% if server.custom is defined %} {{ server.custom }}{% endif %}
+{% endfor %}
+{% endfor %}

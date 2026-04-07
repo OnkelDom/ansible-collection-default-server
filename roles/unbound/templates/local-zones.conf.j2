@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+{% for zone in unbound_local_zones %}
+local-zone: "{{ zone.name }}" {{ zone.type | default('static') }}
+{% for record in zone.records | default([]) %}
+local-data: "{{ record }}"
+{% endfor %}
+{% endfor %}

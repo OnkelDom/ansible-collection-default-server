@@ -1,0 +1,16 @@
+{{ keepalived_config.snat_logfile | default(keepalived_logrotate_config.logfile) }} {
+    {{ keepalived_logrotate_config.frequency }}
+    rotate {{ keepalived_logrotate_config.rotate }}
+{% if keepalived_logrotate_config.compress | bool %}
+    compress
+{% endif %}
+{% if keepalived_logrotate_config.delaycompress | bool %}
+    delaycompress
+{% endif %}
+    missingok
+    notifempty
+    create {{ keepalived_logrotate_config.create_mode }} {{ keepalived_logrotate_config.create_owner }} {{ keepalived_logrotate_config.create_group }}
+    postrotate
+        systemctl kill -s HUP {{ keepalived_service }} 2>/dev/null || true
+    endscript
+}

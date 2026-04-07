@@ -1,0 +1,15 @@
+---
+- name: Restart traefik
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: "{{ traefik_service_name }}"
+    state: restarted
+  become: true
+  tags: traefik
+
+- name: Reload traefik
+  ansible.builtin.systemd:
+    name: "{{ traefik_service_name }}"
+    state: reloaded
+  become: true
+  tags: traefik

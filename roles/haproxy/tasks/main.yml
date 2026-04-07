@@ -1,0 +1,124 @@
+---
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The haproxy role supports Debian and RedHat families only."
+  tags: haproxy
+
+- name: Install haproxy package
+  ansible.builtin.package:
+    name: "{{ haproxy_package_name }}"
+    state: present
+  become: true
+  tags: haproxy
+
+- name: Ensure haproxy certificate directory exists
+  ansible.builtin.file:
+    path: "{{ haproxy_server_tls_certs_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  tags: haproxy
+
+- name: Read fullchain certificates
+  ansible.builtin.slurp:
+    src: "/etc/letsencrypt/live/{{ item }}/fullchain.pem"
+  loop: "{{ haproxy_server_fqdns }}"
+  register: __haproxy_fullchain
+  when:
+  - haproxy_manage_letsencrypt_certs | bool
+  - haproxy_server_fqdns | length > 0
+  become: true
+  tags: haproxy
+
+- name: Read private keys
+  ansible.builtin.slurp:
+    src: "/etc/letsencrypt/live/{{ item }}/privkey.pem"
+  loop: "{{ haproxy_server_fqdns }}"
+  register: __haproxy_privkey
+  when:
+  - haproxy_manage_letsencrypt_certs | bool
+  - haproxy_server_fqdns | length > 0
+  become: true
+  tags: haproxy
+
+- name: Build TLS PEM bundle map
+  ansible.builtin.set_fact:
+    __haproxy_cert_map: "{{ __haproxy_cert_map | default({}) | combine({item.item: {'fullchain': item.content | b64decode}}) }}"
+  loop: "{{ __haproxy_fullchain.results | default([]) }}"
+  when: haproxy_manage_letsencrypt_certs | bool
+  tags: haproxy
+
+- name: Add private keys to TLS PEM bundle map
+  ansible.builtin.set_fact:
+    __haproxy_cert_map: "{{ __haproxy_cert_map | default({}) | combine({item.item: (__haproxy_cert_map[item.item] | default({})) | combine({'privkey': item.content | b64decode})}, recursive=True) }}"
+  loop: "{{ __haproxy_privkey.results | default([]) }}"
+  when: haproxy_manage_letsencrypt_certs | bool
+  tags: haproxy
+
+- name: Write combined haproxy PEM files
+  ansible.builtin.copy:
+    content: "{{ item.value.fullchain }}{{ item.value.privkey }}"
+    dest: "{{ haproxy_server_tls_certs_dir }}/{{ item.key }}.pem"
+    owner: root
+    group: root
+    mode: "0600"
+  loop: "{{ (__haproxy_cert_map | default({})) | dict2items }}"
+  when:
+  - haproxy_manage_letsencrypt_certs | bool
+  - item.value.fullchain is defined
+  - item.value.privkey is defined
+  notify: Restart haproxy
+  become: true
+  tags: haproxy
+
+- name: Build certificate list
+  ansible.builtin.copy:
+    content: |
+      {% for fqdn in haproxy_server_fqdns %}
+      {{ haproxy_server_tls_certs_dir }}/{{ fqdn }}.pem
+      {% endfor %}
+    dest: "{{ haproxy_server_tls_crt_list_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: haproxy_server_fqdns | length > 0
+  notify: Restart haproxy
+  become: true
+  tags: haproxy
+
+- name: Configure haproxy
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: "0644"
+    validate: "haproxy -c -f %s"
+  notify: Restart haproxy
+  become: true
+  tags: haproxy
+
+- name: Open firewall for haproxy on RedHat
+  ansible.posix.firewalld:
+    service: http
+    state: enabled
+    permanent: true
+    immediate: true
+    zone: "{{ haproxy_firewall_zone }}"
+  when:
+  - haproxy_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+  tags: haproxy
+
+- name: Ensure haproxy service is running
+  ansible.builtin.service:
+    name: "{{ haproxy_service_name }}"
+    enabled: "{{ haproxy_service_enabled }}"
+    state: "{{ haproxy_service_state }}"
+  become: true
+  tags: haproxy

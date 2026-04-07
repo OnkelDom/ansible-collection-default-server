@@ -1,0 +1,58 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the keepalived role.
+    description:
+    - Validate variables for the `keepalived` role.
+    options:
+      keepalived_packages:
+        description:
+        - Controls `keepalived_packages` for the `keepalived` role.
+        required: false
+        type: list
+        elements: str
+      keepalived_service_enabled:
+        description:
+        - Controls `keepalived_service_enabled` for the `keepalived` role.
+        required: false
+        type: bool
+      keepalived_service_state:
+        description:
+        - Controls `keepalived_service_state` for the `keepalived` role.
+        required: false
+        type: str
+      keepalived_config_group_vars:
+        description:
+        - Controls `keepalived_config_group_vars` for the `keepalived` role.
+        required: false
+        type: dict
+      keepalived_config_host_vars:
+        description:
+        - Controls `keepalived_config_host_vars` for the `keepalived` role.
+        required: false
+        type: dict
+      keepalived_config_playbook:
+        description:
+        - Controls `keepalived_config_playbook` for the `keepalived` role.
+        required: false
+        type: dict
+      keepalived_config_defaults:
+        description:
+        - Controls `keepalived_config_defaults` for the `keepalived` role.
+        required: false
+        type: dict
+      keepalived_logrotate_enabled:
+        description:
+        - Controls `keepalived_logrotate_enabled` for the `keepalived` role.
+        required: false
+        type: bool
+      keepalived_logrotate_path:
+        description:
+        - Controls `keepalived_logrotate_path` for the `keepalived` role.
+        required: false
+        type: str
+      keepalived_logrotate_config:
+        description:
+        - Controls `keepalived_logrotate_config` for the `keepalived` role.
+        required: false
+        type: dict

@@ -1,0 +1,21 @@
+; {{ ansible_managed }}
+$TTL {{ zone.minimum | default(86400) }}
+{{ zone.name }}. IN SOA {{ (zone.nameservers | default(['ns1.' ~ zone.name ~ '.']))[0] }} hostmaster.{{ zone.name }}. (
+        {{ zone.serial | default(ansible_date_time.epoch) }}
+        {{ zone.refresh | default(3600) }}
+        {{ zone.retry | default(1800) }}
+        {{ zone.expire | default(604800) }}
+        {{ zone.minimum | default(86400) }}
+)
+{% for ns in zone.nameservers | default([]) %}
+{{ zone.name }}. IN NS {{ ns }}
+{% endfor %}
+{% for record in zone.records | default([]) %}
+{% if record.type == 'MX' %}
+{{ record.name if record.name != '@' else zone.name }}. IN MX {{ record.priority | default(10) }} {{ record.value }}
+{% elif record.type == 'SRV' %}
+{{ record.name }}.{{ zone.name }}. IN SRV {{ record.priority | default(10) }} {{ record.weight | default(0) }} {{ record.port }} {{ record.value }}
+{% else %}
+{{ record.name if record.name != '@' else zone.name }}.{{ '' if record.name == '@' else '.' ~ zone.name }} IN {{ record.type }} {{ record.value }}
+{% endif %}
+{% endfor %}

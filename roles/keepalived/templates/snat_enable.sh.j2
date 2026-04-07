@@ -1,0 +1,9 @@
+#!/bin/sh
+{{ ansible_managed | comment }}
+
+LOGFILE="{{ keepalived_config.snat_logfile | default('/var/log/keepalived-snat.log') }}"
+DATE="$(date '+%F %T')"
+
+echo "[$DATE] Enabling SNAT for VIP {{ keepalived_config.vip_address }} on interface {{ keepalived_config.interface }}" >> "$LOGFILE"
+iptables -t nat -C POSTROUTING -d {{ keepalived_config.snat_cidr }} -o {{ keepalived_config.interface }} -j SNAT --to-source {{ keepalived_config.vip_address }} 2>/dev/null || \
+iptables -t nat -A POSTROUTING -d {{ keepalived_config.snat_cidr }} -o {{ keepalived_config.interface }} -j SNAT --to-source {{ keepalived_config.vip_address }}

@@ -26,9 +26,11 @@ role_descriptions:
   dnf_repos: Manage DNF repository definitions on EL systems.
   fail2ban: Install and configure Fail2ban jails and actions.
   firewalld: Manage firewalld services, zones, and rules on EL systems.
+  haproxy: Install and configure HAProxy load balancers and TLS assets.
   hosts: Manage hostname-related entries in /etc/hosts.
   ifcfg: Manage legacy ifcfg-based network configuration on EL systems.
   interfaces: Manage /etc/network/interfaces based network configuration.
+  keepalived: Install and configure Keepalived VRRP instances and helper scripts.
   lvm: Create and manage LVM volume groups and logical volumes.
   motd: Configure the login message of the day.
   mounts: Manage filesystem and network mounts.
@@ -46,7 +48,9 @@ role_descriptions:
   sssd: Configure SSSD for directory integration.
   sysctl: Manage sysctl kernel parameters.
   telegraf: Install and configure Telegraf with plugin definitions.
+  traefik: Install and configure Traefik reverse proxies and routing rules.
   ufw: Manage UFW rules and defaults on Debian and Ubuntu.
+  unbound: Install and configure the Unbound DNS resolver and local zones.
   unattended_updates: Configure unattended upgrades on Debian and Ubuntu.
   users: Manage local users, SSH keys, and shell dotfiles.
   vmware_tools: Install open-vm-tools on supported Linux systems.

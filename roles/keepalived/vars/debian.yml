@@ -1,0 +1,3 @@
+---
+keepalived_binary: /usr/sbin/keepalived
+keepalived_service: keepalived

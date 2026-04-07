@@ -1,0 +1,47 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the unbound role.
+    description:
+    - Validate variables for the `unbound` role.
+    options:
+      unbound_use_blocklist:
+        description:
+        - Controls `unbound_use_blocklist` for the `unbound` role.
+        required: false
+        type: bool
+      unbound_blocklist_url:
+        description:
+        - Controls `unbound_blocklist_url` for the `unbound` role.
+        required: false
+        type: str
+      unbound_manage_firewall:
+        description:
+        - Controls `unbound_manage_firewall` for the `unbound` role.
+        required: false
+        type: bool
+      unbound_firewall_zone:
+        description:
+        - Controls `unbound_firewall_zone` for the `unbound` role.
+        required: false
+        type: str
+      unbound_zones_dir:
+        description:
+        - Controls `unbound_zones_dir` for the `unbound` role.
+        required: false
+        type: str
+      unbound_local_zones:
+        description:
+        - Controls `unbound_local_zones` for the `unbound` role.
+        required: false
+        type: list
+      unbound_auth_zones:
+        description:
+        - Controls `unbound_auth_zones` for the `unbound` role.
+        required: false
+        type: list
+      unbound_config:
+        description:
+        - Controls `unbound_config` for the `unbound` role.
+        required: false
+        type: dict

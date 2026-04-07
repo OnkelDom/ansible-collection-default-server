@@ -1,0 +1,174 @@
+---
+- name: Gather operating system variables
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+  - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+  - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_distribution_file_variety | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_distribution | lower }}.yml"
+  - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  - "{{ ansible_os_family | lower }}.yml"
+  tags: unbound
+
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The unbound role supports Debian and RedHat families only."
+  tags: unbound
+
+- name: Install unbound packages
+  ansible.builtin.package:
+    name: "{{ unbound_packages }}"
+    state: present
+  become: true
+  tags: unbound
+
+- name: Ensure zones directory exists
+  ansible.builtin.file:
+    path: "{{ unbound_zones_dir }}"
+    state: directory
+    owner: root
+    group: "{{ unbound_group }}"
+    mode: "0750"
+  when: unbound_auth_zones | length > 0
+  become: true
+  tags: unbound
+
+- name: Download root hints file
+  ansible.builtin.get_url:
+    url: https://www.internic.net/domain/named.root
+    dest: /etc/unbound/root.hints
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  tags: unbound
+
+- name: Ensure blocklist file exists when disabled
+  ansible.builtin.file:
+    path: /etc/unbound/unbound.block.conf
+    state: touch
+    owner: root
+    group: root
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve
+  when: not unbound_use_blocklist | bool
+  become: true
+  tags: unbound
+
+- name: Deploy blocklist update script
+  ansible.builtin.template:
+    src: unbound_update.sh.j2
+    dest: /usr/local/bin/unbound_update.sh
+    owner: root
+    group: root
+    mode: "0755"
+  when: unbound_use_blocklist | bool
+  become: true
+  tags: unbound
+
+- name: Schedule blocklist update
+  ansible.builtin.cron:
+    name: Unbound Update
+    minute: "15"
+    hour: "2"
+    job: /usr/local/bin/unbound_update.sh
+    user: root
+    state: present
+    cron_file: unbound_update
+  when: unbound_use_blocklist | bool
+  become: true
+  tags: unbound
+
+- name: Generate auth zone files
+  ansible.builtin.template:
+    src: zone.j2
+    dest: "{{ unbound_zones_dir }}/{{ zone.name }}.zone"
+    owner: root
+    group: "{{ unbound_group }}"
+    mode: "0640"
+  loop: "{{ unbound_auth_zones }}"
+  loop_control:
+    loop_var: zone
+  notify: Restart unbound
+  become: true
+  tags: unbound
+
+- name: Find existing auth zone files
+  ansible.builtin.find:
+    paths: "{{ unbound_zones_dir }}"
+    patterns: "*.zone"
+  register: __unbound_existing_zones
+  when: unbound_auth_zones | length > 0
+  become: true
+  tags: unbound
+
+- name: Remove stale auth zone files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ __unbound_existing_zones.files | default([]) }}"
+  when:
+  - unbound_auth_zones | length > 0
+  - item.path | basename | regex_replace('\\.zone$', '') not in (unbound_auth_zones | map(attribute='name') | list)
+  notify: Restart unbound
+  become: true
+  tags: unbound
+
+- name: Configure legacy local zones
+  ansible.builtin.template:
+    src: local-zones.conf.j2
+    dest: /etc/unbound/local-zones.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: unbound_local_zones | length > 0
+  notify: Restart unbound
+  become: true
+  tags: unbound
+
+- name: Remove legacy local zones config when unused
+  ansible.builtin.file:
+    path: /etc/unbound/local-zones.conf
+    state: absent
+  when: unbound_local_zones | length == 0
+  notify: Restart unbound
+  become: true
+  tags: unbound
+
+- name: Configure unbound service
+  ansible.builtin.template:
+    src: unbound.conf.j2
+    dest: /etc/unbound/unbound.conf
+    owner: root
+    group: root
+    mode: "0644"
+    validate: "{{ unbound_checkconf_binary }} %s"
+  notify: Restart unbound
+  become: true
+  tags: unbound
+
+- name: Open DNS service in firewalld
+  ansible.posix.firewalld:
+    service: dns
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ unbound_firewall_zone }}"
+  when:
+  - unbound_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  notify: Reload firewalld
+  become: true
+  tags: unbound
+
+- name: Ensure unbound service is enabled and running
+  ansible.builtin.service:
+    name: "{{ unbound_service_name }}"
+    state: started
+    enabled: true
+  become: true
+  tags: unbound
