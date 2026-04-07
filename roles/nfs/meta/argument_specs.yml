@@ -1,0 +1,17 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the nfs role.
+    description:
+    - Validate variables for the `nfs` role.
+    options:
+      nfs_exports:
+        description:
+        - Controls `nfs_exports` for the `nfs` role.
+        required: false
+        type: list
+      nfs_mounts:
+        description:
+        - Controls `nfs_mounts` for the `nfs` role.
+        required: false
+        type: list

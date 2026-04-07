@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the systemd_timesyncd role.
+    description:
+    - Validate variables for the `systemd_timesyncd` role.
+    options:
+      systemd_timesyncd:
+        description:
+        - Controls `systemd_timesyncd` for the `systemd_timesyncd` role.
+        required: false
+        type: bool
+      systemd_timesyncd_time_zone:
+        description:
+        - Controls `systemd_timesyncd_time_zone` for the `systemd_timesyncd` role.
+        required: false
+        type: str
+      systemd_timesyncd_time_server:
+        description:
+        - Controls `systemd_timesyncd_time_server` for the `systemd_timesyncd` role.
+        required: false
+        type: str
+      systemd_timesyncd_time_server_fallback:
+        description:
+        - Controls `systemd_timesyncd_time_server_fallback` for the `systemd_timesyncd` role.
+        required: false
+        type: str

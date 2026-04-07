@@ -1,0 +1,468 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the apache role.
+    description:
+    - Validate variables for the `apache` role.
+    options:
+      apache_additional_packages:
+        description:
+        - Controls `apache_additional_packages` for the `apache` role.
+        required: false
+        type: list
+      apache_service_enabled:
+        description:
+        - Controls `apache_service_enabled` for the `apache` role.
+        required: false
+        type: bool
+      apache_service_state:
+        description:
+        - Controls `apache_service_state` for the `apache` role.
+        required: false
+        type: str
+      apache_ports:
+        description:
+        - Controls `apache_ports` for the `apache` role.
+        required: false
+        type: list
+        elements: int
+      apache_ssl_ports:
+        description:
+        - Controls `apache_ssl_ports` for the `apache` role.
+        required: false
+        type: list
+        elements: int
+      apache_gnutls_ports:
+        description:
+        - Controls `apache_gnutls_ports` for the `apache` role.
+        required: false
+        type: list
+        elements: int
+      apache_mods:
+        description:
+        - Controls `apache_mods` for the `apache` role.
+        required: false
+        type: dict
+      apache_conf:
+        description:
+        - Controls `apache_conf` for the `apache` role.
+        required: false
+        type: dict
+      apache_mpm:
+        description:
+        - Controls `apache_mpm` for the `apache` role.
+        required: false
+        type: str
+      apache_prefork_server_limit:
+        description:
+        - Controls `apache_prefork_server_limit` for the `apache` role.
+        required: false
+        type: int
+      apache_prefork_start_servers:
+        description:
+        - Controls `apache_prefork_start_servers` for the `apache` role.
+        required: false
+        type: int
+      apache_prefork_min_spare_servers:
+        description:
+        - Controls `apache_prefork_min_spare_servers` for the `apache` role.
+        required: false
+        type: int
+      apache_prefork_max_spare_servers:
+        description:
+        - Controls `apache_prefork_max_spare_servers` for the `apache` role.
+        required: false
+        type: int
+      apache_prefork_max_request_workers:
+        description:
+        - Controls `apache_prefork_max_request_workers` for the `apache` role.
+        required: false
+        type: int
+      apache_prefork_max_connections_per_child:
+        description:
+        - Controls `apache_prefork_max_connections_per_child` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_server_limit:
+        description:
+        - Controls `apache_worker_server_limit` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_start_servers:
+        description:
+        - Controls `apache_worker_start_servers` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_min_spare_threads:
+        description:
+        - Controls `apache_worker_min_spare_threads` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_max_spare_threads:
+        description:
+        - Controls `apache_worker_max_spare_threads` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_thread_limit:
+        description:
+        - Controls `apache_worker_thread_limit` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_threads_per_child:
+        description:
+        - Controls `apache_worker_threads_per_child` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_max_clients:
+        description:
+        - Controls `apache_worker_max_clients` for the `apache` role.
+        required: false
+        type: int
+      apache_worker_max_connections_per_child:
+        description:
+        - Controls `apache_worker_max_connections_per_child` for the `apache` role.
+        required: false
+        type: int
+      apache_event_server_limit:
+        description:
+        - Controls `apache_event_server_limit` for the `apache` role.
+        required: false
+        type: int
+      apache_event_start_servers:
+        description:
+        - Controls `apache_event_start_servers` for the `apache` role.
+        required: false
+        type: int
+      apache_event_min_spare_threads:
+        description:
+        - Controls `apache_event_min_spare_threads` for the `apache` role.
+        required: false
+        type: int
+      apache_event_max_spare_threads:
+        description:
+        - Controls `apache_event_max_spare_threads` for the `apache` role.
+        required: false
+        type: int
+      apache_event_thread_limit:
+        description:
+        - Controls `apache_event_thread_limit` for the `apache` role.
+        required: false
+        type: int
+      apache_event_threads_per_child:
+        description:
+        - Controls `apache_event_threads_per_child` for the `apache` role.
+        required: false
+        type: int
+      apache_event_max_clients:
+        description:
+        - Controls `apache_event_max_clients` for the `apache` role.
+        required: false
+        type: int
+      apache_event_max_connections_per_child:
+        description:
+        - Controls `apache_event_max_connections_per_child` for the `apache` role.
+        required: false
+        type: int
+      apache_remoteip:
+        description:
+        - Controls `apache_remoteip` for the `apache` role.
+        required: false
+        type: bool
+      apache_remoteip_header:
+        description:
+        - Controls `apache_remoteip_header` for the `apache` role.
+        required: false
+        type: str
+      apache_remoteip_internal_proxies:
+        description:
+        - Controls `apache_remoteip_internal_proxies` for the `apache` role.
+        required: false
+        type: list
+        elements: str
+      apache_remoteip_trusted_proxies:
+        description:
+        - Controls `apache_remoteip_trusted_proxies` for the `apache` role.
+        required: false
+        type: list
+      apache_ssl_protocol:
+        description:
+        - Controls `apache_ssl_protocol` for the `apache` role.
+        required: false
+        type: str
+      apache_ssl_ciphersuite:
+        description:
+        - Controls `apache_ssl_ciphersuite` for the `apache` role.
+        required: false
+        type: str
+      apache_ssl_honorcipherorder:
+        description:
+        - Controls `apache_ssl_honorcipherorder` for the `apache` role.
+        required: false
+        type: str
+      apache_ssl_compression:
+        description:
+        - Controls `apache_ssl_compression` for the `apache` role.
+        required: false
+        type: str
+      apache_ssl_usestapling:
+        description:
+        - Controls `apache_ssl_usestapling` for the `apache` role.
+        required: false
+        type: str
+      apache_ssl_staplingcache:
+        description:
+        - Controls `apache_ssl_staplingcache` for the `apache` role.
+        required: false
+        type: int
+      apache_ssl_staplingrespondertimeout:
+        description:
+        - Controls `apache_ssl_staplingrespondertimeout` for the `apache` role.
+        required: false
+        type: int
+      apache_ssl_staplingreturnrespondererrors:
+        description:
+        - Controls `apache_ssl_staplingreturnrespondererrors` for the `apache` role.
+        required: false
+        type: str
+      apache_ssl_sessioncache:
+        description:
+        - Controls `apache_ssl_sessioncache` for the `apache` role.
+        required: false
+        type: int
+      apache_ssl_sessioncachetimeout:
+        description:
+        - Controls `apache_ssl_sessioncachetimeout` for the `apache` role.
+        required: false
+        type: int
+      apache_ssl_headers:
+        description:
+        - Controls `apache_ssl_headers` for the `apache` role.
+        required: false
+        type: list
+      apache_server_tokens:
+        description:
+        - Controls `apache_server_tokens` for the `apache` role.
+        required: false
+        type: str
+      apache_server_signature:
+        description:
+        - Controls `apache_server_signature` for the `apache` role.
+        required: false
+        type: str
+      apache_trace_enable:
+        description:
+        - Controls `apache_trace_enable` for the `apache` role.
+        required: false
+        type: str
+      apache_hostname_lookups:
+        description:
+        - Controls `apache_hostname_lookups` for the `apache` role.
+        required: false
+        type: str
+      apache_listen_backlog:
+        description:
+        - Controls `apache_listen_backlog` for the `apache` role.
+        required: false
+        type: int
+      apache_keepalive:
+        description:
+        - Controls `apache_keepalive` for the `apache` role.
+        required: false
+        type: str
+      apache_keepalive_timeout:
+        description:
+        - Controls `apache_keepalive_timeout` for the `apache` role.
+        required: false
+        type: int
+      apache_max_keepalive_requests:
+        description:
+        - Controls `apache_max_keepalive_requests` for the `apache` role.
+        required: false
+        type: int
+      apache_timeout:
+        description:
+        - Controls `apache_timeout` for the `apache` role.
+        required: false
+        type: int
+      apache_umask:
+        description:
+        - Controls `apache_umask` for the `apache` role.
+        required: false
+        type: str
+      apache_user:
+        description:
+        - Controls `apache_user` for the `apache` role.
+        required: false
+        type: str
+      apache_group:
+        description:
+        - Controls `apache_group` for the `apache` role.
+        required: false
+        type: str
+      apache_custom_options:
+        description:
+        - Controls `apache_custom_options` for the `apache` role.
+        required: false
+        type: dict
+      apache_mailadmin:
+        description:
+        - Controls `apache_mailadmin` for the `apache` role.
+        required: false
+        type: str
+      apache_logs_directory:
+        description:
+        - Controls `apache_logs_directory` for the `apache` role.
+        required: false
+        type: str
+      apache_logrotate_permissions:
+        description:
+        - Controls `apache_logrotate_permissions` for the `apache` role.
+        required: false
+        type: str
+      apache_logrotate_user:
+        description:
+        - Controls `apache_logrotate_user` for the `apache` role.
+        required: false
+        type: str
+      apache_logrotate_group:
+        description:
+        - Controls `apache_logrotate_group` for the `apache` role.
+        required: false
+        type: str
+      apache_logrotate_retention:
+        description:
+        - Controls `apache_logrotate_retention` for the `apache` role.
+        required: false
+        type: str
+      apache_logrotate_frequency:
+        description:
+        - Controls `apache_logrotate_frequency` for the `apache` role.
+        required: false
+        type: str
+      apache_logrotate_paths:
+        description:
+        - Controls `apache_logrotate_paths` for the `apache` role.
+        required: false
+        type: list
+        elements: str
+      apache_logrotate_delay_compress:
+        description:
+        - Controls `apache_logrotate_delay_compress` for the `apache` role.
+        required: false
+        type: bool
+      apache_remove_default_vhost:
+        description:
+        - Controls `apache_remove_default_vhost` for the `apache` role.
+        required: false
+        type: bool
+      apache_default_vhost_template:
+        description:
+        - Controls `apache_default_vhost_template` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_path:
+        description:
+        - Controls `apache_default_vhost_path` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_http:
+        description:
+        - Controls `apache_default_vhost_http` for the `apache` role.
+        required: false
+        type: bool
+      apache_default_vhost_ssl:
+        description:
+        - Controls `apache_default_vhost_ssl` for the `apache` role.
+        required: false
+        type: bool
+      apache_default_vhost_ssl_certs_path:
+        description:
+        - Controls `apache_default_vhost_ssl_certs_path` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_crt:
+        description:
+        - Controls `apache_default_vhost_crt` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_key:
+        description:
+        - Controls `apache_default_vhost_key` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_chain:
+        description:
+        - Controls `apache_default_vhost_chain` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_ip:
+        description:
+        - Controls `apache_default_vhost_ip` for the `apache` role.
+        required: false
+        type: str
+      apache_default_vhost_http_port:
+        description:
+        - Controls `apache_default_vhost_http_port` for the `apache` role.
+        required: false
+        type: int
+      apache_default_vhost_ssl_port:
+        description:
+        - Controls `apache_default_vhost_ssl_port` for the `apache` role.
+        required: false
+        type: int
+      apache_vhosts_user:
+        description:
+        - Controls `apache_vhosts_user` for the `apache` role.
+        required: false
+        type: str
+      apache_vhosts_group:
+        description:
+        - Controls `apache_vhosts_group` for the `apache` role.
+        required: false
+        type: str
+      apache_vhosts_directory:
+        description:
+        - Controls `apache_vhosts_directory` for the `apache` role.
+        required: false
+        type: str
+      apache_vhosts:
+        description:
+        - Controls `apache_vhosts` for the `apache` role.
+        required: false
+        type: list
+      apache_vhosts_default:
+        description:
+        - Controls `apache_vhosts_default` for the `apache` role.
+        required: false
+        type: dict
+      apache_certbot_webroot:
+        description:
+        - Controls `apache_certbot_webroot` for the `apache` role.
+        required: false
+        type: str
+      apache_default_maintenance_whitelist:
+        description:
+        - Controls `apache_default_maintenance_whitelist` for the `apache` role.
+        required: false
+        type: list
+        elements: str
+      apache_default_maintenance_template:
+        description:
+        - Controls `apache_default_maintenance_template` for the `apache` role.
+        required: false
+        type: str
+      apache_systemd_base_path:
+        description:
+        - Controls `apache_systemd_base_path` for the `apache` role.
+        required: false
+        type: str
+      apache_manage_systemd_override:
+        description:
+        - Controls `apache_manage_systemd_override` for the `apache` role.
+        required: false
+        type: bool
+      apache_systemd_unit_template:
+        description:
+        - Controls `apache_systemd_unit_template` for the `apache` role.
+        required: false
+        type: str

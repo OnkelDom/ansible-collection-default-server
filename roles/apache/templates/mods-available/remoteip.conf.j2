@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+<IfModule remoteip_module>
+    RemoteIPHeader {{ apache_remoteip_header }}
+
+{% for internal_proxy in apache_remoteip_internal_proxies %}
+    RemoteIPInternalProxy {{ internal_proxy }}
+{% endfor %}
+{% if apache_remoteip_trusted_proxies %}
+{% for trusted_proxy in apache_remoteip_trusted_proxies %}
+    RemoteIPTrustedProxy {{ trusted_proxy }}
+{% endfor %}
+{% endif %}
+</IfModule>

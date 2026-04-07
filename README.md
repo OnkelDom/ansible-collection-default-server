@@ -23,9 +23,9 @@ Nicht jede Rolle ist auf jeder Plattform sinnvoll. Netzwerk- und Firewall-Rollen
 Die Collection enthaelt unter anderem Rollen fuer:
 
 - Basis-Systemeinstellungen: `chrony`, `hosts`, `motd`, `packages`, `sysctl`, `users`
-- Netzwerk: `firewalld`, `ifcfg`, `interfaces`, `netplan`, `nmcli`, `resolvconf`, `ufw`
+- Netzwerk: `firewalld`, `ifcfg`, `interfaces`, `netplan`, `nfs`, `nmcli`, `resolvconf`, `systemd_resolved`, `systemd_timesyncd`, `ufw`
 - Security: `auditd`, `fail2ban`, `sshd`, `sssd`
-- Dienste und Tools: `borgbackup`, `certbot`, `haproxy`, `keepalived`, `msmtp`, `nginx`, `node-exporter`, `telegraf`, `traefik`, `unbound`
+- Dienste und Tools: `apache`, `borgbackup`, `certbot`, `haproxy`, `keepalived`, `msmtp`, `nginx`, `node_exporter`, `telegraf`, `traefik`, `unbound`
 - Plattform-spezifische Helfer: `dnf_automatic`, `dnf_repos`, `qemu_guest_agent`, `vmware_tools`
 
 ## Installation

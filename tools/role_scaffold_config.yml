@@ -17,6 +17,7 @@ common_platforms:
   versions:
   - "9"
 role_descriptions:
+  apache: Install and configure Apache HTTP Server and virtual hosts.
   auditd: Manage additional auditd rules.
   borgbackup: Install and configure BorgBackup jobs and defaults.
   ca: Deploy custom certificate authorities.
@@ -36,16 +37,19 @@ role_descriptions:
   mounts: Manage filesystem and network mounts.
   msmtp: Configure msmtp relay accounts and aliases.
   multipath: Configure device-mapper multipath on supported Linux systems.
+  nfs: Configure NFS server exports and client mounts.
   netplan: Manage netplan configuration on Debian and Ubuntu.
   nginx: Install and configure NGINX and virtual hosts.
   nmcli: Manage NetworkManager connections with community.general.nmcli.
-  node-exporter: Install and configure Prometheus node_exporter.
+  node_exporter: Install and configure Prometheus node_exporter.
   packages: Install and remove packages from aggregated package lists.
   proxy: Configure proxy environment files for system tools.
   qemu_guest_agent: Install the QEMU guest agent package.
   resolvconf: Manage resolver nameservers and search domains.
   sshd: Configure OpenSSH client and server settings.
   sssd: Configure SSSD for directory integration.
+  systemd_resolved: Configure systemd-resolved DNS settings.
+  systemd_timesyncd: Configure systemd-timesyncd NTP settings.
   sysctl: Manage sysctl kernel parameters.
   telegraf: Install and configure Telegraf with plugin definitions.
   traefik: Install and configure Traefik reverse proxies and routing rules.
@@ -137,6 +141,26 @@ role_platform_overrides:
     display: RHEL 9+
     versions:
     - "9"
+  systemd_resolved:
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
+  systemd_timesyncd:
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
   ufw:
   - name: Ubuntu
     display: Ubuntu 22.04+

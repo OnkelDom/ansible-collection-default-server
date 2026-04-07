@@ -1,0 +1,17 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the systemd_resolved role.
+    description:
+    - Validate variables for the `systemd_resolved` role.
+    options:
+      systemd_resolved_dns_server:
+        description:
+        - Controls `systemd_resolved_dns_server` for the `systemd_resolved` role.
+        required: false
+        type: str
+      systemd_resolved_dns_stublistener:
+        description:
+        - Controls `systemd_resolved_dns_stublistener` for the `systemd_resolved` role.
+        required: false
+        type: str

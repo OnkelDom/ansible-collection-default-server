@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Dominik Lenhardt
+  description: Configure systemd-resolved DNS settings.
+  license: MIT
+  min_ansible_version: '2.16'
+  platforms:
+  - name: Ubuntu
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    versions:
+    - bookworm
+  galaxy_tags:
+  - linux
+  - system
+  - infrastructure
+dependencies: []

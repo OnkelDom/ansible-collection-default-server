@@ -1,0 +1,134 @@
+# apache
+
+Install and configure Apache HTTP Server and virtual hosts.
+
+## Supported platforms
+
+- Ubuntu 22.04+
+- Debian 12+
+- RHEL 9+
+
+## Role Variables
+
+The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
+
+```yaml
+---
+apache_additional_packages: []
+apache_service_enabled: true
+apache_service_state: started
+apache_ports:
+- 80
+apache_ssl_ports:
+- 443
+apache_gnutls_ports:
+- 443
+apache_mods: {}
+apache_conf: {}
+apache_mpm: prefork
+apache_prefork_server_limit: 256
+apache_prefork_start_servers: 5
+apache_prefork_min_spare_servers: 5
+apache_prefork_max_spare_servers: 10
+apache_prefork_max_request_workers: 256
+apache_prefork_max_connections_per_child: 10000
+apache_worker_server_limit: 16
+apache_worker_start_servers: 3
+apache_worker_min_spare_threads: 75
+apache_worker_max_spare_threads: 250
+apache_worker_thread_limit: 64
+apache_worker_threads_per_child: 25
+apache_worker_max_clients: 400
+apache_worker_max_connections_per_child: 10000
+apache_event_server_limit: 16
+apache_event_start_servers: 3
+apache_event_min_spare_threads: 75
+apache_event_max_spare_threads: 250
+apache_event_thread_limit: 64
+apache_event_threads_per_child: 25
+apache_event_max_clients: 400
+apache_event_max_connections_per_child: 10000
+apache_remoteip: true
+apache_remoteip_header: X-Forwarded-For
+apache_remoteip_internal_proxies:
+- 127.0.0.1
+apache_remoteip_trusted_proxies: []
+apache_ssl_protocol: -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+apache_ssl_ciphersuite: ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA
+apache_ssl_honorcipherorder: on
+apache_ssl_compression: off
+apache_ssl_usestapling: on
+apache_ssl_staplingcache: 128000
+apache_ssl_staplingrespondertimeout: 5
+apache_ssl_staplingreturnrespondererrors: off
+apache_ssl_sessioncache: 512000
+apache_ssl_sessioncachetimeout: 300
+apache_ssl_headers: []
+apache_server_tokens: Prod
+apache_server_signature: Off
+apache_trace_enable: off
+apache_hostname_lookups: Off
+apache_listen_backlog: 1024
+apache_keepalive: Off
+apache_keepalive_timeout: 3
+apache_max_keepalive_requests: 100
+apache_timeout: 300
+apache_umask: '022'
+apache_user: ''
+apache_group: ''
+apache_custom_options: {}
+apache_mailadmin: admin@example.com
+apache_logs_directory: /var/log/{{ _apache_package_name }}/vhosts
+apache_logrotate_permissions: '644'
+apache_logrotate_user: root
+apache_logrotate_group: root
+apache_logrotate_retention: '365'
+apache_logrotate_frequency: daily
+apache_logrotate_paths:
+- /var/log/{{ _apache_package_name }}/*.log
+- /var/log/{{ _apache_package_name }}/vhosts/*/*.log
+apache_logrotate_delay_compress: false
+apache_remove_default_vhost: false
+apache_default_vhost_template: sites-available/default_vhost.j2
+apache_default_vhost_path: /var/www/html
+apache_default_vhost_http: true
+apache_default_vhost_ssl: false
+apache_default_vhost_ssl_certs_path: /etc/{{ _apache_package_name }}/ssl
+apache_default_vhost_crt: ''
+apache_default_vhost_key: ''
+apache_default_vhost_chain: ''
+apache_default_vhost_ip: '*'
+apache_default_vhost_http_port: 80
+apache_default_vhost_ssl_port: 443
+apache_vhosts_user: ''
+apache_vhosts_group: ''
+apache_vhosts_directory: /srv/www
+apache_vhosts: []
+apache_vhosts_default:
+  docroot: current
+  create_path: true
+  create_docroot: false
+  https_redir: false
+  https: false
+apache_certbot_webroot: /var/www/letsencrypt
+apache_default_maintenance_whitelist:
+- 127.0.0.0/8
+apache_default_maintenance_template: default_maintenance.html.j2
+apache_systemd_base_path: /etc/systemd/system
+apache_manage_systemd_override: false
+apache_systemd_unit_template: ''
+```
+
+## Example Playbook
+
+```yaml
+- name: Apply apache
+  hosts: all
+  become: true
+  roles:
+    - role: lenmail.default_server.apache
+```
+
+## Testing
+
+The collection CI runs `ansible-lint`, `ansible-test sanity`, repository consistency tests, and per-role syntax checks using `roles/apache/tests/test.yml`.

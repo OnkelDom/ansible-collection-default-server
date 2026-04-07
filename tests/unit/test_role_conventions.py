@@ -25,3 +25,8 @@ def test_roles_follow_required_file_conventions() -> None:
                 missing.append(f"{role_dir.name}: missing {relative_path}")
 
     assert not missing, "\n".join(missing)
+
+
+def test_role_directory_names_use_underscores_only() -> None:
+    invalid = sorted(path.name for path in ROLES_DIR.iterdir() if path.is_dir() and "-" in path.name)
+    assert not invalid, f"Role directories must use underscores instead of hyphens: {', '.join(invalid)}"
