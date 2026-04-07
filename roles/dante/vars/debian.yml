@@ -1,0 +1,7 @@
+---
+dante_package_names:
+- dante-client
+- dante-server
+dante_service_name: danted
+dante_config_path: /etc/danted.conf
+dante_validate_binary: /usr/sbin/danted

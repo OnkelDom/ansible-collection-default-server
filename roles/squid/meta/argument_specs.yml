@@ -1,0 +1,99 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the squid role.
+    description:
+    - Validate variables for the `squid` role.
+    options:
+      proxy_env:
+        description:
+        - Controls `proxy_env` for the `squid` role.
+        required: false
+        type: dict
+      squid_manage_service:
+        description:
+        - Controls `squid_manage_service` for the `squid` role.
+        required: false
+        type: bool
+      squid_service_enabled:
+        description:
+        - Controls `squid_service_enabled` for the `squid` role.
+        required: false
+        type: bool
+      squid_service_state:
+        description:
+        - Controls `squid_service_state` for the `squid` role.
+        required: false
+        type: str
+      squid_manage_firewall:
+        description:
+        - Controls `squid_manage_firewall` for the `squid` role.
+        required: false
+        type: bool
+      squid_port:
+        description:
+        - Controls `squid_port` for the `squid` role.
+        required: false
+        type: int
+      squid_config_dir:
+        description:
+        - Controls `squid_config_dir` for the `squid` role.
+        required: false
+        type: str
+      squid_conf_d_dir:
+        description:
+        - Controls `squid_conf_d_dir` for the `squid` role.
+        required: false
+        type: str
+      squid_user:
+        description:
+        - Controls `squid_user` for the `squid` role.
+        required: false
+        type: str
+      squid_group:
+        description:
+        - Controls `squid_group` for the `squid` role.
+        required: false
+        type: str
+      squid_visible_hostname:
+        description:
+        - Controls `squid_visible_hostname` for the `squid` role.
+        required: false
+        type: str
+      squid_cache_mgr:
+        description:
+        - Controls `squid_cache_mgr` for the `squid` role.
+        required: false
+        type: str
+      squid_ssl_ports:
+        description:
+        - Controls `squid_ssl_ports` for the `squid` role.
+        required: false
+        type: list
+        elements: int
+      squid_safe_ports:
+        description:
+        - Controls `squid_safe_ports` for the `squid` role.
+        required: false
+        type: list
+        elements: int
+      squid_acl_files:
+        description:
+        - Controls `squid_acl_files` for the `squid` role.
+        required: false
+        type: list
+      squid_acl_definitions:
+        description:
+        - Controls `squid_acl_definitions` for the `squid` role.
+        required: false
+        type: list
+      squid_http_access_rules:
+        description:
+        - Controls `squid_http_access_rules` for the `squid` role.
+        required: false
+        type: list
+      squid_extra_config:
+        description:
+        - Controls `squid_extra_config` for the `squid` role.
+        required: false
+        type: list

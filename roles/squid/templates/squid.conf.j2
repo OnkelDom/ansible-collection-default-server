@@ -1,0 +1,31 @@
+{{ ansible_managed | comment }}
+
+{% for ssl_port in squid_ssl_ports %}
+acl SSL_ports port {{ ssl_port }}
+{% endfor %}
+{% for safe_port in squid_safe_ports %}
+acl Safe_ports port {{ safe_port }}
+{% endfor %}
+acl CONNECT method CONNECT
+
+{% for definition in squid_acl_definitions %}
+{{ definition }}
+{% endfor %}
+
+http_access allow localhost manager
+http_access deny manager
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost
+{% for rule in squid_http_access_rules %}
+http_access {{ rule }}
+{% endfor %}
+http_access deny all
+
+http_port {{ squid_port }}
+visible_hostname {{ squid_visible_hostname }}
+cache_mgr {{ squid_cache_mgr }}
+
+{% for line in squid_extra_config %}
+{{ line }}
+{% endfor %}

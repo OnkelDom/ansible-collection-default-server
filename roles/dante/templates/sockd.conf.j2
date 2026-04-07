@@ -1,0 +1,42 @@
+{{ ansible_managed | comment }}
+
+logoutput: stderr {{ dante_log_directory }}/access.log
+internal.protocol: ipv4{% if dante_enable_ipv6 %} ipv6{% endif %}
+external.protocol: ipv4{% if dante_enable_ipv6 %} ipv6{% endif %}
+
+internal: {{ dante_listen_address }} port = {{ dante_listen_port }}
+{% if dante_enable_ipv6 %}
+internal: {{ dante_listen_address_ipv6 }} port = {{ dante_listen_port }}
+{% endif %}
+external: {{ dante_external_interface }}
+
+user.privileged: root
+user.notprivileged: {{ dante_user }}
+
+clientmethod: {{ dante_client_method }}
+socksmethod: {{ dante_socks_method }}
+
+{% for rule in dante_client_rules %}
+client {{ rule.action | default('pass') }} {
+    from: {{ rule.from | default('0.0.0.0/0') }}
+    to: {{ rule.to | default('0.0.0.0/0') }}
+    log: {{ rule.log | default('connect error') }}
+}
+
+{% endfor %}
+{% for rule in dante_socks_rules %}
+socks {{ rule.action | default('pass') }} {
+    from: {{ rule.from | default('0.0.0.0/0') }}
+    to: {{ rule.to | default('0.0.0.0/0') }}
+    {% if rule.command is defined %}command: {{ rule.command }}
+    {% endif %}socksmethod: {{ rule.method | default(dante_socks_method) }}
+    log: {{ rule.log | default('connect error') }}
+}
+
+{% endfor %}
+socks block {
+    from: 0.0.0.0/0
+    to: 0.0.0.0/0
+    socksmethod: {{ dante_socks_method }}
+    log: error connect disconnect
+}

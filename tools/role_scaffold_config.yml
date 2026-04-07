@@ -24,6 +24,7 @@ role_descriptions:
   ca: Deploy custom certificate authorities.
   certbot: Request and renew TLS certificates with Certbot.
   chrony: Install and configure Chrony for time synchronization.
+  dante: Install and configure the Dante SOCKS proxy service.
   dnf_automatic: Configure automatic package updates on EL systems.
   dnf_repos: Manage DNF repository definitions on EL systems.
   fail2ban: Install and configure Fail2ban jails and actions.
@@ -47,6 +48,7 @@ role_descriptions:
   proxy: Configure proxy environment files for system tools.
   qemu_guest_agent: Install the QEMU guest agent package.
   resolvconf: Manage resolver nameservers and search domains.
+  squid: Install and configure the Squid HTTP proxy service.
   sftp_server: Manage chrooted SFTP-only accounts and SSH match configuration.
   sshd: Configure OpenSSH client and server settings.
   sssd: Configure SSSD for directory integration.

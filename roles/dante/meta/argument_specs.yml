@@ -1,0 +1,97 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the dante role.
+    description:
+    - Validate variables for the `dante` role.
+    options:
+      proxy_env:
+        description:
+        - Controls `proxy_env` for the `dante` role.
+        required: false
+        type: dict
+      dante_manage_service:
+        description:
+        - Controls `dante_manage_service` for the `dante` role.
+        required: false
+        type: bool
+      dante_service_enabled:
+        description:
+        - Controls `dante_service_enabled` for the `dante` role.
+        required: false
+        type: bool
+      dante_service_state:
+        description:
+        - Controls `dante_service_state` for the `dante` role.
+        required: false
+        type: str
+      dante_manage_firewall:
+        description:
+        - Controls `dante_manage_firewall` for the `dante` role.
+        required: false
+        type: bool
+      dante_listen_address:
+        description:
+        - Controls `dante_listen_address` for the `dante` role.
+        required: false
+        type: str
+      dante_listen_port:
+        description:
+        - Controls `dante_listen_port` for the `dante` role.
+        required: false
+        type: int
+      dante_listen_address_ipv6:
+        description:
+        - Controls `dante_listen_address_ipv6` for the `dante` role.
+        required: false
+        type: str
+      dante_enable_ipv6:
+        description:
+        - Controls `dante_enable_ipv6` for the `dante` role.
+        required: false
+        type: bool
+      dante_external_interface:
+        description:
+        - Controls `dante_external_interface` for the `dante` role.
+        required: false
+        type: str
+      dante_user:
+        description:
+        - Controls `dante_user` for the `dante` role.
+        required: false
+        type: str
+      dante_group:
+        description:
+        - Controls `dante_group` for the `dante` role.
+        required: false
+        type: str
+      dante_log_directory:
+        description:
+        - Controls `dante_log_directory` for the `dante` role.
+        required: false
+        type: str
+      dante_pid_directory:
+        description:
+        - Controls `dante_pid_directory` for the `dante` role.
+        required: false
+        type: str
+      dante_client_method:
+        description:
+        - Controls `dante_client_method` for the `dante` role.
+        required: false
+        type: str
+      dante_socks_method:
+        description:
+        - Controls `dante_socks_method` for the `dante` role.
+        required: false
+        type: str
+      dante_client_rules:
+        description:
+        - Controls `dante_client_rules` for the `dante` role.
+        required: false
+        type: list
+      dante_socks_rules:
+        description:
+        - Controls `dante_socks_rules` for the `dante` role.
+        required: false
+        type: list

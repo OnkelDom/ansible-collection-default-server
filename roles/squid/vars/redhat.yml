@@ -1,0 +1,4 @@
+---
+squid_package_name: squid
+squid_service_name: squid
+squid_config_path: /etc/squid/squid.conf
