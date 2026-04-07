@@ -1,0 +1,73 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the sftp_server role.
+    description:
+    - Validate variables for the `sftp_server` role.
+    options:
+      sftp_server_group:
+        description:
+        - Controls `sftp_server_group` for the `sftp_server` role.
+        required: false
+        type: str
+      sftp_server_base_path:
+        description:
+        - Controls `sftp_server_base_path` for the `sftp_server` role.
+        required: false
+        type: str
+      sftp_server_home_base:
+        description:
+        - Controls `sftp_server_home_base` for the `sftp_server` role.
+        required: false
+        type: str
+      sftp_server_manage_sshd:
+        description:
+        - Controls `sftp_server_manage_sshd` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_allow_password_auth:
+        description:
+        - Controls `sftp_server_allow_password_auth` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_allow_public_key_auth:
+        description:
+        - Controls `sftp_server_allow_public_key_auth` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_default_shell:
+        description:
+        - Controls `sftp_server_default_shell` for the `sftp_server` role.
+        required: false
+        type: str
+      sftp_server_default_directories:
+        description:
+        - Controls `sftp_server_default_directories` for the `sftp_server` role.
+        required: false
+        type: list
+        elements: str
+      sftp_server_directory_mode:
+        description:
+        - Controls `sftp_server_directory_mode` for the `sftp_server` role.
+        required: false
+        type: str
+      sftp_server_remove_home_on_absent:
+        description:
+        - Controls `sftp_server_remove_home_on_absent` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_remove_chroot_on_absent:
+        description:
+        - Controls `sftp_server_remove_chroot_on_absent` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_internal_sftp_options:
+        description:
+        - Controls `sftp_server_internal_sftp_options` for the `sftp_server` role.
+        required: false
+        type: list
+      sftp_server_users:
+        description:
+        - Controls `sftp_server_users` for the `sftp_server` role.
+        required: false
+        type: list

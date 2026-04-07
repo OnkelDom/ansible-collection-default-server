@@ -1,0 +1,16 @@
+---
+- name: Remove SFTP account
+  ansible.builtin.user:
+    name: "{{ sftp_server_user.name }}"
+    state: absent
+    remove: "{{ sftp_server_remove_home_on_absent }}"
+  become: true
+  tags: sftp_server
+
+- name: Remove SFTP chroot directory
+  ansible.builtin.file:
+    path: "{{ sftp_server_base_path }}/{{ sftp_server_user.name }}"
+    state: absent
+  become: true
+  when: sftp_server_remove_chroot_on_absent | bool
+  tags: sftp_server

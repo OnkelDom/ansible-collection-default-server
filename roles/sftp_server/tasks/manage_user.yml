@@ -1,0 +1,52 @@
+---
+- name: Ensure SFTP account exists
+  ansible.builtin.user:
+    name: "{{ sftp_server_user.name }}"
+    comment: "{{ sftp_server_user.comment | default(omit) }}"
+    uid: "{{ sftp_server_user.uid | default(omit) }}"
+    group: "{{ sftp_server_user.group | default(sftp_server_group) }}"
+    groups: "{{ sftp_server_user.groups | default(omit) }}"
+    append: "{{ sftp_server_user.append_groups | default(false) }}"
+    shell: "{{ sftp_server_user.shell | default(sftp_server_default_shell) }}"
+    home: "{{ sftp_server_home_base }}/{{ sftp_server_user.name }}"
+    create_home: true
+    state: present
+    password: >-
+      {{
+        omit if sftp_server_user.password is not defined else
+        (sftp_server_user.password if (sftp_server_user.password_hashed | default(false)) else (sftp_server_user.password | password_hash('sha512')))
+      }}
+    update_password: "{{ sftp_server_user.update_password | default('on_create') }}"
+  become: true
+  tags: sftp_server
+
+- name: Ensure chroot root exists
+  ansible.builtin.file:
+    path: "{{ sftp_server_base_path }}/{{ sftp_server_user.name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  tags: sftp_server
+
+- name: Ensure user-accessible SFTP directories exist
+  ansible.builtin.file:
+    path: "{{ sftp_server_base_path }}/{{ sftp_server_user.name }}/{{ item }}"
+    state: directory
+    owner: "{{ sftp_server_user.name }}"
+    group: "{{ sftp_server_user.group | default(sftp_server_group) }}"
+    mode: "{{ sftp_server_user.directory_mode | default(sftp_server_directory_mode) }}"
+  loop: "{{ sftp_server_user.directories | default(sftp_server_default_directories) }}"
+  become: true
+  tags: sftp_server
+
+- name: Install authorized keys for SFTP account
+  ansible.posix.authorized_key:
+    user: "{{ sftp_server_user.name }}"
+    key: "{{ item }}"
+    state: present
+  loop: "{{ sftp_server_user.authorized_keys | default([]) }}"
+  become: true
+  when: (sftp_server_user.authorized_keys | default([])) | length > 0
+  tags: sftp_server

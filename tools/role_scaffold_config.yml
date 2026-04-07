@@ -47,6 +47,7 @@ role_descriptions:
   proxy: Configure proxy environment files for system tools.
   qemu_guest_agent: Install the QEMU guest agent package.
   resolvconf: Manage resolver nameservers and search domains.
+  sftp_server: Manage chrooted SFTP-only accounts and SSH match configuration.
   sshd: Configure OpenSSH client and server settings.
   sssd: Configure SSSD for directory integration.
   systemd_resolved: Configure systemd-resolved DNS settings.
