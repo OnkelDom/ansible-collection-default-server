@@ -1,14 +1,8 @@
 ---
-- name: Build effective SFTP directory layout
-  ansible.builtin.set_fact:
-    sftp_server_effective_directories: "{{ sftp_server_user.directories | default(sftp_server_default_directories) }}"
-    sftp_server_effective_home_subdirectory: "{{ sftp_server_user.home_subdirectory | default(sftp_server_home_subdirectory) }}"
-  tags: sftp_server
-
 - name: Validate effective SFTP home directory
   ansible.builtin.assert:
     that:
-    - sftp_server_effective_home_subdirectory in sftp_server_effective_directories
+    - (sftp_server_user.home_subdirectory | default(sftp_server_home_subdirectory)) in (sftp_server_user.directories | default(sftp_server_default_directories))
     fail_msg: >-
       The home subdirectory for {{ sftp_server_user.name }} must exist in the directory list.
       Set `home_subdirectory` to one of `directories` or include it explicitly.
@@ -22,8 +16,8 @@
     group: "{{ sftp_server_user.group | default(sftp_server_group) }}"
     groups: "{{ sftp_server_user.groups | default(omit) }}"
     append: "{{ sftp_server_user.append_groups | default(false) }}"
-    shell: "{{ sftp_server_user.shell | default(sftp_server_default_shell) }}"
-    home: "/{{ sftp_server_effective_home_subdirectory }}"
+    shell: "{{ sftp_server_user.shell | default(sftp_server_default_shell or sftp_server_nologin_shell) }}"
+    home: "/{{ sftp_server_user.home_subdirectory | default(sftp_server_home_subdirectory) }}"
     create_home: false
     state: present
     password: >-
@@ -31,6 +25,7 @@
         omit if sftp_server_user.password is not defined else
         (sftp_server_user.password if (sftp_server_user.password_hashed | default(false)) else (sftp_server_user.password | password_hash('sha512')))
       }}
+    password_lock: "{{ sftp_server_user.password_lock | default(sftp_server_default_password_lock) }}"
     update_password: "{{ sftp_server_user.update_password | default('on_create') }}"
   become: true
   tags: sftp_server
@@ -52,7 +47,7 @@
     owner: "{{ sftp_server_user.name }}"
     group: "{{ sftp_server_user.group | default(sftp_server_group) }}"
     mode: "{{ sftp_server_user.directory_mode | default(sftp_server_directory_mode) }}"
-  loop: "{{ sftp_server_effective_directories }}"
+  loop: "{{ sftp_server_user.directories | default(sftp_server_default_directories) }}"
   become: true
   tags: sftp_server
 

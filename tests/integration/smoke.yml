@@ -39,6 +39,15 @@
     resolvconf_nameservers:
     - 1.1.1.1
     - 9.9.9.9
+    sftp_server_manage_service: false
+    sftp_server_users:
+    - name: sftpci
+      comment: SFTP CI
+      directories:
+      - inbox
+      - archive
+      home_subdirectory: inbox
+      read_only: true
 
   tasks:
   - name: Apply baseline package role
@@ -70,6 +79,10 @@
     ansible.builtin.import_role:
       name: lenmail.default_server.resolvconf
 
+  - name: Apply sftp_server role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.sftp_server
+
   - name: Check proxy environment file
     ansible.builtin.stat:
       path: /etc/environment
@@ -91,6 +104,34 @@
     register: __smoke_msmtp
     when: ansible_os_family == "Debian"
 
+  - name: Check SFTP chroot directory
+    ansible.builtin.stat:
+      path: /srv/sftp/sftpci
+    register: __smoke_sftp_chroot
+
+  - name: Check SFTP user data directory
+    ansible.builtin.stat:
+      path: /srv/sftp/sftpci/inbox
+    register: __smoke_sftp_home
+
+  - name: Check SFTP sshd match configuration
+    ansible.builtin.stat:
+      path: /etc/ssh/sshd_config.d/99-sftp-server.conf
+    register: __smoke_sftp_match
+
+  - name: Read SFTP sshd match configuration
+    ansible.builtin.slurp:
+      path: /etc/ssh/sshd_config.d/99-sftp-server.conf
+    register: __smoke_sftp_match_content
+
+  - name: Assert SFTP match configuration content
+    ansible.builtin.assert:
+      that:
+      - (__smoke_sftp_match_content.content | b64decode) is search("Match User sftpci")
+      - (__smoke_sftp_match_content.content | b64decode) is search("ForceCommand internal-sftp -R")
+      - (__smoke_sftp_match_content.content | b64decode) is search("Match Group sftp")
+      fail_msg: "The generated SFTP sshd match configuration is incomplete."
+
   - name: Assert smoke test artifacts exist
     ansible.builtin.assert:
       that:
@@ -98,4 +139,7 @@
       - __smoke_sudoers.stat.exists
       - __smoke_resolv.stat.exists
       - ansible_os_family != "Debian" or __smoke_msmtp.stat.exists
+      - __smoke_sftp_chroot.stat.exists
+      - __smoke_sftp_home.stat.exists
+      - __smoke_sftp_match.stat.exists
       fail_msg: "One or more smoke test artifacts are missing."

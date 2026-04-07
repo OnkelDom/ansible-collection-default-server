@@ -17,9 +17,12 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 sftp_server_group: sftp
 sftp_server_base_path: /srv/sftp
 sftp_server_manage_sshd: true
+sftp_server_manage_service: true
+sftp_server_service_state: started
 sftp_server_allow_password_auth: false
 sftp_server_allow_public_key_auth: true
-sftp_server_default_shell: /usr/sbin/nologin
+sftp_server_default_password_lock: true
+sftp_server_default_shell: ''
 sftp_server_home_subdirectory: data
 sftp_server_default_directories:
 - data

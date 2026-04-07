@@ -20,6 +20,16 @@ argument_specs:
         - Controls `sftp_server_manage_sshd` for the `sftp_server` role.
         required: false
         type: bool
+      sftp_server_manage_service:
+        description:
+        - Controls `sftp_server_manage_service` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_service_state:
+        description:
+        - Controls `sftp_server_service_state` for the `sftp_server` role.
+        required: false
+        type: str
       sftp_server_allow_password_auth:
         description:
         - Controls `sftp_server_allow_password_auth` for the `sftp_server` role.
@@ -28,6 +38,11 @@ argument_specs:
       sftp_server_allow_public_key_auth:
         description:
         - Controls `sftp_server_allow_public_key_auth` for the `sftp_server` role.
+        required: false
+        type: bool
+      sftp_server_default_password_lock:
+        description:
+        - Controls `sftp_server_default_password_lock` for the `sftp_server` role.
         required: false
         type: bool
       sftp_server_default_shell:
