@@ -1,8 +1,8 @@
 ---
 interfaces_config:
-  - name: lo
-    bootproto: loopback
-  - name: "{{ ansible_default_ipv4.interface }}"
-    bootproto: dhcp
-    bootproto6: dhcp
-    macaddr: "{{ ansible_default_ipv4.macaddress }}"
+- name: lo
+  bootproto: loopback
+- name: "{{ ansible_default_ipv4.interface }}"
+  bootproto: dhcp
+  bootproto6: dhcp
+  macaddr: "{{ ansible_default_ipv4.macaddress }}"

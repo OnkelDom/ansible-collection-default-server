@@ -13,7 +13,8 @@ Configure device-mapper multipath on supported Linux systems.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-multipath_friendly_names: 'yes'
+---
+multipath_friendly_names: yes
 multipath_blackbist: ^(ram|raw|loop|fd|md|dm-|sr|scd|st|sd[a-z])[0-9]*
 multipath_pathes: {}
 ```

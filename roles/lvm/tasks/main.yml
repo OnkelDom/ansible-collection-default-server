@@ -1,3 +1,4 @@
+---
 - name: Combine lvm_config
   ansible.builtin.set_fact:
     lvm_config: >-
@@ -12,8 +13,8 @@
 - name: Install necessary packages
   ansible.builtin.package:
     name:
-      - lvm2
-      - xfsprogs
+    - lvm2
+    - xfsprogs
     state: present
   become: true
   tags: lvm

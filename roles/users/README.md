@@ -13,6 +13,7 @@ Manage local users, SSH keys, and shell dotfiles.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 users_defaults: []
 ```
 

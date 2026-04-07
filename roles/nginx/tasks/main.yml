@@ -2,13 +2,13 @@
 - name: Gather operating system variables
   include_vars: "{{ item }}"
   with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_distribution_file_variety | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}.yml"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
-    - "{{ ansible_os_family | lower }}.yml"
+  - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+  - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_distribution_file_variety | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+  - "{{ ansible_distribution | lower }}.yml"
+  - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  - "{{ ansible_os_family | lower }}.yml"
   tags: nginx
 
 - name: Define nginx_user.
@@ -59,7 +59,7 @@
     group: "{{ root_group }}"
     mode: 0644
   notify:
-    - Reload nginx
+  - Reload nginx
   tags: nginx
 
 - name: Ensure nginx service is running as configured.

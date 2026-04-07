@@ -13,6 +13,7 @@ Install and configure BorgBackup jobs and defaults.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 borgbackup_repository: /var/backups/borg
 borgbackup_source_paths:
 - /etc

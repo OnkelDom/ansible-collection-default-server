@@ -13,6 +13,7 @@ Manage sysctl kernel parameters.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 sysctl_defaults:
   net.ipv4.ip_forward: 1
   net.ipv4.conf.all.rp_filter: 1

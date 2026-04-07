@@ -1,5 +1,5 @@
 ---
 resolvconf_nameservers:
-  - 1.0.0.1
-  - 1.1.1.1
+- 1.0.0.1
+- 1.1.1.1
 resolvconf_search_domains: []

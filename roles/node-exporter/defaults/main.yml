@@ -35,22 +35,22 @@ node_exporter_http_server_config: {}
 node_exporter_basic_auth_users: {}
 
 node_exporter_enabled_collectors:
-  - filesystem:
-      mount-points-exclude: "^/(boot|boot/efi|dev.+|proc|run|run.+|sys.+|var/lib/docker.+|var/lib/containers/storage.+)($|/)$"
-  - textfile:
-      directory: "{{ node_exporter_textfile_dir }}"
+- filesystem:
+    mount-points-exclude: "^/(boot|boot/efi|dev.+|proc|run|run.+|sys.+|var/lib/docker.+|var/lib/containers/storage.+)($|/)$"
+- textfile:
+    directory: "{{ node_exporter_textfile_dir }}"
 
 node_exporter_disabled_collectors:
-  - bonding
-  - zfs
-  - btrfs
-  - infiniband
-  - edac
-  - nfs
-  - nfsd
-  - xfs
-  - vmstat
-  - entropy
-  - rapl
+- bonding
+- zfs
+- btrfs
+- infiniband
+- edac
+- nfs
+- nfsd
+- xfs
+- vmstat
+- entropy
+- rapl
 
 node_exporter_webconfig: []

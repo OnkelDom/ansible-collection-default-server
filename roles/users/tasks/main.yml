@@ -30,11 +30,11 @@
   loop: "{{ users_list }}"
   loop_control:
     loop_var: user_item
-  when: 
-    - users_list is defined
-    - users_list | length > 0
-    - user_item.state is defined
-    - user_item.state == 'absent'
+  when:
+  - users_list is defined
+  - users_list | length > 0
+  - user_item.state is defined
+  - user_item.state == 'absent'
   become: true
   tags: users
 
@@ -52,11 +52,11 @@
   loop: "{{ users_list }}"
   loop_control:
     loop_var: user_item
-  when: 
-    - users_list is defined
-    - users_list | length > 0
-    - user_item.name is defined
-    - user_item.name is match("^[a-z_][a-z0-9_-]*[$]?$")
+  when:
+  - users_list is defined
+  - users_list | length > 0
+  - user_item.name is defined
+  - user_item.name is match("^[a-z_][a-z0-9_-]*[$]?$")
   become: true
   tags: users
 
@@ -67,12 +67,12 @@
   loop: "{{ users_list | subelements('authorized_keys', skip_missing=True) }}"
   loop_control:
     loop_var: auth_key_item
-  when: 
-    - users_list is defined
-    - users_list | length > 0
-    - auth_key_item.1 is defined 
-    - auth_key_item.1 | length > 0
-    - auth_key_item.0.state | default('present') == 'present'
+  when:
+  - users_list is defined
+  - users_list | length > 0
+  - auth_key_item.1 is defined
+  - auth_key_item.1 | length > 0
+  - auth_key_item.0.state | default('present') == 'present'
   become: true
   tags: users
 
@@ -88,10 +88,10 @@
   loop_control:
     loop_var: sudo_item
   when:
-    - users_list is defined
-    - users_list | length > 0
-    - sudo_item.name is defined
-    - sudo_item.state | default('present') == 'present'
+  - users_list is defined
+  - users_list | length > 0
+  - sudo_item.name is defined
+  - sudo_item.state | default('present') == 'present'
   become: true
   tags: users
 
@@ -107,9 +107,9 @@
     loop_var: bash_file_item
     label: "{{ bash_file_item.0.name }} -> {{ bash_file_item.1.name }}"
   when:
-    - users_list is defined
-    - users_list | length > 0
-    - bash_file_item.0.state | default('present') == 'present'
+  - users_list is defined
+  - users_list | length > 0
+  - bash_file_item.0.state | default('present') == 'present'
   become: true
   tags: users
 
@@ -121,15 +121,15 @@
     group: root
     mode: "{{ item.mode }}"
   loop:
-    - source: git-prompt.sh
-      dest: "/etc/profile.d/git-prompt.sh"
-      mode: "0755"
-    - source: ssh-agent.sh
-      dest: "/etc/profile.d/ssh-agent.sh"
-      mode: "0755"
-    - source: bcrypt
-      dest: "/usr/local/bin/bcrypt"
-      mode: "0755"
+  - source: git-prompt.sh
+    dest: "/etc/profile.d/git-prompt.sh"
+    mode: "0755"
+  - source: ssh-agent.sh
+    dest: "/etc/profile.d/ssh-agent.sh"
+    mode: "0755"
+  - source: bcrypt
+    dest: "/usr/local/bin/bcrypt"
+    mode: "0755"
   become: true
   tags: users
 
@@ -141,18 +141,18 @@
     group: root
     mode: "{{ item.mode }}"
   loop:
-    - source: ms.sh
-      dest: "/root/.ms.sh"
-      mode: "0755"
-    - source: tmux.conf
-      dest: "/root/.tmux.conf"
-      mode: "0644"
-    - source: vimrc
-      dest: "/root/.vimrc"
-      mode: "0644"
-    - source: gitconfig
-      dest: "/root/.gitconfig"
-      mode: "0644"
+  - source: ms.sh
+    dest: "/root/.ms.sh"
+    mode: "0755"
+  - source: tmux.conf
+    dest: "/root/.tmux.conf"
+    mode: "0644"
+  - source: vimrc
+    dest: "/root/.vimrc"
+    mode: "0644"
+  - source: gitconfig
+    dest: "/root/.gitconfig"
+    mode: "0644"
   become: true
   tags: users
 
@@ -175,11 +175,11 @@
     loop_var: msmtp_user
   become: true
   when:
-    - users_list is defined
-    - users_list | length > 0
-    - msmtp_user.name != 'root'
-    - msmtp_user.state | default('present') == 'present'
-    - msmtprc_stat.stat.exists
+  - users_list is defined
+  - users_list | length > 0
+  - msmtp_user.name != 'root'
+  - msmtp_user.state | default('present') == 'present'
+  - msmtprc_stat.stat.exists
   tags: users
 
 - name: Replace logfile path in /etc/msmtprc to ~/.msmtp.log
@@ -192,9 +192,9 @@
     loop_var: msmtp_replace_user
   become: true
   when:
-    - users_list is defined
-    - users_list | length > 0
-    - msmtp_replace_user.name != 'root'
-    - msmtp_replace_user.state | default('present') == 'present'
-    - msmtprc_stat.stat.exists
+  - users_list is defined
+  - users_list | length > 0
+  - msmtp_replace_user.name != 'root'
+  - msmtp_replace_user.state | default('present') == 'present'
+  - msmtprc_stat.stat.exists
   tags: users

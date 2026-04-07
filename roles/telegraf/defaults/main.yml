@@ -1,3 +1,4 @@
+---
 # Telegraf default settings
 telegraf_repo_url: "{{ 'https://repos.influxdata.com/debian stable main' if ansible_os_family == 'Debian' else 'https://repos.influxdata.com/rhel/9/x86_64/stable/' }}"
 telegraf_gpg_key_url: "{{ 'https://repos.influxdata.com/influxdb.key' }}"
@@ -20,57 +21,57 @@ telegraf_config:
     hostname: "{{ ansible_hostname }}"
     omit_hostname: false
   outputs:
-    - type: "loki"
-      config:
-        url: "http://loki.local:3100/loki/api/v1/push"
-        labels:
-          job: "telegraf"
-          host: "{{ ansible_hostname }}"
-    - type: "prometheus_client"
-      config:
-        listen: ":9273"
-        metric_version: 2
+  - type: "loki"
+    config:
+      url: "http://loki.local:3100/loki/api/v1/push"
+      labels:
+        job: "telegraf"
+        host: "{{ ansible_hostname }}"
+  - type: "prometheus_client"
+    config:
+      listen: ":9273"
+      metric_version: 2
     # - type: "syslog"
     #   config:
     #     server: "tcp://syslog01.wolf.local:514"
     #     syslog_protocol: "rfc5424"
   inputs:
-    - type: "cpu"
-      config:
-        percpu: true
-        totalcpu: true
-        collect_cpu_time: false
-        report_active: false
-    - type: "mem"
-      config: {}
-    - type: "disk"
-      config:
-        ignore_fs: ["tmpfs", "devtmpfs"]
-    - type: "net"
-      config: {}
-    - type: "system"
-      config: {}
-    - type: "smart"
-      config:
-        attributes: true
-        devices: ["/dev/sda", "/dev/vda", "/dev/sdb", "/dev/vdb"]
-    - type: "procstat"
-      config:
-        pid_file: "/var/run/sshd.pid"
-    - type: "service"
-      config:
-        services:
-          - sshd
-          - cron
-          - systemd-journald
-    - type: "journald"
-      config:
-        files: ["/var/log/journal"]
+  - type: "cpu"
+    config:
+      percpu: true
+      totalcpu: true
+      collect_cpu_time: false
+      report_active: false
+  - type: "mem"
+    config: {}
+  - type: "disk"
+    config:
+      ignore_fs: ["tmpfs", "devtmpfs"]
+  - type: "net"
+    config: {}
+  - type: "system"
+    config: {}
+  - type: "smart"
+    config:
+      attributes: true
+      devices: ["/dev/sda", "/dev/vda", "/dev/sdb", "/dev/vdb"]
+  - type: "procstat"
+    config:
+      pid_file: "/var/run/sshd.pid"
+  - type: "service"
+    config:
+      services:
+      - sshd
+      - cron
+      - systemd-journald
+  - type: "journald"
+    config:
+      files: ["/var/log/journal"]
         #units: ["sshd.service", "cron.service", "nginx.service"]
-        from_beginning: false
-        max_entries: 5000
-    - type: "logparser"
-      config:
-        files: ["/var/log/syslog", "/var/log/messages"]
-        from_beginning: true
-        name_override: "journald"
+      from_beginning: false
+      max_entries: 5000
+  - type: "logparser"
+    config:
+      files: ["/var/log/syslog", "/var/log/messages"]
+      from_beginning: true
+      name_override: "journald"

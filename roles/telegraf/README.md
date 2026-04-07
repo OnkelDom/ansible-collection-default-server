@@ -13,8 +13,9 @@ Install and configure Telegraf with plugin definitions.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-telegraf_repo_url: '{{ ''https://repos.influxdata.com/debian stable main'' if ansible_os_family == ''Debian'' else ''https://repos.influxdata.com/rhel/9/x86_64/stable/'' }}'
-telegraf_gpg_key_url: '{{ ''https://repos.influxdata.com/influxdb.key'' }}'
+---
+telegraf_repo_url: "{{ 'https://repos.influxdata.com/debian stable main' if ansible_os_family == 'Debian' else 'https://repos.influxdata.com/rhel/9/x86_64/stable/' }}"
+telegraf_gpg_key_url: "{{ 'https://repos.influxdata.com/influxdb.key' }}"
 telegraf_config_path: /etc/telegraf/telegraf.conf
 telegraf_plugins_path: /etc/telegraf/telegraf.d
 telegraf_service_name: telegraf

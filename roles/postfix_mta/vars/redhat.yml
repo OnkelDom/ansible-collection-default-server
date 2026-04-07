@@ -1,9 +1,9 @@
 ---
 postfix_mta_packages:
-  - postfix
-  - mailx
-  - cyrus-sasl-plain
-  - ca-certificates
+- postfix
+- mailx
+- cyrus-sasl-plain
+- ca-certificates
 postfix_mta_remove_packages:
-  - sendmail
-  - msmtp
+- sendmail
+- msmtp

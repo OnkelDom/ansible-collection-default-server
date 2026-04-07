@@ -13,7 +13,8 @@ Manage NetworkManager connections with community.general.nmcli.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-nmcli_default_iface: '{{ ansible_default_ipv4.interface | default(''enp6s18'') }}'
+---
+nmcli_default_iface: "{{ ansible_default_ipv4.interface | default('enp6s18') }}"
 nmcli_default_gateway: '{{ ansible_default_ipv4.gateway | default(omit) }}'
 nmcli_default_address: '{{ ansible_default_ipv4.address | default(omit) }}'
 nmcli_default_netmask: '{{ ansible_default_ipv4.netmask | default(omit) }}'

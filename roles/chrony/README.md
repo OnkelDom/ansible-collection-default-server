@@ -13,6 +13,7 @@ Install and configure Chrony for time synchronization.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 chrony_set_time_zone: true
 chrony_timezone: Europe/Berlin
 chrony_servers:

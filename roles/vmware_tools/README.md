@@ -13,6 +13,7 @@ Install open-vm-tools on supported Linux systems.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 vmware_tools_package_state: present
 ```
 

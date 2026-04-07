@@ -8,7 +8,7 @@ netplan_config: {}
 netplan_enabled: true
 
 netplan_packages:
-  - netplan.io
+- netplan.io
 
 # Set defaults for when not defined in the netplan_config
 netplan_renderer: networkd

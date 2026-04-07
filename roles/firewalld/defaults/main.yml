@@ -1,15 +1,14 @@
 ---
-
 firewalld_defaults_rules:
-  - service: 'ssh'
-    state: 'enabled'
-    permanent: true
-  - service: 'cockpit'
-    state: 'disabled'
-    permanent: true
-  - service: 'dhcpv6-client'
-    state: 'disabled'
-    permanent: true
+- service: 'ssh'
+  state: 'enabled'
+  permanent: true
+- service: 'cockpit'
+  state: 'disabled'
+  permanent: true
+- service: 'dhcpv6-client'
+  state: 'disabled'
+  permanent: true
 #  - service: 'http'
 #    state: 'enabled'
 #    permanent: true

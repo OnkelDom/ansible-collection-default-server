@@ -6,8 +6,8 @@ certbot_cloudflare_credentials_path: "/etc/letsencrypt/cloudflare.ini"
 certbot_renew_hook: ""
 
 certbot_certs:
-  - domains:
-    - "{{ ansible_fqdn }}"
-    services:
-    - name: node_exporter
-      action: restart
+- domains:
+  - "{{ ansible_fqdn }}"
+  services:
+  - name: node_exporter
+    action: restart

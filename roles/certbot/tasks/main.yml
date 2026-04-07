@@ -2,9 +2,9 @@
 - name: Gather distribution facts
   ansible.builtin.setup:
     gather_subset:
-      - '!all'
-      - '!any'
-      - distribution
+    - '!all'
+    - '!any'
+    - distribution
   tags: certbot
 
 - name: Load distribution-specific variables
@@ -22,8 +22,8 @@
     update_cache: true
     cache_valid_time: 3600
   when:
-    - ansible_os_family == "Debian"
-    - certbot_update_cache | default(false)
+  - ansible_os_family == "Debian"
+  - certbot_update_cache | default(false)
   changed_when: false
   become: true
   tags: certbot
@@ -32,9 +32,9 @@
   ansible.builtin.package:
     name: epel-release
     state: present
-  when: 
-    - ansible_os_family == "RedHat"
-    - certbot_enable_epel | default(false)
+  when:
+  - ansible_os_family == "RedHat"
+  - certbot_enable_epel | default(false)
   become: true
   tags: certbot
 
@@ -105,6 +105,9 @@
   loop: "{{ certbot_certs }}"
   tags: certbot
   register: certbot_output
+  changed_when: >
+    'not yet due for renewal' not in (certbot_output.stdout | default('') | lower) and
+    'no action taken' not in (certbot_output.stdout | default('') | lower)
   become: true
 
 - name: Modify Certbot renewal configuration file

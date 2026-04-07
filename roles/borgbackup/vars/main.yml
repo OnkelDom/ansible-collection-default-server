@@ -1,3 +1,4 @@
+---
 repository: ansible-roles/borgbackup/vars/main.yml
 
 # Variables for BorgBackup Ansible Role
@@ -19,8 +20,8 @@ compression: "lz4"
 
 # Define the list of files or directories to backup
 files_to_backup:
-  - "/home/user/data"
-  - "/etc/config"
+- "/home/user/data"
+- "/etc/config"
 
 # Define the Borg prune options
 prune_options: "--keep-daily=7 --keep-weekly=4 --keep-monthly=12"

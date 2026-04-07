@@ -1,3 +1,4 @@
+---
 - name: Combine rules
   ansible.builtin.set_fact:
     ufw_rules: >-

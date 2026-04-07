@@ -1,3 +1,4 @@
+---
 lvm_config_defaults: []
   # - vg: system
   #   pv: /dev/vda

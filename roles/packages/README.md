@@ -13,6 +13,7 @@ Install and remove packages from aggregated package lists.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 packages_epel_release: true
 packages_manage_cache: true
 ```

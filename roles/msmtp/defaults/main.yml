@@ -7,12 +7,12 @@ msmtp_syslog: "on"
 msmtp_default_account: "default"
 
 msmtp_accounts:
-  - name: "default"
-    host: "smtp.example.com"
-    port: "587"
-    from: "user@example.com"
-    user: "user@example.com"
-    password: "password"
+- name: "default"
+  host: "smtp.example.com"
+  port: "587"
+  from: "user@example.com"
+  user: "user@example.com"
+  password: "password"
 
 msmtp_aliases: {}
 #  - name: root

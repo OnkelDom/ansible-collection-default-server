@@ -13,11 +13,12 @@ Configure msmtp relay accounts and aliases.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
-msmtp_auth: 'on'
-msmtp_tls: 'on'
-msmtp_tls_starttls: 'on'
-msmtp_set_from_header: 'on'
-msmtp_syslog: 'on'
+---
+msmtp_auth: on
+msmtp_tls: on
+msmtp_tls_starttls: on
+msmtp_set_from_header: on
+msmtp_syslog: on
 msmtp_default_account: default
 msmtp_accounts:
 - name: default

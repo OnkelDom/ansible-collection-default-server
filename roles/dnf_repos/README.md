@@ -11,6 +11,7 @@ Manage DNF repository definitions on EL systems.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 dnf_repos_remove_original: true
 dnf_repos_list:
 - name: baseos

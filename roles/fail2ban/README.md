@@ -13,6 +13,7 @@ Install and configure Fail2ban jails and actions.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 fail2ban_mail_recipient: root@localhost
 fail2ban_loglevel: INFO
 fail2ban_logtarget: /var/log/fail2ban.log
@@ -20,7 +21,7 @@ fail2ban_syslog_target: /var/log/fail2ban.log
 fail2ban_syslog_facility: 1
 fail2ban_socket: /var/run/fail2ban/fail2ban.sock
 fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
-fail2ban_sendername: '{{ ansible_hostname + ''.'' + ansible_domain if ansible_domain is defined and ansible_domain != '''' else ansible_hostname }}'
+fail2ban_sendername: "{{ ansible_hostname + '.' + ansible_domain if ansible_domain is defined and ansible_domain != '' else ansible_hostname }}"
 fail2ban_ignoreips:
 - 127.0.0.1/8
 - ::1

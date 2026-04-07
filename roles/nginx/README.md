@@ -13,6 +13,7 @@ Install and configure NGINX and virtual hosts.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 nginx_default_release: ''
 nginx_yum_repo_enabled: true
 nginx_zypper_repo_enabled: true
@@ -25,15 +26,15 @@ nginx_conf_template: nginx.conf.j2
 nginx_vhost_template: vhost.j2
 nginx_worker_processes: '"{{ ansible_processor_vcpus | default(ansible_processor_count) }}"'
 nginx_worker_connections: '1024'
-nginx_multi_accept: 'off'
+nginx_multi_accept: off
 nginx_error_log: /var/log/nginx/error.log warn
 nginx_access_log: /var/log/nginx/access.log main buffer=16k flush=2m
-nginx_sendfile: 'on'
-nginx_tcp_nopush: 'on'
-nginx_tcp_nodelay: 'on'
+nginx_sendfile: on
+nginx_tcp_nopush: on
+nginx_tcp_nodelay: on
 nginx_keepalive_timeout: '75'
 nginx_keepalive_requests: '600'
-nginx_server_tokens: 'on'
+nginx_server_tokens: on
 nginx_client_max_body_size: 64m
 nginx_server_names_hash_bucket_size: '64'
 nginx_proxy_cache_path: ''
@@ -43,11 +44,7 @@ nginx_remove_default_vhost: false
 nginx_listen_ipv6: true
 nginx_vhosts: []
 nginx_upstreams: []
-nginx_log_format: '''$remote_addr - $remote_user [$time_local] "$request" ''
-
-  ''$status $body_bytes_sent "$http_referer" ''
-
-  ''"$http_user_agent" "$http_x_forwarded_for"'''
+nginx_log_format: "'$remote_addr - $remote_user [$time_local] \"$request\" '\n'$status $body_bytes_sent \"$http_referer\" '\n'\"$http_user_agent\" \"$http_x_forwarded_for\"'"
 ```
 
 ## Example Playbook

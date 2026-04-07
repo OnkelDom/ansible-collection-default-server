@@ -12,6 +12,7 @@ Manage /etc/network/interfaces based network configuration.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 interfaces_config:
 - name: lo
   bootproto: loopback

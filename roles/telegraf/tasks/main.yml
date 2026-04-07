@@ -1,7 +1,9 @@
+---
 - name: Install GPG key
   ansible.builtin.get_url:
     url: "{{ telegraf_gpg_key_url }}"
     dest: /etc/apt/trusted.gpg.d/influxdb.gpg
+    mode: '0644'
   when: ansible_os_family == 'Debian'
   become: true
   tags: telegraf
@@ -16,8 +18,9 @@
 - name: Add Telegraf repository (RedHat)
   ansible.builtin.yum_repository:
     name: influxdata
+    description: InfluxData Telegraf repository
     baseurl: "{{ telegraf_repo_url }}"
-    gpgcheck: yes
+    gpgcheck: true
     gpgkey: "{{ telegraf_gpg_key_url }}"
   when: ansible_os_family == 'RedHat'
   become: true

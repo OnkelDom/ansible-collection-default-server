@@ -2,5 +2,6 @@
 - name: Update truststore
   ansible.builtin.command:
     cmd: "{{ ca_update }}"
+  changed_when: false
   become: true
   tags: chrony

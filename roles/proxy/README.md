@@ -13,6 +13,7 @@ Configure proxy environment files for system tools.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 proxy_env: {}
 ```
 

@@ -11,10 +11,11 @@ Manage legacy ifcfg-based network configuration on EL systems.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 ifcfg_interfaces:
 - device: '{{ ansible_default_ipv4.interface }}'
   bootproto: dhcp
-  onboot: 'yes'
+  onboot: yes
   macaddr: '{{ ansible_default_ipv4.macaddress }}'
 ```
 

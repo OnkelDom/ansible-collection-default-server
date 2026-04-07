@@ -54,8 +54,8 @@
 - name: Install packages
   ansible.builtin.package:
     name:
-      - firewalld
-      - python3-firewall
+    - firewalld
+    - python3-firewall
     state: "present"
   become: true
   tags: firewalld
@@ -111,11 +111,12 @@
   ansible.builtin.command:
     cmd: "firewall-cmd --permanent --delete-zone={{ item['zone'] }}"
   register: "_firewalld_custom_zone_deleted"
+  changed_when: true
   loop: "{{ firewalld_custom_zones }}"
   when: >
-        item['zone'] in _firewalld_get_zones['stdout'] and
-        not item['present'] and
-        firewalld_custom_zones is defined
+    item['zone'] in _firewalld_get_zones['stdout'] and
+    not item['present'] and
+    firewalld_custom_zones is defined
   notify: Reload firewalld
   become: true
   tags: firewalld
@@ -124,11 +125,12 @@
   ansible.builtin.command:
     cmd: "firewall-cmd --permanent --new-zone={{ item['zone'] }}"
   register: "_firewalld_custom_zone_created"
+  changed_when: true
   loop: "{{ firewalld_custom_zones }}"
   when: >
-        item['zone'] not in _firewalld_get_zones['stdout'] and
-        item['present'] and
-        firewalld_custom_zones is defined
+    item['zone'] not in _firewalld_get_zones['stdout'] and
+    item['present'] and
+    firewalld_custom_zones is defined
   notify: Reload firewalld
   become: true
   tags: firewalld
@@ -139,9 +141,9 @@
     name: firewalld
     state: reloaded
   when:
-    - _firewalld_define_services is changed
-    - firewalld_custom_zones is defined
-    - _firewalld_custom_zone_deleted.changed or _firewalld_custom_zone_created.changed
+  - _firewalld_define_services is changed
+  - firewalld_custom_zones is defined
+  - _firewalld_custom_zone_deleted.changed or _firewalld_custom_zone_created.changed
   become: true
   tags: firewalld
 

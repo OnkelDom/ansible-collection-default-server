@@ -1,3 +1,4 @@
+---
 - name: Install BorgBackup
   ansible.builtin.package:
     name: borgbackup

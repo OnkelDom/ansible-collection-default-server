@@ -1,6 +1,6 @@
 ---
 msmtp_packages:
-  - msmtp
+- msmtp
 msmtp_config_file: /etc/msmtprc
 msmtp_user: root
 msmtp_group: root

@@ -28,7 +28,7 @@
     group: root
     mode: "0644"
   with_items:
-    - curlrc
-    - wgetrc
+  - curlrc
+  - wgetrc
   become: true
   tags: proxy

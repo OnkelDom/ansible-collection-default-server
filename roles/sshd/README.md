@@ -13,6 +13,7 @@ Configure OpenSSH client and server settings.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 sshd_bind_ips: false
 sshd_client_defaults:
   ForwardX11Trusted: true
@@ -34,26 +35,26 @@ sshd_server_defaults:
   GSSAPICleanupCredentials: false
   HostKey:
   - /etc/ssh/ssh_host_rsa_key
-  PasswordAuthentication: 'no'
-  PermitRootLogin: 'no'
-  PermitEmptyPasswords: 'no'
+  PasswordAuthentication: no
+  PermitRootLogin: no
+  PermitEmptyPasswords: no
   Port: 22
   Protocol: 2
   LoginGraceTime: 30
-  StrictModes: 'yes'
+  StrictModes: yes
   MaxStartups: 200
   Subsystem: sftp internal-sftp
   SyslogFacility: AUTHPRIV
   UsePAM: true
   X11Forwarding: true
-  PrintMotd: 'yes'
-  PrintLastLog: 'yes'
+  PrintMotd: yes
+  PrintLastLog: yes
   Ciphers: aes128-ctr,aes192-ctr,aes256-ctr,chacha20-poly1305@openssh.com
   MACs: hmac-sha2-256,hmac-sha2-512
   KexAlgorithms: curve25519-sha256,diffie-hellman-group-exchange-sha256
-  PermitUserEnvironment: 'no'
+  PermitUserEnvironment: no
   MaxSessions: 10
-  TCPKeepAlive: 'yes'
+  TCPKeepAlive: yes
   ClientAliveInterval: 300
   ClientAliveCountMax: 2
 ```

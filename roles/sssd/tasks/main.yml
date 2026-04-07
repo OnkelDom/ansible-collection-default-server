@@ -3,17 +3,17 @@
   ansible.builtin.package:
     state: present
     name:
-      - realmd
-      - sssd
-      - sssd-tools
-      - samba-common
-      - krb5-user
-      - packagekit
-      - samba-common-bin
-      - samba-libs
-      - adcli
-      - chrony
-      - python3-pexpect
+    - realmd
+    - sssd
+    - sssd-tools
+    - samba-common
+    - krb5-user
+    - packagekit
+    - samba-common-bin
+    - samba-libs
+    - adcli
+    - chrony
+    - python3-pexpect
   become: true
   tags: sssd
 

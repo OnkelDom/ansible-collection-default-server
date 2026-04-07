@@ -15,12 +15,12 @@
     path: "{{ item }}"
     state: absent
   with_items:
-    - /etc/update-motd.d/10-help-text
-    - /etc/update-motd.d/50-landscape-sysinfo
-    - /etc/update-motd.d/50-motd-news
-    - /etc/update-motd.d/60-unminimize
-    - /etc/update-motd.d/88-esm-announce
-    - /etc/update-motd.d/91-contract-ua-esm-status
+  - /etc/update-motd.d/10-help-text
+  - /etc/update-motd.d/50-landscape-sysinfo
+  - /etc/update-motd.d/50-motd-news
+  - /etc/update-motd.d/60-unminimize
+  - /etc/update-motd.d/88-esm-announce
+  - /etc/update-motd.d/91-contract-ua-esm-status
   when: ansible_os_family == "Debian"
   become: true
   tags: motd

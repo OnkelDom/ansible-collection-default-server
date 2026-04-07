@@ -19,16 +19,17 @@
     timeout: 30
   become: true
   loop: "{{ dnf_repos_list }}"
-  when: 
-    - dnf_repos_list is defined
-    - item.gpgcheck | default('0') | int == 1
-    - item.gpgkey_url is defined
-    - item.gpgkey is defined
+  when:
+  - dnf_repos_list is defined
+  - item.gpgcheck | default('0') | int == 1
+  - item.gpgkey_url is defined
+  - item.gpgkey is defined
   tags: dnf_repos
 
 - name: Get list of files in /etc/yum.repos.d
   ansible.builtin.command: ls /etc/yum.repos.d
   register: __dnf_repos_files
+  changed_when: false
   tags: dnf_repos
 
 - name: Remove original repos if configured

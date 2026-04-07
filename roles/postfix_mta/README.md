@@ -13,6 +13,7 @@ Configure Postfix as a relay or local MTA.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 postfix_mta_hostname: '{{ ansible_hostname }}'
 postfix_mta_domain: '{{ ansible_domain }}'
 postfix_mta_relayhost: ''

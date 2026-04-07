@@ -1,3 +1,4 @@
+---
 - name: Combine mounts
   ansible.builtin.set_fact:
     mounts: >-

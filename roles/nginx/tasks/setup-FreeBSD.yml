@@ -3,9 +3,9 @@
   command: pkg update -f
   environment:
     ASSUME_ALWAYS_YES: "yes"
-  tags: 
-    - skip_ansible_lint
-    - nginx
+  tags:
+  - skip_ansible_lint
+  - nginx
 
 - name: Ensure nginx is installed.
   pkgng:

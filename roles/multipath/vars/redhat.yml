@@ -1,5 +1,5 @@
 ---
 multipath_packages:
-  - device-mapper-multipath
+- device-mapper-multipath
 multipath_config_file: /etc/multipath.conf
 multipath_service: multipathd

@@ -1,7 +1,7 @@
 ---
 borgbackup_repository: /var/backups/borg
 borgbackup_source_paths:
-  - /etc
+- /etc
 borgbackup_archive_name: "{{ ansible_date_time.iso8601_basic_short }}"
 borgbackup_encryption_mode: repokey
 borgbackup_encryption_passphrase: ""

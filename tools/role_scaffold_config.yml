@@ -3,19 +3,19 @@ collection_namespace: inframonks
 collection_name: default_server
 min_ansible_version: "2.16"
 common_platforms:
-  - name: Ubuntu
-    display: Ubuntu 22.04+
-    versions:
-      - jammy
-      - noble
-  - name: Debian
-    display: Debian 12+
-    versions:
-      - bookworm
-  - name: EL
-    display: RHEL 9+
-    versions:
-      - "9"
+- name: Ubuntu
+  display: Ubuntu 22.04+
+  versions:
+  - jammy
+  - noble
+- name: Debian
+  display: Debian 12+
+  versions:
+  - bookworm
+- name: EL
+  display: RHEL 9+
+  versions:
+  - "9"
 role_descriptions:
   auditd: Manage additional auditd rules.
   borgbackup: Install and configure BorgBackup jobs and defaults.
@@ -53,104 +53,104 @@ role_descriptions:
   vmware_tools: Install open-vm-tools on supported Linux systems.
 role_platform_overrides:
   certbot:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   dnf_automatic:
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   dnf_repos:
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   firewalld:
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   ifcfg:
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   interfaces:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
   netplan:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
   nmcli:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   qemu_guest_agent:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
-    - name: EL
-      display: RHEL 9+
-      versions:
-        - "9"
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
+  - name: EL
+    display: RHEL 9+
+    versions:
+    - "9"
   ufw:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
   unattended_updates:
-    - name: Ubuntu
-      display: Ubuntu 22.04+
-      versions:
-        - jammy
-        - noble
-    - name: Debian
-      display: Debian 12+
-      versions:
-        - bookworm
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm

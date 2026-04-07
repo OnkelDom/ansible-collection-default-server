@@ -1,3 +1,4 @@
+---
 - name: Combine sysctl entries from all sources
   ansible.builtin.set_fact:
     sysctl_entries: >-

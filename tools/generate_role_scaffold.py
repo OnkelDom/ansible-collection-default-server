@@ -3,11 +3,13 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import io
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
 import yaml
+from ruamel.yaml import YAML
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,14 +18,17 @@ CONFIG_PATH = ROOT / "tools" / "role_scaffold_config.yml"
 
 
 def yaml_dump(data: Any) -> str:
-    return yaml.safe_dump(
-        data,
-        sort_keys=False,
-        default_flow_style=False,
-        allow_unicode=False,
-        indent=2,
-        width=1000,
-    )
+    formatter = YAML()
+    formatter.explicit_start = True
+    formatter.default_flow_style = False
+    formatter.allow_unicode = False
+    formatter.sort_base_mapping_type_on_output = False
+    formatter.indent(mapping=2, sequence=2, offset=0)
+    formatter.width = 1000
+
+    buffer = io.StringIO()
+    formatter.dump(data, buffer)
+    return buffer.getvalue()
 
 
 def load_yaml(path: Path) -> Any:
@@ -99,7 +104,7 @@ def build_meta_main(config: dict[str, Any], role_name: str, description: str) ->
         },
         "dependencies": [],
     }
-    return f"---\n{yaml_dump(data)}"
+    return yaml_dump(data)
 
 
 def build_argument_specs(role_name: str, defaults: Any) -> str:
@@ -125,7 +130,7 @@ def build_argument_specs(role_name: str, defaults: Any) -> str:
             }
         }
     }
-    return f"---\n{yaml_dump(data)}"
+    return yaml_dump(data)
 
 
 def build_role_readme(config: dict[str, Any], role_name: str, description: str, defaults: Any) -> str:
@@ -168,7 +173,7 @@ def build_role_test_playbook(config: dict[str, Any], role_name: str) -> str:
   connection: local
   gather_facts: true
   roles:
-    - role: ..
+  - role: ..
 """
 
 

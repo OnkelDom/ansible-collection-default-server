@@ -13,6 +13,7 @@ Deploy custom certificate authorities.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 ca_source_path: ca/*
 ```
 

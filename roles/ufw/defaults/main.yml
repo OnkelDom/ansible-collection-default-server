@@ -1,7 +1,7 @@
 ---
 ufw_rules_defaults:
-  - name: OpenSSH
-    rule: allow
+- name: OpenSSH
+  rule: allow
 
 # Manage the configuration file
 ufw_manage_config: true

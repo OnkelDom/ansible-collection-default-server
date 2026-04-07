@@ -1,3 +1,4 @@
+---
 - name: Restart multipath
   ansible.builtin.service:
     name: multipathd

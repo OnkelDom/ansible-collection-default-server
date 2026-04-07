@@ -13,6 +13,7 @@ Request and renew TLS certificates with Certbot.
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
 ```yaml
+---
 certbot_cloudflare_api_email: '{{ cloudflare_api_email}}'
 certbot_cloudflare_api_key: '{{ encrypted_cloudflare_api_key}}'
 certbot_cloudflare_credentials_path: /etc/letsencrypt/cloudflare.ini
