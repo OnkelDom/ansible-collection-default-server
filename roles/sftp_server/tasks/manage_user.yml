@@ -1,4 +1,19 @@
 ---
+- name: Build effective SFTP directory layout
+  ansible.builtin.set_fact:
+    sftp_server_effective_directories: "{{ sftp_server_user.directories | default(sftp_server_default_directories) }}"
+    sftp_server_effective_home_subdirectory: "{{ sftp_server_user.home_subdirectory | default(sftp_server_home_subdirectory) }}"
+  tags: sftp_server
+
+- name: Validate effective SFTP home directory
+  ansible.builtin.assert:
+    that:
+    - sftp_server_effective_home_subdirectory in sftp_server_effective_directories
+    fail_msg: >-
+      The home subdirectory for {{ sftp_server_user.name }} must exist in the directory list.
+      Set `home_subdirectory` to one of `directories` or include it explicitly.
+  tags: sftp_server
+
 - name: Ensure SFTP account exists
   ansible.builtin.user:
     name: "{{ sftp_server_user.name }}"
@@ -8,8 +23,8 @@
     groups: "{{ sftp_server_user.groups | default(omit) }}"
     append: "{{ sftp_server_user.append_groups | default(false) }}"
     shell: "{{ sftp_server_user.shell | default(sftp_server_default_shell) }}"
-    home: "{{ sftp_server_home_base }}/{{ sftp_server_user.name }}"
-    create_home: true
+    home: "/{{ sftp_server_effective_home_subdirectory }}"
+    create_home: false
     state: present
     password: >-
       {{
@@ -37,7 +52,7 @@
     owner: "{{ sftp_server_user.name }}"
     group: "{{ sftp_server_user.group | default(sftp_server_group) }}"
     mode: "{{ sftp_server_user.directory_mode | default(sftp_server_directory_mode) }}"
-  loop: "{{ sftp_server_user.directories | default(sftp_server_default_directories) }}"
+  loop: "{{ sftp_server_effective_directories }}"
   become: true
   tags: sftp_server
 

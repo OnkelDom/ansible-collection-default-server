@@ -15,11 +15,6 @@ argument_specs:
         - Controls `sftp_server_base_path` for the `sftp_server` role.
         required: false
         type: str
-      sftp_server_home_base:
-        description:
-        - Controls `sftp_server_home_base` for the `sftp_server` role.
-        required: false
-        type: str
       sftp_server_manage_sshd:
         description:
         - Controls `sftp_server_manage_sshd` for the `sftp_server` role.
@@ -40,6 +35,11 @@ argument_specs:
         - Controls `sftp_server_default_shell` for the `sftp_server` role.
         required: false
         type: str
+      sftp_server_home_subdirectory:
+        description:
+        - Controls `sftp_server_home_subdirectory` for the `sftp_server` role.
+        required: false
+        type: str
       sftp_server_default_directories:
         description:
         - Controls `sftp_server_default_directories` for the `sftp_server` role.
@@ -51,11 +51,6 @@ argument_specs:
         - Controls `sftp_server_directory_mode` for the `sftp_server` role.
         required: false
         type: str
-      sftp_server_remove_home_on_absent:
-        description:
-        - Controls `sftp_server_remove_home_on_absent` for the `sftp_server` role.
-        required: false
-        type: bool
       sftp_server_remove_chroot_on_absent:
         description:
         - Controls `sftp_server_remove_chroot_on_absent` for the `sftp_server` role.

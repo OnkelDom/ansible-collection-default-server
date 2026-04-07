@@ -1,16 +1,14 @@
 ---
 sftp_server_group: sftp
 sftp_server_base_path: /srv/sftp
-sftp_server_home_base: /var/lib/sftp-home
 sftp_server_manage_sshd: true
 sftp_server_allow_password_auth: false
 sftp_server_allow_public_key_auth: true
 sftp_server_default_shell: /usr/sbin/nologin
+sftp_server_home_subdirectory: data
 sftp_server_default_directories:
-- upload
-- download
+- data
 sftp_server_directory_mode: "0750"
-sftp_server_remove_home_on_absent: false
 sftp_server_remove_chroot_on_absent: false
 sftp_server_internal_sftp_options: []
 sftp_server_users: []
