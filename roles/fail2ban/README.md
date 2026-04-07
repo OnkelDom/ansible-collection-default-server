@@ -38,6 +38,11 @@ fail2ban_findtime: 600
 fail2ban_backend: systemd
 fail2ban_destemail: '{{ fail2ban_mail_recipient }}'
 fail2ban_banaction: nftables-multiport
+fail2ban_allowipv6: auto
+fail2ban_sender:
+fail2ban_mta:
+fail2ban_protocol:
+fail2ban_chain:
 fail2ban_jails:
 - name: sshd
   enabled: true

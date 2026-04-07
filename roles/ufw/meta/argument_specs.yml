@@ -11,6 +11,21 @@ argument_specs:
         required: false
         type: list
         elements: dict
+      ufw_rules_group_vars:
+        description:
+        - Controls `ufw_rules_group_vars` for the `ufw` role.
+        required: false
+        type: list
+      ufw_rules_host_vars:
+        description:
+        - Controls `ufw_rules_host_vars` for the `ufw` role.
+        required: false
+        type: list
+      ufw_rules_playbook:
+        description:
+        - Controls `ufw_rules_playbook` for the `ufw` role.
+        required: false
+        type: list
       ufw_enabled:
         description:
         - Controls `ufw_enabled` for the `ufw` role.

@@ -15,6 +15,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 users_defaults: []
+users_group_vars: []
+users_host_vars: []
+users_playbook: []
 users_manage_root_dotfiles: true
 users_copy_msmtp_config: true
 ```

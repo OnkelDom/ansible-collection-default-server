@@ -10,3 +10,18 @@ argument_specs:
         - Controls `sysctl_defaults` for the `sysctl` role.
         required: false
         type: dict
+      sysctl_group_vars:
+        description:
+        - Controls `sysctl_group_vars` for the `sysctl` role.
+        required: false
+        type: dict
+      sysctl_host_vars:
+        description:
+        - Controls `sysctl_host_vars` for the `sysctl` role.
+        required: false
+        type: dict
+      sysctl_playbook:
+        description:
+        - Controls `sysctl_playbook` for the `sysctl` role.
+        required: false
+        type: dict

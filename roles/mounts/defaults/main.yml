@@ -1,5 +1,8 @@
 ---
 mounts_defaults: []
+mounts_group_vars: []
+mounts_host_vars: []
+mounts_playbook: []
   # - mount: "/"
   #   src: "/dev/system/root"
   #   fstype: "xfs"

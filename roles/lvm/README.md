@@ -15,6 +15,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 lvm_config_defaults: []
+lvm_config_group_vars: []
+lvm_config_host_vars: []
+lvm_config_playbook: []
 ```
 
 ## Example Playbook

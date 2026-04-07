@@ -7,7 +7,7 @@ APT::Periodic::Unattended-Upgrade "1";
 {% if unattended_updates_update_package_list is defined %}
 APT::Periodic::Update-Package-Lists "{{unattended_updates_update_package_list}}";
 {% endif %}
-{% if unattended_updates_download_upgradeable is defined %}
+{% if unattended_updates_download_upgradeable is not none %}
 APT::Periodic::Download-Upgradeable-Packages "{{unattended_updates_download_upgradeable}}";
 {% endif %}
 {% if unattended_updates_autoclean_interval is defined %}
@@ -119,7 +119,7 @@ Unattended-Upgrade::Automatic-Reboot "true";
 Unattended-Upgrade::Automatic-Reboot-Time "{{ unattended_updates_automatic_reboot_time }}";
 {% endif %}
 
-{% if unattended_updates_update_days is defined %}
+{% if unattended_updates_update_days is not none %}
 // Set the days of the week that updates should be applied. The days can be specified
 // as localized abbreviated or full names. Or as integers where "0" is Sunday, "1" is
 // Monday etc.

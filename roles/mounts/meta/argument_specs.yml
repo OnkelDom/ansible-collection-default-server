@@ -10,3 +10,18 @@ argument_specs:
         - Controls `mounts_defaults` for the `mounts` role.
         required: false
         type: list
+      mounts_group_vars:
+        description:
+        - Controls `mounts_group_vars` for the `mounts` role.
+        required: false
+        type: list
+      mounts_host_vars:
+        description:
+        - Controls `mounts_host_vars` for the `mounts` role.
+        required: false
+        type: list
+      mounts_playbook:
+        description:
+        - Controls `mounts_playbook` for the `mounts` role.
+        required: false
+        type: list

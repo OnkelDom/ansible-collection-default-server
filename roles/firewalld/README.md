@@ -25,6 +25,18 @@ firewalld_defaults_rules:
 firewalld_defaults_custom_zones: []
 firewalld_defaults_zones: []
 firewalld_defaults_services: []
+firewalld_group_vars_services: []
+firewalld_group_vars_zones: []
+firewalld_group_vars_custom_zones: []
+firewalld_group_vars_rules: []
+firewalld_host_vars_services: []
+firewalld_host_vars_zones: []
+firewalld_host_vars_custom_zones: []
+firewalld_host_vars_rules: []
+firewalld_playbook_services: []
+firewalld_playbook_zones: []
+firewalld_playbook_custom_zones: []
+firewalld_playbook_rules: []
 ```
 
 ## Example Playbook

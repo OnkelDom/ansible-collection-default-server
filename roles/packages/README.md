@@ -16,6 +16,15 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ---
 packages_epel_release: true
 packages_manage_cache: true
+packages_group_vars_install: []
+packages_group_vars_install_epel: []
+packages_group_vars_remove: []
+packages_host_vars_install: []
+packages_host_vars_install_epel: []
+packages_host_vars_remove: []
+packages_playbook_install: []
+packages_playbook_install_epel: []
+packages_playbook_remove: []
 ```
 
 ## Example Playbook

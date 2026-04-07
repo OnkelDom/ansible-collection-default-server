@@ -20,9 +20,9 @@ email_host                 = {{ dnf_automatic_email_host }}
 email_tls                  = {{ dnf_automatic_email_tls }}
 email_port                 = {{ dnf_automatic_email_port }}
 email_auth                 = {{ dnf_automatic_email_auth | default('login') }}
-{% if dnf_automatic_email_user is defined %}
+{% if dnf_automatic_email_user is not none %}
 email_user                 = {{ dnf_automatic_email_user }}
 {% endif %}
-{% if dnf_automatic_email_password is defined %}
+{% if dnf_automatic_email_password is not none %}
 email_password             = {{ dnf_automatic_email_password }}
 {% endif %}

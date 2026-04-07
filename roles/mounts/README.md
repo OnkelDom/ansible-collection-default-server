@@ -15,6 +15,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 mounts_defaults: []
+mounts_group_vars: []
+mounts_host_vars: []
+mounts_playbook: []
 ```
 
 ## Example Playbook

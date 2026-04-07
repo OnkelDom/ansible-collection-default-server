@@ -107,7 +107,7 @@ unattended_updates_update_package_list: 1
 
 # APT::Periodic::Download-Upgradeable-Packages "0";
 # - Do "apt-get upgrade --download-only" every n-days (0=disable)
-# unattended_download_upgradeable: 0
+unattended_updates_download_upgradeable: null
 
 # APT::Periodic::AutocleanInterval "0";
 # - Do "apt-get autoclean" every n-days (0=disable)
@@ -135,6 +135,7 @@ unattended_updates_verbose: 1
 # everyone running their updates all at the same time
 # Kept undefined to allow default (1800)
 unattended_updates_random_sleep: 1800
+unattended_updates_update_days: null
 
 # Dpkg::Options
 # Provide dpkg options that take effect during unattended upgrades.

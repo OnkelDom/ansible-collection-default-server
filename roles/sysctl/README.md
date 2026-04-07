@@ -19,6 +19,9 @@ sysctl_defaults:
   net.ipv4.conf.all.rp_filter: 1
   vm.swappiness: 10
   vm.vfs_cache_pressure: 50
+sysctl_group_vars: {}
+sysctl_host_vars: {}
+sysctl_playbook: {}
 ```
 
 ## Example Playbook

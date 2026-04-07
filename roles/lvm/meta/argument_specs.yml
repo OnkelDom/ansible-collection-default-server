@@ -10,3 +10,18 @@ argument_specs:
         - Controls `lvm_config_defaults` for the `lvm` role.
         required: false
         type: list
+      lvm_config_group_vars:
+        description:
+        - Controls `lvm_config_group_vars` for the `lvm` role.
+        required: false
+        type: list
+      lvm_config_host_vars:
+        description:
+        - Controls `lvm_config_host_vars` for the `lvm` role.
+        required: false
+        type: list
+      lvm_config_playbook:
+        description:
+        - Controls `lvm_config_playbook` for the `lvm` role.
+        required: false
+        type: list

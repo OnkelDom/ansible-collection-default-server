@@ -24,7 +24,7 @@
 
 - name: Select wpad webserver implementation
   ansible.builtin.set_fact:
-    _wpad_webserver: "{{ wpad_webserver_map[wpad_webserver] }}"
+    _wpad_webserver: "{{ _wpad_webserver_map[wpad_webserver] }}"
 
 - name: Ensure wpad document root exists
   ansible.builtin.file:

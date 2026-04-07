@@ -15,8 +15,38 @@ argument_specs:
         - Controls `sshd_client_defaults` for the `sshd` role.
         required: false
         type: dict
+      sshd_client_group_vars:
+        description:
+        - Controls `sshd_client_group_vars` for the `sshd` role.
+        required: false
+        type: dict
+      sshd_client_host_vars:
+        description:
+        - Controls `sshd_client_host_vars` for the `sshd` role.
+        required: false
+        type: dict
+      sshd_client_playbook:
+        description:
+        - Controls `sshd_client_playbook` for the `sshd` role.
+        required: false
+        type: dict
       sshd_server_defaults:
         description:
         - Controls `sshd_server_defaults` for the `sshd` role.
+        required: false
+        type: dict
+      sshd_server_group_vars:
+        description:
+        - Controls `sshd_server_group_vars` for the `sshd` role.
+        required: false
+        type: dict
+      sshd_server_host_vars:
+        description:
+        - Controls `sshd_server_host_vars` for the `sshd` role.
+        required: false
+        type: dict
+      sshd_server_playbook:
+        description:
+        - Controls `sshd_server_playbook` for the `sshd` role.
         required: false
         type: dict

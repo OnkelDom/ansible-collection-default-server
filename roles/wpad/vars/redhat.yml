@@ -1,5 +1,5 @@
 ---
-wpad_webserver_map:
+_wpad_webserver_map:
   apache:
     service_name: httpd
     config_path: /etc/httpd/conf.d/wpad.conf

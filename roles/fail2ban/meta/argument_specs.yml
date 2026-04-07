@@ -81,6 +81,31 @@ argument_specs:
         - Controls `fail2ban_banaction` for the `fail2ban` role.
         required: false
         type: str
+      fail2ban_allowipv6:
+        description:
+        - Controls `fail2ban_allowipv6` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_sender:
+        description:
+        - Controls `fail2ban_sender` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_mta:
+        description:
+        - Controls `fail2ban_mta` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_protocol:
+        description:
+        - Controls `fail2ban_protocol` for the `fail2ban` role.
+        required: false
+        type: str
+      fail2ban_chain:
+        description:
+        - Controls `fail2ban_chain` for the `fail2ban` role.
+        required: false
+        type: str
       fail2ban_jails:
         description:
         - Controls `fail2ban_jails` for the `fail2ban` role.

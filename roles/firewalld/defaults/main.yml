@@ -75,3 +75,15 @@ firewalld_defaults_services: []
 #    ports:
 #      - port: 8501
 #        protocol: tcp
+firewalld_group_vars_services: []
+firewalld_group_vars_zones: []
+firewalld_group_vars_custom_zones: []
+firewalld_group_vars_rules: []
+firewalld_host_vars_services: []
+firewalld_host_vars_zones: []
+firewalld_host_vars_custom_zones: []
+firewalld_host_vars_rules: []
+firewalld_playbook_services: []
+firewalld_playbook_zones: []
+firewalld_playbook_custom_zones: []
+firewalld_playbook_rules: []

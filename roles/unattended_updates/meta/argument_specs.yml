@@ -96,6 +96,11 @@ argument_specs:
         - Controls `unattended_updates_update_package_list` for the `unattended_updates` role.
         required: false
         type: int
+      unattended_updates_download_upgradeable:
+        description:
+        - Controls `unattended_updates_download_upgradeable` for the `unattended_updates` role.
+        required: false
+        type: str
       unattended_updates_autoclean_interval:
         description:
         - Controls `unattended_updates_autoclean_interval` for the `unattended_updates` role.
@@ -116,6 +121,11 @@ argument_specs:
         - Controls `unattended_updates_random_sleep` for the `unattended_updates` role.
         required: false
         type: int
+      unattended_updates_update_days:
+        description:
+        - Controls `unattended_updates_update_days` for the `unattended_updates` role.
+        required: false
+        type: str
       unattended_updates_dpkg_options:
         description:
         - Controls `unattended_updates_dpkg_options` for the `unattended_updates` role.

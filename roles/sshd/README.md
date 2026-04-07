@@ -23,6 +23,9 @@ sshd_client_defaults:
   - LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
   - LC_IDENTIFICATION LC_ALL LANGUAGE
   - XMODIFIERS
+sshd_client_group_vars: {}
+sshd_client_host_vars: {}
+sshd_client_playbook: {}
 sshd_server_defaults:
   AcceptEnv:
   - LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
@@ -57,6 +60,9 @@ sshd_server_defaults:
   TCPKeepAlive: yes
   ClientAliveInterval: 300
   ClientAliveCountMax: 2
+sshd_server_group_vars: {}
+sshd_server_host_vars: {}
+sshd_server_playbook: {}
 ```
 
 ## Example Playbook

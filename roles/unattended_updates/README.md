@@ -35,10 +35,12 @@ unattended_updates_ignore_apps_require_restart: false
 unattended_updates_syslog_enable: true
 unattended_updates_syslog_facility: updates
 unattended_updates_update_package_list: 1
+unattended_updates_download_upgradeable:
 unattended_updates_autoclean_interval: 7
 unattended_updates_clean_interval: 7
 unattended_updates_verbose: 1
 unattended_updates_random_sleep: 1800
+unattended_updates_update_days:
 unattended_updates_dpkg_options: []
 unattended_updates_dl_limit: 0
 unattended_updates_only_on_ac_power: false

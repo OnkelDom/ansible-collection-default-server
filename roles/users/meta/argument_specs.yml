@@ -10,6 +10,21 @@ argument_specs:
         - Controls `users_defaults` for the `users` role.
         required: false
         type: list
+      users_group_vars:
+        description:
+        - Controls `users_group_vars` for the `users` role.
+        required: false
+        type: list
+      users_host_vars:
+        description:
+        - Controls `users_host_vars` for the `users` role.
+        required: false
+        type: list
+      users_playbook:
+        description:
+        - Controls `users_playbook` for the `users` role.
+        required: false
+        type: list
       users_manage_root_dotfiles:
         description:
         - Controls `users_manage_root_dotfiles` for the `users` role.
