@@ -80,6 +80,7 @@ GitHub Actions prueft automatisiert:
 - `ansible-test sanity`
 - Rollen-Geruest per `pytest`
 - Syntax-Checks fuer jede Rolle
+- Container-Smoke-Tests fuer Ubuntu 22.04, Debian 12 und Rocky Linux 9
 
 ## Lizenz
 

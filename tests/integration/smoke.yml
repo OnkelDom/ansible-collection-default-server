@@ -1,0 +1,96 @@
+---
+- name: Container smoke test for CI-safe roles
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    packages_defaults_install:
+    - ca-certificates
+    - curl
+    - sudo
+    packages_defaults_install_epel: []
+    packages_defaults_remove: []
+    proxy_env:
+      http_proxy: http://proxy.example.invalid:3128
+      https_proxy: http://proxy.example.invalid:3128
+      no_proxy: localhost,127.0.0.1,::1
+    msmtp_auth: "off"
+    msmtp_tls: "off"
+    msmtp_tls_starttls: "off"
+    msmtp_accounts:
+    - name: default
+      host: smtp.example.invalid
+      port: 25
+      from: root@example.invalid
+      auth: "off"
+    users_manage_root_dotfiles: false
+    users_copy_msmtp_config: false
+    users_defaults:
+    - name: ansibleci
+      fullname: Ansible CI
+      sudo: true
+      cmd: ALL=(ALL) NOPASSWD:ALL
+    resolvconf_manage_systemd_resolved: false
+    resolvconf_nameservers:
+    - 1.1.1.1
+    - 9.9.9.9
+
+  tasks:
+  - name: Apply baseline package role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.packages
+
+  - name: Apply CA role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.ca
+
+  - name: Apply MOTD role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.motd
+
+  - name: Apply users role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.users
+
+  - name: Apply msmtp role on Debian family
+    ansible.builtin.import_role:
+      name: lenmail.default_server.msmtp
+    when: ansible_os_family == "Debian"
+
+  - name: Apply proxy role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.proxy
+
+  - name: Apply resolvconf role
+    ansible.builtin.import_role:
+      name: lenmail.default_server.resolvconf
+
+  - name: Check proxy environment file
+    ansible.builtin.stat:
+      path: /etc/environment
+    register: __smoke_environment
+
+  - name: Check sudoers drop-in for CI user
+    ansible.builtin.stat:
+      path: /etc/sudoers.d/user_ansibleci
+    register: __smoke_sudoers
+
+  - name: Check resolver configuration
+    ansible.builtin.stat:
+      path: /etc/resolv.conf
+    register: __smoke_resolv
+
+  - name: Check msmtp configuration on Debian family
+    ansible.builtin.stat:
+      path: /etc/msmtprc
+    register: __smoke_msmtp
+    when: ansible_os_family == "Debian"
+
+  - name: Assert smoke test artifacts exist
+    ansible.builtin.assert:
+      that:
+      - __smoke_environment.stat.exists
+      - __smoke_sudoers.stat.exists
+      - __smoke_resolv.stat.exists
+      - ansible_os_family != "Debian" or __smoke_msmtp.stat.exists
+      fail_msg: "One or more smoke test artifacts are missing."

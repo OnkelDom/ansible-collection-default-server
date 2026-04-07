@@ -49,6 +49,7 @@ Dieses Repository enthaelt die Ansible Collection `lenmail.default_server`.
 - `.venv/bin/pytest -q tests/unit`
 - `PATH="$PWD/.venv/bin:$PATH" bash tests/run_role_syntax_checks.sh`
 - `PATH="$PWD/.venv/bin:$PATH" ansible-lint`
+- bei CI-Aenderungen auch `bash -n tests/run_container_integration_smoke.sh`
 
 ## Plattform-Regeln
 
