@@ -16,4 +16,8 @@ galaxy_info:
   - linux
   - system
   - infrastructure
+  - apt
+  - repository
+  - packages
+  - debian
 dependencies: []

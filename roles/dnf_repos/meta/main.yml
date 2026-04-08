@@ -12,4 +12,9 @@ galaxy_info:
   - linux
   - system
   - infrastructure
+  - dnf
+  - yum
+  - repository
+  - packages
+  - rhel
 dependencies: []

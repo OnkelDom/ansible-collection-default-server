@@ -22,11 +22,25 @@ dnf_repos_list: []
 ## Example Playbook
 
 ```yaml
-- name: Apply dnf_repos
-  hosts: all
+- name: Configure custom EL repositories
+  hosts: el_hosts
   become: true
   roles:
     - role: lenmail.default_server.dnf_repos
+      vars:
+        dnf_repos_list:
+          - name: epel
+            description: Extra Packages for Enterprise Linux 9
+            metalink: https://mirrors.fedoraproject.org/metalink?repo=epel-9&arch=$basearch
+            gpgcheck: true
+            gpgkey_url: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+          - name: internal-base
+            description: Internal Base Repository
+            baseurl: https://repo.example.com/el9/baseos/$basearch
+            enabled: true
+            gpgcheck: true
+            key_path: /etc/pki/rpm-gpg/RPM-GPG-KEY-internal-base
+            gpgkey_url: https://repo.example.com/keys/RPM-GPG-KEY-internal-base
 ```
 
 ## Testing

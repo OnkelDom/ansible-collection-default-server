@@ -73,6 +73,29 @@ def get_platforms(config: dict[str, Any], role_name: str) -> list[dict[str, Any]
     return deepcopy(config.get("role_platform_overrides", {}).get(role_name, config["common_platforms"]))
 
 
+def get_galaxy_tags(config: dict[str, Any], role_name: str) -> list[str]:
+    tags = ["linux", "system", "infrastructure"]
+    role_tags = config.get("role_galaxy_tags", {}).get(role_name, [])
+    return list(dict.fromkeys(tags + role_tags))
+
+
+def get_role_dependencies(config: dict[str, Any], role_name: str) -> list[Any]:
+    return deepcopy(config.get("role_dependencies", {}).get(role_name, []))
+
+
+def get_example_playbook(config: dict[str, Any], role_name: str) -> str:
+    examples = config.get("role_example_playbooks", {})
+    if role_name in examples:
+        return examples[role_name].rstrip()
+
+    collection = f"{config['collection_namespace']}.{config['collection_name']}"
+    return f"""- name: Apply {role_name}
+  hosts: all
+  become: true
+  roles:
+    - role: {collection}.{role_name}"""
+
+
 def format_platform_list(platforms: list[dict[str, Any]]) -> str:
     return "\n".join(f"- {item['display']}" for item in platforms)
 
@@ -100,9 +123,9 @@ def build_meta_main(config: dict[str, Any], role_name: str, description: str) ->
                 }
                 for platform in platforms
             ],
-            "galaxy_tags": ["linux", "system", "infrastructure"],
+            "galaxy_tags": get_galaxy_tags(config, role_name),
         },
-        "dependencies": [],
+        "dependencies": get_role_dependencies(config, role_name),
     }
     return yaml_dump(data)
 
@@ -134,9 +157,9 @@ def build_argument_specs(role_name: str, defaults: Any) -> str:
 
 
 def build_role_readme(config: dict[str, Any], role_name: str, description: str, defaults: Any) -> str:
-    collection = f"{config['collection_namespace']}.{config['collection_name']}"
     platforms = get_platforms(config, role_name)
     defaults_block = render_defaults_block(defaults)
+    example_playbook = get_example_playbook(config, role_name)
     return f"""# {role_name}
 
 {description}
@@ -153,11 +176,7 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ## Example Playbook
 
 ```yaml
-- name: Apply {role_name}
-  hosts: all
-  become: true
-  roles:
-    - role: {collection}.{role_name}
+{example_playbook}
 ```
 
 ## Testing

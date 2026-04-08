@@ -24,11 +24,31 @@ apt_repos_list: []
 ## Example Playbook
 
 ```yaml
-- name: Apply apt_repos
-  hosts: all
+- name: Configure third-party APT repositories
+  hosts: debian_hosts
   become: true
   roles:
     - role: lenmail.default_server.apt_repos
+      vars:
+        apt_repos_list:
+          - name: docker
+            uris:
+              - https://download.docker.com/linux/{{ ansible_distribution | lower }}
+            suites:
+              - "{{ ansible_distribution_release }}"
+            components:
+              - stable
+            architectures:
+              - "{{ ansible_architecture }}"
+            key_url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+          - name: hashicorp
+            uris:
+              - https://apt.releases.hashicorp.com
+            suites:
+              - "{{ ansible_distribution_release }}"
+            components:
+              - main
+            key_url: https://apt.releases.hashicorp.com/gpg
 ```
 
 ## Testing
