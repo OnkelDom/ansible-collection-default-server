@@ -5,6 +5,21 @@ argument_specs:
     description:
     - Validate variables for the `dnf_repos` role.
     options:
+      dnf_repos_directory:
+        description:
+        - Controls `dnf_repos_directory` for the `dnf_repos` role.
+        required: false
+        type: str
+      dnf_repos_key_directory:
+        description:
+        - Controls `dnf_repos_key_directory` for the `dnf_repos` role.
+        required: false
+        type: str
+      dnf_repos_manage_keys:
+        description:
+        - Controls `dnf_repos_manage_keys` for the `dnf_repos` role.
+        required: false
+        type: bool
       dnf_repos_remove_original:
         description:
         - Controls `dnf_repos_remove_original` for the `dnf_repos` role.
@@ -15,4 +30,3 @@ argument_specs:
         - Controls `dnf_repos_list` for the `dnf_repos` role.
         required: false
         type: list
-        elements: dict

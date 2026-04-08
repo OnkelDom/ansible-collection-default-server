@@ -1,0 +1,37 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the apt_repos role.
+    description:
+    - Validate variables for the `apt_repos` role.
+    options:
+      apt_repos_directory:
+        description:
+        - Controls `apt_repos_directory` for the `apt_repos` role.
+        required: false
+        type: str
+      apt_repos_keyring_directory:
+        description:
+        - Controls `apt_repos_keyring_directory` for the `apt_repos` role.
+        required: false
+        type: str
+      apt_repos_manage_keys:
+        description:
+        - Controls `apt_repos_manage_keys` for the `apt_repos` role.
+        required: false
+        type: bool
+      apt_repos_manage_cache:
+        description:
+        - Controls `apt_repos_manage_cache` for the `apt_repos` role.
+        required: false
+        type: bool
+      apt_repos_remove_original:
+        description:
+        - Controls `apt_repos_remove_original` for the `apt_repos` role.
+        required: false
+        type: bool
+      apt_repos_list:
+        description:
+        - Controls `apt_repos_list` for the `apt_repos` role.
+        required: false
+        type: list

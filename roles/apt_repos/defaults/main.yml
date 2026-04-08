@@ -1,0 +1,7 @@
+---
+apt_repos_directory: /etc/apt/sources.list.d
+apt_repos_keyring_directory: /etc/apt/keyrings
+apt_repos_manage_keys: true
+apt_repos_manage_cache: true
+apt_repos_remove_original: false
+apt_repos_list: []

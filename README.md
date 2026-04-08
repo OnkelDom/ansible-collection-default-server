@@ -24,6 +24,7 @@ Die Collection enthaelt unter anderem Rollen fuer:
 
 - Basis-Systemeinstellungen: `chrony`, `hosts`, `motd`, `packages`, `sysctl`, `users`
 - Netzwerk: `firewalld`, `ifcfg`, `interfaces`, `netplan`, `nfs`, `nmcli`, `resolvconf`, `systemd_resolved`, `systemd_timesyncd`, `ufw`
+- Paketquellen: `apt_repos`, `dnf_repos`
 - Security: `auditd`, `fail2ban`, `sshd`, `sssd`
 - Dienste und Tools: `alloy`, `apache`, `borgbackup`, `certbot`, `dante`, `haproxy`, `keepalived`, `msmtp`, `nginx`, `node_exporter`, `sftp_server`, `squid`, `telegraf`, `traefik`, `unbound`, `wpad`
 - Plattform-spezifische Helfer: `dnf_automatic`, `dnf_repos`, `qemu_guest_agent`, `vmware_tools`

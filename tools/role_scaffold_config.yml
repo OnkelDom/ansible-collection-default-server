@@ -19,6 +19,7 @@ common_platforms:
 role_descriptions:
   alloy: Install and configure Grafana Alloy as a client-side telemetry agent.
   apache: Install and configure Apache HTTP Server and virtual hosts.
+  apt_repos: Manage APT repository definitions and signing keys on Debian-based systems.
   auditd: Manage additional auditd rules.
   borgbackup: Install and configure BorgBackup jobs and defaults.
   ca: Deploy custom certificate authorities.
@@ -26,7 +27,7 @@ role_descriptions:
   chrony: Install and configure Chrony for time synchronization.
   dante: Install and configure the Dante SOCKS proxy service.
   dnf_automatic: Configure automatic package updates on EL systems.
-  dnf_repos: Manage DNF repository definitions on EL systems.
+  dnf_repos: Manage YUM and DNF repository definitions and signing keys on EL systems.
   fail2ban: Install and configure Fail2ban jails and actions.
   firewalld: Manage firewalld services, zones, and rules on EL systems.
   haproxy: Install and configure HAProxy load balancers and TLS assets.
@@ -88,6 +89,16 @@ role_platform_overrides:
     display: RHEL 9+
     versions:
     - "9"
+  apt_repos:
+  - name: Ubuntu
+    display: Ubuntu 22.04+
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    display: Debian 12+
+    versions:
+    - bookworm
   firewalld:
   - name: EL
     display: RHEL 9+
