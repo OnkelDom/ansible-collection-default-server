@@ -1,2 +1,5 @@
 ---
+auditd_manage_service: true
+auditd_service_enabled: true
+auditd_service_state: started
 auditd_extra_rules: []

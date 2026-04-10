@@ -22,6 +22,17 @@
 - name: Load platform-specific vars for wpad
   ansible.builtin.include_vars: "{{ ansible_os_family | lower }}.yml"
 
+- name: Install SELinux tooling for wpad
+  ansible.builtin.package:
+    name: policycoreutils-python-utils
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - wpad_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+
 - name: Select wpad webserver implementation
   ansible.builtin.set_fact:
     _wpad_webserver: "{{ _wpad_webserver_map[wpad_webserver] }}"
@@ -94,3 +105,49 @@
   - wpad_manage_webserver_config | bool
   - wpad_state == "absent"
   notify: Reload wpad webserver
+
+- name: Ensure wpad webserver service state
+  ansible.builtin.service:
+    name: "{{ _wpad_webserver.service_name }}"
+    enabled: "{{ wpad_service_enabled }}"
+    state: "{{ wpad_service_state }}"
+  when:
+  - wpad_manage_service | bool
+  - wpad_state == "present"
+  become: true
+
+- name: Open WPAD port in firewalld
+  ansible.posix.firewalld:
+    port: "{{ wpad_listen_port }}/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ wpad_firewall_zone }}"
+  when:
+  - wpad_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+
+- name: Open WPAD port in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ wpad_listen_port }}"
+    proto: tcp
+    comment: WPAD
+  when:
+  - wpad_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+
+- name: Allow WPAD port in SELinux
+  community.general.seport:
+    ports: "{{ wpad_listen_port }}"
+    proto: tcp
+    setype: http_port_t
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - wpad_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true

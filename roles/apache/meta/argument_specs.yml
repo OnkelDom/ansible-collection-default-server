@@ -10,6 +10,11 @@ argument_specs:
         - Controls `apache_additional_packages` for the `apache` role.
         required: false
         type: list
+      apache_manage_service:
+        description:
+        - Controls `apache_manage_service` for the `apache` role.
+        required: false
+        type: bool
       apache_service_enabled:
         description:
         - Controls `apache_service_enabled` for the `apache` role.
@@ -20,6 +25,21 @@ argument_specs:
         - Controls `apache_service_state` for the `apache` role.
         required: false
         type: str
+      apache_manage_firewall:
+        description:
+        - Controls `apache_manage_firewall` for the `apache` role.
+        required: false
+        type: bool
+      apache_firewall_zone:
+        description:
+        - Controls `apache_firewall_zone` for the `apache` role.
+        required: false
+        type: str
+      apache_manage_selinux:
+        description:
+        - Controls `apache_manage_selinux` for the `apache` role.
+        required: false
+        type: bool
       apache_ports:
         description:
         - Controls `apache_ports` for the `apache` role.

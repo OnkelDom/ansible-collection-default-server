@@ -3,6 +3,7 @@ sftp_server_group: sftp
 sftp_server_base_path: /srv/sftp
 sftp_server_manage_sshd: true
 sftp_server_manage_service: true
+sftp_server_service_enabled: true
 sftp_server_service_state: started
 sftp_server_allow_password_auth: false
 sftp_server_allow_public_key_auth: true

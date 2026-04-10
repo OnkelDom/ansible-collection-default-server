@@ -17,6 +17,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 chrony_set_time_zone: true
 chrony_timezone: Europe/Berlin
 chrony_manage_ntp: true
+chrony_manage_service: true
+chrony_service_enabled: true
+chrony_service_state: started
 chrony_servers:
 - 0.de.pool.ntp.org
 - 1.de.pool.ntp.org

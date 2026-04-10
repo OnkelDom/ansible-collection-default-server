@@ -31,9 +31,10 @@
 - name: Ensure service is started and enabled
   ansible.builtin.service:
     name: auditd
-    state: started
-    enabled: true
+    state: "{{ auditd_service_state }}"
+    enabled: "{{ auditd_service_enabled }}"
   become: true
+  when: auditd_manage_service | bool
   tags: auditd
 
 - name: Flush handlers

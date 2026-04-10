@@ -15,8 +15,12 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 apache_additional_packages: []
+apache_manage_service: true
 apache_service_enabled: true
 apache_service_state: started
+apache_manage_firewall: false
+apache_firewall_zone: public
+apache_manage_selinux: true
 apache_ports:
 - 80
 apache_ssl_ports:

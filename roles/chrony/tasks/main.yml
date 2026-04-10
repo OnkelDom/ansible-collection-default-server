@@ -90,9 +90,10 @@
 - name: Ensure service is started and enabled
   ansible.builtin.service:
     name: "{{ chrony_service_name }}"
-    state: started
-    enabled: true
+    state: "{{ chrony_service_state }}"
+    enabled: "{{ chrony_service_enabled }}"
   become: true
+  when: chrony_manage_service | bool
   tags: chrony
 
 - name: Flush handlers

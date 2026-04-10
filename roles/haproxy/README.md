@@ -16,6 +16,7 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ---
 haproxy_package_name: haproxy
 haproxy_service_name: haproxy
+haproxy_manage_service: true
 haproxy_service_enabled: true
 haproxy_service_state: started
 haproxy_server_user: haproxy
@@ -26,6 +27,11 @@ haproxy_server_tls_crt_list_path: /etc/haproxy/crt-list.txt
 haproxy_manage_letsencrypt_certs: true
 haproxy_manage_firewall: false
 haproxy_firewall_zone: public
+haproxy_manage_selinux: true
+haproxy_firewall_ports:
+- 80/tcp
+- 443/tcp
+haproxy_selinux_ports: '{{ haproxy_firewall_ports }}'
 haproxy_frontends_list: []
 haproxy_backends_list: []
 haproxy_listens_list: []

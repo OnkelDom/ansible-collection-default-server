@@ -7,3 +7,6 @@ nginx_pidfile: /var/run/nginx.pid
 nginx_vhost_path: /etc/nginx/conf.d
 nginx_default_vhost_path: /etc/nginx/conf.d/default.conf
 __nginx_user: "nginx"
+nginx_selinux_packages:
+- policycoreutils-python-utils
+nginx_selinux_port_type: http_port_t

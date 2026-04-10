@@ -5,6 +5,21 @@ argument_specs:
     description:
     - Validate variables for the `multipath` role.
     options:
+      multipath_manage_service:
+        description:
+        - Controls `multipath_manage_service` for the `multipath` role.
+        required: false
+        type: bool
+      multipath_service_enabled:
+        description:
+        - Controls `multipath_service_enabled` for the `multipath` role.
+        required: false
+        type: bool
+      multipath_service_state:
+        description:
+        - Controls `multipath_service_state` for the `multipath` role.
+        required: false
+        type: str
       multipath_friendly_names:
         description:
         - Controls `multipath_friendly_names` for the `multipath` role.

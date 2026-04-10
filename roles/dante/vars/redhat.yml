@@ -5,3 +5,6 @@ dante_package_names:
 dante_service_name: sockd
 dante_config_path: /etc/sockd.conf
 dante_validate_binary: /usr/sbin/sockd
+dante_selinux_packages:
+- policycoreutils-python-utils
+dante_selinux_port_type: socks_port_t

@@ -5,6 +5,36 @@ argument_specs:
     description:
     - Validate variables for the `sshd` role.
     options:
+      sshd_manage_service:
+        description:
+        - Controls `sshd_manage_service` for the `sshd` role.
+        required: false
+        type: bool
+      sshd_service_enabled:
+        description:
+        - Controls `sshd_service_enabled` for the `sshd` role.
+        required: false
+        type: bool
+      sshd_service_state:
+        description:
+        - Controls `sshd_service_state` for the `sshd` role.
+        required: false
+        type: str
+      sshd_manage_firewall:
+        description:
+        - Controls `sshd_manage_firewall` for the `sshd` role.
+        required: false
+        type: bool
+      sshd_firewall_zone:
+        description:
+        - Controls `sshd_firewall_zone` for the `sshd` role.
+        required: false
+        type: str
+      sshd_manage_selinux:
+        description:
+        - Controls `sshd_manage_selinux` for the `sshd` role.
+        required: false
+        type: bool
       sshd_bind_ips:
         description:
         - Controls `sshd_bind_ips` for the `sshd` role.

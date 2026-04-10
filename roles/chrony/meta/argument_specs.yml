@@ -20,6 +20,21 @@ argument_specs:
         - Controls `chrony_manage_ntp` for the `chrony` role.
         required: false
         type: bool
+      chrony_manage_service:
+        description:
+        - Controls `chrony_manage_service` for the `chrony` role.
+        required: false
+        type: bool
+      chrony_service_enabled:
+        description:
+        - Controls `chrony_service_enabled` for the `chrony` role.
+        required: false
+        type: bool
+      chrony_service_state:
+        description:
+        - Controls `chrony_service_state` for the `chrony` role.
+        required: false
+        type: str
       chrony_servers:
         description:
         - Controls `chrony_servers` for the `chrony` role.

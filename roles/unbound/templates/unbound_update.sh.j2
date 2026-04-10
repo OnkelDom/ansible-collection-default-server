@@ -2,6 +2,6 @@
 set -eu
 TMP_FILE="$(mktemp)"
 curl -fsSL "{{ unbound_blocklist_url }}" > "$TMP_FILE"
-awk '/^0.0.0.0 / { print "local-zone: \"" $2 "\" always_nxdomain" }' "$TMP_FILE" > /etc/unbound/unbound.block.conf
+awk '/^0.0.0.0 / { print "local-zone: \"" $2 "\" always_nxdomain" }' "$TMP_FILE" > "{{ unbound_blocklist_path }}"
 rm -f "$TMP_FILE"
 systemctl reload {{ unbound_service_name }}

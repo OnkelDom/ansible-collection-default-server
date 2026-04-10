@@ -13,6 +13,20 @@
   - alloy
   - alloy-config
 
+- name: Install SELinux tooling for alloy
+  ansible.builtin.package:
+    name: "{{ alloy_selinux_packages }}"
+    state: present
+  become: true
+  when:
+  - ansible_os_family == "RedHat"
+  - alloy_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  tags:
+  - alloy
+  - alloy-firewall
+
 - name: Install Grafana Alloy package
   ansible.builtin.package:
     name: "{{ alloy_package_name }}"
@@ -91,10 +105,11 @@
     permanent: true
     state: enabled
     immediate: true
+    zone: "{{ alloy_firewall_zone }}"
   loop: "{{ alloy_firewall_ports }}"
   become: true
   when:
-  - alloy_firewall_enabled
+  - alloy_manage_firewall | bool or alloy_firewall_enabled | bool
   - alloy_firewall_ports | length > 0
   - ansible_os_family == "RedHat"
   tags:
@@ -109,9 +124,27 @@
   loop: "{{ alloy_firewall_ports }}"
   become: true
   when:
-  - alloy_firewall_enabled
+  - alloy_manage_firewall | bool or alloy_firewall_enabled | bool
   - alloy_firewall_ports | length > 0
   - ansible_os_family == "Debian"
+  tags:
+  - alloy
+  - alloy-firewall
+
+- name: Configure SELinux ports for alloy
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: http_port_t
+    state: present
+  loop: "{{ alloy_selinux_ports }}"
+  become: true
+  when:
+  - ansible_os_family == "RedHat"
+  - alloy_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  - alloy_selinux_ports | length > 0
   tags:
   - alloy
   - alloy-firewall
@@ -123,6 +156,7 @@
     enabled: "{{ alloy_service_enabled }}"
     daemon_reload: true
   become: true
+  when: alloy_manage_service | bool
   tags:
   - alloy
   - alloy-service

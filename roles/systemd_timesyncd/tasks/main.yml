@@ -2,7 +2,7 @@
 - name: Validate supported platforms
   ansible.builtin.assert:
     that:
-      - ansible_os_family == "Debian"
+    - ansible_os_family == "Debian"
     fail_msg: "The systemd_timesyncd role currently supports Debian and Ubuntu systems only."
   tags: timesyncd
 
@@ -29,10 +29,12 @@
 - name: Start and enable systemd time services
   ansible.builtin.service:
     name: "{{ item }}"
-    state: started
-    enabled: true
+    state: "{{ systemd_timesyncd_service_state }}"
+    enabled: "{{ systemd_timesyncd_service_enabled }}"
   loop:
-    - systemd-timedated
-    - systemd-timesyncd
-  when: systemd_timesyncd
+  - systemd-timedated
+  - systemd-timesyncd
+  when:
+  - systemd_timesyncd
+  - systemd_timesyncd_manage_service | bool
   tags: timesyncd

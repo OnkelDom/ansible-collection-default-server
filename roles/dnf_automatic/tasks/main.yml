@@ -20,9 +20,10 @@
 - name: Enable and start timer
   ansible.builtin.systemd:
     name: dnf-automatic.timer
-    enabled: true
-    state: started
+    enabled: "{{ dnf_automatic_service_enabled }}"
+    state: "{{ dnf_automatic_service_state }}"
   become: true
+  when: dnf_automatic_manage_service | bool
   tags: dnf-automatic
 
 - name: Flush handlers

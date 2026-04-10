@@ -18,6 +18,18 @@
   become: true
   tags: dante
 
+- name: Install SELinux tooling for Dante
+  ansible.builtin.package:
+    name: "{{ dante_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - dante_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: dante
+
 - name: Ensure Dante group exists
   ansible.builtin.group:
     name: "{{ dante_group }}"
@@ -79,12 +91,29 @@
 - name: Open Dante port in firewalld
   ansible.posix.firewalld:
     port: "{{ dante_listen_port }}/tcp"
+    zone: "{{ dante_firewall_zone }}"
     permanent: true
     immediate: true
     state: enabled
   when:
   - dante_manage_firewall | bool
   - ansible_os_family == "RedHat"
+  become: true
+  tags: dante
+
+- name: Label Dante port for SELinux
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: "{{ dante_selinux_port_type }}"
+    state: present
+  loop: "{{ dante_selinux_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - dante_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  - dante_selinux_ports | length > 0
   become: true
   tags: dante
 

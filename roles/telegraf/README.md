@@ -15,6 +15,14 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 telegraf_manage_repository: true
+telegraf_manage_service: true
+telegraf_service_enabled: true
+telegraf_service_state: started
+telegraf_manage_firewall: false
+telegraf_firewall_zone: public
+telegraf_manage_selinux: true
+telegraf_firewall_ports:
+- 9273/tcp
 telegraf_apt_repo: deb [signed-by=/etc/apt/keyrings/influxdata.gpg] https://repos.influxdata.com/debian stable main
 telegraf_yum_repo_baseurl: https://repos.influxdata.com/rhel/$releasever/$basearch/stable
 telegraf_gpg_key_url: https://repos.influxdata.com/influxdb.key

@@ -14,6 +14,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 systemd_timesyncd: true
+systemd_timesyncd_manage_service: true
+systemd_timesyncd_service_enabled: true
+systemd_timesyncd_service_state: started
 systemd_timesyncd_time_zone: Europe/Berlin
 systemd_timesyncd_time_server: time.cloudflare.com
 systemd_timesyncd_time_server_fallback: 0.de.pool.ntp.org 1.de.pool.ntp.org 2.de.pool.ntp.org 3.de.pool.ntp.org

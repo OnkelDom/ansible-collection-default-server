@@ -136,7 +136,8 @@
 - name: Ensure sssd service is started and enabled
   ansible.builtin.service:
     name: sssd
-    state: started
-    enabled: true
+    state: "{{ sssd_service_state }}"
+    enabled: "{{ sssd_service_enabled }}"
+  when: sssd_manage_service | bool
   become: true
   tags: sssd

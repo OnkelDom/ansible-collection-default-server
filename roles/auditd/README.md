@@ -14,6 +14,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+auditd_manage_service: true
+auditd_service_enabled: true
+auditd_service_state: started
 auditd_extra_rules: []
 ```
 

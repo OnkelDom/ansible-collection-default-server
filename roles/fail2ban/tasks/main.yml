@@ -78,9 +78,10 @@
 - name: Ensure service is started and enabled
   ansible.builtin.service:
     name: fail2ban
-    state: started
-    enabled: true
+    state: "{{ fail2ban_service_state }}"
+    enabled: "{{ fail2ban_service_enabled }}"
   become: true
+  when: fail2ban_manage_service | bool
   tags: fail2ban
 
 - name: Flush handlers

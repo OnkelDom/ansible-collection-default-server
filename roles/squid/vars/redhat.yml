@@ -1,4 +1,10 @@
 ---
 squid_package_name: squid
 squid_service_name: squid
+squid_os_config_dir: /etc/squid
+squid_os_conf_d_dir: /etc/squid/conf.d
 squid_config_path: /etc/squid/squid.conf
+squid_validate_binary: /usr/sbin/squid
+squid_selinux_packages:
+- policycoreutils-python-utils
+squid_selinux_port_type: squid_port_t

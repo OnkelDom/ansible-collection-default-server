@@ -14,6 +14,7 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+alloy_manage_service: true
 alloy_service_enabled: true
 alloy_service_state: started
 alloy_config_file: /etc/alloy/config.alloy
@@ -65,8 +66,12 @@ alloy_config:
           host: '{{ ansible_hostname }}'
         forward_to:
         - loki_1
+alloy_manage_firewall: false
 alloy_firewall_enabled: false
+alloy_firewall_zone: public
+alloy_manage_selinux: true
 alloy_firewall_ports: []
+alloy_selinux_ports: '{{ alloy_firewall_ports }}'
 alloy_service_override: {}
 ```
 

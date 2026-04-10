@@ -5,6 +5,21 @@ argument_specs:
     description:
     - Validate variables for the `nfs` role.
     options:
+      nfs_manage_service:
+        description:
+        - Controls `nfs_manage_service` for the `nfs` role.
+        required: false
+        type: bool
+      nfs_service_enabled:
+        description:
+        - Controls `nfs_service_enabled` for the `nfs` role.
+        required: false
+        type: str
+      nfs_service_state:
+        description:
+        - Controls `nfs_service_state` for the `nfs` role.
+        required: false
+        type: str
       nfs_exports:
         description:
         - Controls `nfs_exports` for the `nfs` role.

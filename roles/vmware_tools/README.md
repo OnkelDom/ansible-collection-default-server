@@ -15,6 +15,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 vmware_tools_package_state: present
+vmware_tools_manage_service: true
+vmware_tools_service_enabled: true
+vmware_tools_service_state: started
 ```
 
 ## Example Playbook

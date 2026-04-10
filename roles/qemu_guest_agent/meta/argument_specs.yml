@@ -4,4 +4,19 @@ argument_specs:
     short_description: Entry point for the qemu_guest_agent role.
     description:
     - Validate variables for the `qemu_guest_agent` role.
-    options: {}
+    options:
+      qemu_guest_agent_manage_service:
+        description:
+        - Controls `qemu_guest_agent_manage_service` for the `qemu_guest_agent` role.
+        required: false
+        type: bool
+      qemu_guest_agent_service_enabled:
+        description:
+        - Controls `qemu_guest_agent_service_enabled` for the `qemu_guest_agent` role.
+        required: false
+        type: bool
+      qemu_guest_agent_service_state:
+        description:
+        - Controls `qemu_guest_agent_service_state` for the `qemu_guest_agent` role.
+        required: false
+        type: str

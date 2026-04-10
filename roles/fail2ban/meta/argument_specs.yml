@@ -5,6 +5,21 @@ argument_specs:
     description:
     - Validate variables for the `fail2ban` role.
     options:
+      fail2ban_manage_service:
+        description:
+        - Controls `fail2ban_manage_service` for the `fail2ban` role.
+        required: false
+        type: bool
+      fail2ban_service_enabled:
+        description:
+        - Controls `fail2ban_service_enabled` for the `fail2ban` role.
+        required: false
+        type: bool
+      fail2ban_service_state:
+        description:
+        - Controls `fail2ban_service_state` for the `fail2ban` role.
+        required: false
+        type: str
       fail2ban_mail_recipient:
         description:
         - Controls `fail2ban_mail_recipient` for the `fail2ban` role.

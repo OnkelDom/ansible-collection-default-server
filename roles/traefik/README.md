@@ -20,6 +20,16 @@ traefik_binary_install_dir: /usr/local/bin
 traefik_binary_path: '{{ traefik_binary_install_dir }}/traefik'
 traefik_limit_nofile: 16384
 traefik_service_name: traefik
+traefik_manage_service: true
+traefik_service_enabled: true
+traefik_service_state: started
+traefik_manage_firewall: false
+traefik_firewall_zone: public
+traefik_manage_selinux: true
+traefik_firewall_ports:
+- 80/tcp
+- 443/tcp
+traefik_selinux_ports: '{{ traefik_firewall_ports }}'
 traefik_user: traefik
 traefik_group: traefik
 traefik_external_domain: ''

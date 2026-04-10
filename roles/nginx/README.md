@@ -20,8 +20,15 @@ nginx_zypper_repo_enabled: true
 nginx_ppa_use: false
 nginx_ppa_version: stable
 nginx_package_name: nginx
+nginx_manage_service: true
 nginx_service_state: started
 nginx_service_enabled: true
+nginx_manage_firewall: false
+nginx_firewall_zone: public
+nginx_manage_selinux: true
+nginx_firewall_ports:
+- 80/tcp
+- 443/tcp
 nginx_conf_template: nginx.conf.j2
 nginx_vhost_template: vhost.j2
 nginx_worker_processes: '"{{ ansible_processor_vcpus | default(ansible_processor_count) }}"'
