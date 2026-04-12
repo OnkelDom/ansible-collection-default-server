@@ -5,7 +5,9 @@
     state: directory
     mode: "0755"
   loop: "{{ nfs_exports }}"
-  when: item.create is not defined or item.create
+  when:
+  - nfs_exports | length > 0
+  - item.create is not defined or item.create
 
 - name: Configure NFS exports
   ansible.builtin.blockinfile:
@@ -15,6 +17,15 @@
       {% for export in nfs_exports %}
       {{ export.path }} {{ export.exports | join(" ") }}
       {% endfor %}
+  notify: reload nfs
+  when: nfs_exports | length > 0
+
+- name: Remove managed NFS exports block when no exports are configured
+  ansible.builtin.blockinfile:
+    path: /etc/exports
+    marker: "# {mark}: Ansible-managed NFS exports"
+    state: absent
+  when: nfs_exports | length == 0
   notify: reload nfs
 
 - name: Configure the NFS server daemon

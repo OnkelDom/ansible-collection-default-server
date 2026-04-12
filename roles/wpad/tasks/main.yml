@@ -121,7 +121,7 @@
     port: "{{ wpad_listen_port }}/tcp"
     permanent: true
     immediate: true
-    state: enabled
+    state: "{{ 'enabled' if wpad_state == 'present' else 'disabled' }}"
     zone: "{{ wpad_firewall_zone }}"
   when:
   - wpad_manage_firewall | bool
@@ -134,6 +134,7 @@
     port: "{{ wpad_listen_port }}"
     proto: tcp
     comment: WPAD
+    delete: "{{ wpad_state == 'absent' }}"
   when:
   - wpad_manage_firewall | bool
   - ansible_os_family == "Debian"
@@ -144,7 +145,7 @@
     ports: "{{ wpad_listen_port }}"
     proto: tcp
     setype: "{{ wpad_selinux_port_type }}"
-    state: present
+    state: "{{ wpad_state }}"
   when:
   - ansible_os_family == "RedHat"
   - wpad_manage_selinux | bool
