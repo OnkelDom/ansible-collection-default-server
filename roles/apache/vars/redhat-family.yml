@@ -116,3 +116,6 @@ _apache_vhosts_user: "{{ apache_vhosts_user if apache_vhosts_user != '' else _ap
 _apache_vhosts_group: "{{ apache_vhosts_group if apache_vhosts_group != '' else _apache_group }}"
 
 _apache_vhost_conf_path: "/etc/{{ _apache_package_name }}/conf.d"
+apache_selinux_packages:
+- policycoreutils-python-utils
+apache_selinux_port_type: http_port_t

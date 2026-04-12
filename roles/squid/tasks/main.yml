@@ -18,6 +18,18 @@
   become: true
   tags: squid
 
+- name: Install SELinux tooling for Squid
+  ansible.builtin.package:
+    name: "{{ squid_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - squid_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: squid
+
 - name: Ensure Squid configuration directories exist
   ansible.builtin.file:
     path: "{{ item }}"
@@ -64,7 +76,7 @@
     owner: root
     group: root
     mode: "0644"
-    validate: "/usr/sbin/squid -k parse -f %s"
+    validate: "{{ squid_validate_binary }} -k parse -f %s"
   notify: Reload squid
   become: true
   tags: squid
@@ -87,9 +99,24 @@
     permanent: true
     immediate: true
     state: enabled
+    zone: "{{ squid_firewall_zone }}"
   when:
   - squid_manage_firewall | bool
   - ansible_os_family == "RedHat"
+  become: true
+  tags: squid
+
+- name: Allow Squid port in SELinux
+  community.general.seport:
+    ports: "{{ squid_port }}"
+    proto: tcp
+    setype: "{{ squid_selinux_port_type }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - squid_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
   become: true
   tags: squid
 

@@ -25,6 +25,11 @@ argument_specs:
         - Controls `sftp_server_manage_service` for the `sftp_server` role.
         required: false
         type: bool
+      sftp_server_service_enabled:
+        description:
+        - Controls `sftp_server_service_enabled` for the `sftp_server` role.
+        required: false
+        type: bool
       sftp_server_service_state:
         description:
         - Controls `sftp_server_service_state` for the `sftp_server` role.

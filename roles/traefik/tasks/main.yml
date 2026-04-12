@@ -6,6 +6,23 @@
     fail_msg: "The traefik role supports Debian and RedHat families only."
   tags: traefik
 
+- name: Include RedHat-specific variables for traefik
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: traefik
+
+- name: Install SELinux tooling for traefik
+  ansible.builtin.package:
+    name: "{{ traefik_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - traefik_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: traefik
+
 - name: Create traefik group
   ansible.builtin.group:
     name: "{{ traefik_group }}"
@@ -165,11 +182,54 @@
   become: true
   tags: traefik
 
+- name: Open traefik ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ traefik_firewall_zone }}"
+  loop: "{{ traefik_firewall_ports }}"
+  when:
+  - traefik_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+  tags: traefik
+
+- name: Open traefik ports in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    comment: Traefik
+  loop: "{{ traefik_firewall_ports }}"
+  when:
+  - traefik_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: traefik
+
+- name: Allow traefik ports in SELinux
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: "{{ traefik_selinux_port_type }}"
+    state: present
+  loop: "{{ traefik_selinux_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - traefik_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: traefik
+
 - name: Ensure traefik service is started and enabled
   ansible.builtin.systemd:
     daemon_reload: true
     name: "{{ traefik_service_name }}"
-    enabled: true
-    state: started
+    enabled: "{{ traefik_service_enabled }}"
+    state: "{{ traefik_service_state }}"
+  when: traefik_manage_service | bool
   become: true
   tags: traefik

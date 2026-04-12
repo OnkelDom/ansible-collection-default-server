@@ -35,6 +35,11 @@ argument_specs:
         - Controls `nginx_package_name` for the `nginx` role.
         required: false
         type: str
+      nginx_manage_service:
+        description:
+        - Controls `nginx_manage_service` for the `nginx` role.
+        required: false
+        type: bool
       nginx_service_state:
         description:
         - Controls `nginx_service_state` for the `nginx` role.
@@ -45,6 +50,27 @@ argument_specs:
         - Controls `nginx_service_enabled` for the `nginx` role.
         required: false
         type: bool
+      nginx_manage_firewall:
+        description:
+        - Controls `nginx_manage_firewall` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_firewall_zone:
+        description:
+        - Controls `nginx_firewall_zone` for the `nginx` role.
+        required: false
+        type: str
+      nginx_manage_selinux:
+        description:
+        - Controls `nginx_manage_selinux` for the `nginx` role.
+        required: false
+        type: bool
+      nginx_firewall_ports:
+        description:
+        - Controls `nginx_firewall_ports` for the `nginx` role.
+        required: false
+        type: list
+        elements: str
       nginx_conf_template:
         description:
         - Controls `nginx_conf_template` for the `nginx` role.

@@ -109,6 +109,7 @@
     enabled: "{{ keepalived_service_enabled }}"
     state: "{{ keepalived_service_state }}"
   become: true
+  when: keepalived_manage_service | bool
   tags: keepalived
 
 - name: Flush handlers

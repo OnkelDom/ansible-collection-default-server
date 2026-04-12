@@ -10,3 +10,18 @@ argument_specs:
         - Controls `vmware_tools_package_state` for the `vmware_tools` role.
         required: false
         type: str
+      vmware_tools_manage_service:
+        description:
+        - Controls `vmware_tools_manage_service` for the `vmware_tools` role.
+        required: false
+        type: bool
+      vmware_tools_service_enabled:
+        description:
+        - Controls `vmware_tools_service_enabled` for the `vmware_tools` role.
+        required: false
+        type: bool
+      vmware_tools_service_state:
+        description:
+        - Controls `vmware_tools_service_state` for the `vmware_tools` role.
+        required: false
+        type: str

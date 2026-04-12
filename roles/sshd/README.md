@@ -14,6 +14,12 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+sshd_manage_service: true
+sshd_service_enabled: true
+sshd_service_state: started
+sshd_manage_firewall: false
+sshd_firewall_zone: public
+sshd_manage_selinux: true
 sshd_bind_ips: false
 sshd_client_defaults:
   ForwardX11Trusted: true

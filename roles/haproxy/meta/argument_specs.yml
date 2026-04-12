@@ -15,6 +15,11 @@ argument_specs:
         - Controls `haproxy_service_name` for the `haproxy` role.
         required: false
         type: str
+      haproxy_manage_service:
+        description:
+        - Controls `haproxy_manage_service` for the `haproxy` role.
+        required: false
+        type: bool
       haproxy_service_enabled:
         description:
         - Controls `haproxy_service_enabled` for the `haproxy` role.
@@ -65,6 +70,23 @@ argument_specs:
         - Controls `haproxy_firewall_zone` for the `haproxy` role.
         required: false
         type: str
+      haproxy_manage_selinux:
+        description:
+        - Controls `haproxy_manage_selinux` for the `haproxy` role.
+        required: false
+        type: bool
+      haproxy_firewall_ports:
+        description:
+        - Controls `haproxy_firewall_ports` for the `haproxy` role.
+        required: false
+        type: list
+        elements: str
+      haproxy_selinux_ports:
+        description:
+        - Controls `haproxy_selinux_ports` for the `haproxy` role.
+        required: false
+        type: list
+        elements: str
       haproxy_frontends_list:
         description:
         - Controls `haproxy_frontends_list` for the `haproxy` role.

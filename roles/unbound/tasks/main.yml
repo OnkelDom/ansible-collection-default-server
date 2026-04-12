@@ -25,6 +25,18 @@
   become: true
   tags: unbound
 
+- name: Install SELinux tooling for unbound
+  ansible.builtin.package:
+    name: "{{ unbound_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - unbound_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: unbound
+
 - name: Ensure zones directory exists
   ansible.builtin.file:
     path: "{{ unbound_zones_dir }}"
@@ -39,7 +51,7 @@
 - name: Download root hints file
   ansible.builtin.get_url:
     url: https://www.internic.net/domain/named.root
-    dest: /etc/unbound/root.hints
+    dest: "{{ unbound_root_hints_path }}"
     owner: root
     group: root
     mode: "0644"
@@ -48,7 +60,7 @@
 
 - name: Ensure blocklist file exists when disabled
   ansible.builtin.file:
-    path: /etc/unbound/unbound.block.conf
+    path: "{{ unbound_blocklist_path }}"
     state: touch
     owner: root
     group: root
@@ -121,7 +133,7 @@
 - name: Configure legacy local zones
   ansible.builtin.template:
     src: local-zones.conf.j2
-    dest: /etc/unbound/local-zones.conf
+    dest: "{{ unbound_local_zones_path }}"
     owner: root
     group: root
     mode: "0644"
@@ -132,7 +144,7 @@
 
 - name: Remove legacy local zones config when unused
   ansible.builtin.file:
-    path: /etc/unbound/local-zones.conf
+    path: "{{ unbound_local_zones_path }}"
     state: absent
   when: unbound_local_zones | length == 0
   notify: Restart unbound
@@ -142,7 +154,7 @@
 - name: Configure unbound service
   ansible.builtin.template:
     src: unbound.conf.j2
-    dest: /etc/unbound/unbound.conf
+    dest: "{{ unbound_config_path }}"
     owner: root
     group: root
     mode: "0644"
@@ -151,9 +163,9 @@
   become: true
   tags: unbound
 
-- name: Open DNS service in firewalld
+- name: Open Unbound TCP port in firewalld
   ansible.posix.firewalld:
-    service: dns
+    port: "{{ unbound_config.server.port }}/tcp"
     permanent: true
     immediate: true
     state: enabled
@@ -165,10 +177,77 @@
   become: true
   tags: unbound
 
+- name: Open Unbound UDP port in firewalld
+  ansible.posix.firewalld:
+    port: "{{ unbound_config.server.port }}/udp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ unbound_firewall_zone }}"
+  when:
+  - unbound_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  notify: Reload firewalld
+  become: true
+  tags: unbound
+
+- name: Open Unbound DNS port in UFW over TCP
+  community.general.ufw:
+    rule: allow
+    port: "{{ unbound_config.server.port }}"
+    proto: tcp
+    comment: Unbound DNS
+  when:
+  - unbound_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: unbound
+
+- name: Open Unbound DNS port in UFW over UDP
+  community.general.ufw:
+    rule: allow
+    port: "{{ unbound_config.server.port }}"
+    proto: udp
+    comment: Unbound DNS
+  when:
+  - unbound_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: unbound
+
+- name: Allow Unbound port in SELinux
+  community.general.seport:
+    ports: "{{ unbound_config.server.port }}"
+    proto: tcp
+    setype: "{{ unbound_selinux_port_type }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - unbound_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: unbound
+
+- name: Allow Unbound UDP port in SELinux
+  community.general.seport:
+    ports: "{{ unbound_config.server.port }}"
+    proto: udp
+    setype: "{{ unbound_selinux_port_type }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - unbound_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: unbound
+
 - name: Ensure unbound service is enabled and running
   ansible.builtin.service:
     name: "{{ unbound_service_name }}"
-    state: started
-    enabled: true
+    state: "{{ unbound_service_state }}"
+    enabled: "{{ unbound_service_enabled }}"
+  when: unbound_manage_service | bool
   become: true
   tags: unbound

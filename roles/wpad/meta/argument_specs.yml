@@ -30,6 +30,31 @@ argument_specs:
         - Controls `wpad_manage_service` for the `wpad` role.
         required: false
         type: bool
+      wpad_service_enabled:
+        description:
+        - Controls `wpad_service_enabled` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_service_state:
+        description:
+        - Controls `wpad_service_state` for the `wpad` role.
+        required: false
+        type: str
+      wpad_manage_firewall:
+        description:
+        - Controls `wpad_manage_firewall` for the `wpad` role.
+        required: false
+        type: bool
+      wpad_firewall_zone:
+        description:
+        - Controls `wpad_firewall_zone` for the `wpad` role.
+        required: false
+        type: str
+      wpad_manage_selinux:
+        description:
+        - Controls `wpad_manage_selinux` for the `wpad` role.
+        required: false
+        type: bool
       wpad_document_root:
         description:
         - Controls `wpad_document_root` for the `wpad` role.

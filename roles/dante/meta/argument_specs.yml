@@ -30,6 +30,16 @@ argument_specs:
         - Controls `dante_manage_firewall` for the `dante` role.
         required: false
         type: bool
+      dante_firewall_zone:
+        description:
+        - Controls `dante_firewall_zone` for the `dante` role.
+        required: false
+        type: str
+      dante_manage_selinux:
+        description:
+        - Controls `dante_manage_selinux` for the `dante` role.
+        required: false
+        type: bool
       dante_listen_address:
         description:
         - Controls `dante_listen_address` for the `dante` role.
@@ -50,6 +60,12 @@ argument_specs:
         - Controls `dante_enable_ipv6` for the `dante` role.
         required: false
         type: bool
+      dante_selinux_ports:
+        description:
+        - Controls `dante_selinux_ports` for the `dante` role.
+        required: false
+        type: list
+        elements: str
       dante_external_interface:
         description:
         - Controls `dante_external_interface` for the `dante` role.

@@ -1,4 +1,9 @@
 ---
+- name: Include RedHat-specific variables for node_exporter
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: node_exporter
+
 - name: create system group
   ansible.builtin.group:
     name: "{{ node_exporter_system_group }}"
@@ -28,6 +33,18 @@
     owner: root
     group: root
     mode: "0755"
+  become: true
+  tags: node_exporter
+
+- name: Install SELinux tooling for node_exporter
+  ansible.builtin.package:
+    name: "{{ node_exporter_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - node_exporter_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
   become: true
   tags: node_exporter
 
@@ -254,11 +271,57 @@
   become: true
   tags: node_exporter
 
+- name: Open node_exporter ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    zone: "{{ node_exporter_firewall_zone }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ node_exporter_firewall_ports }}"
+  when:
+  - node_exporter_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  - node_exporter_firewall_ports | length > 0
+  become: true
+  tags: node_exporter
+
+- name: Open node_exporter ports in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    comment: node_exporter metrics endpoint
+  loop: "{{ node_exporter_firewall_ports }}"
+  when:
+  - node_exporter_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  - node_exporter_firewall_ports | length > 0
+  become: true
+  tags: node_exporter
+
+- name: Label node_exporter ports for SELinux
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: "{{ node_exporter_selinux_port_type }}"
+    state: present
+  loop: "{{ node_exporter_selinux_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - node_exporter_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  - node_exporter_selinux_ports | length > 0
+  become: true
+  tags: node_exporter
+
 - name: start and enable node_exporter
   ansible.builtin.systemd:
     daemon_reload: true
     name: node_exporter
-    enabled: true
-    state: started
+    enabled: "{{ node_exporter_service_enabled }}"
+    state: "{{ node_exporter_service_state }}"
+  when: node_exporter_manage_service | bool
   become: true
   tags: node_exporter

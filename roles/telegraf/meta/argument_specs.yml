@@ -10,6 +10,42 @@ argument_specs:
         - Controls `telegraf_manage_repository` for the `telegraf` role.
         required: false
         type: bool
+      telegraf_manage_service:
+        description:
+        - Controls `telegraf_manage_service` for the `telegraf` role.
+        required: false
+        type: bool
+      telegraf_service_enabled:
+        description:
+        - Controls `telegraf_service_enabled` for the `telegraf` role.
+        required: false
+        type: bool
+      telegraf_service_state:
+        description:
+        - Controls `telegraf_service_state` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_manage_firewall:
+        description:
+        - Controls `telegraf_manage_firewall` for the `telegraf` role.
+        required: false
+        type: bool
+      telegraf_firewall_zone:
+        description:
+        - Controls `telegraf_firewall_zone` for the `telegraf` role.
+        required: false
+        type: str
+      telegraf_manage_selinux:
+        description:
+        - Controls `telegraf_manage_selinux` for the `telegraf` role.
+        required: false
+        type: bool
+      telegraf_firewall_ports:
+        description:
+        - Controls `telegraf_firewall_ports` for the `telegraf` role.
+        required: false
+        type: list
+        elements: str
       telegraf_apt_repo:
         description:
         - Controls `telegraf_apt_repo` for the `telegraf` role.

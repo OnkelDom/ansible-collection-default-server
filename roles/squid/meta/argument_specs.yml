@@ -30,6 +30,16 @@ argument_specs:
         - Controls `squid_manage_firewall` for the `squid` role.
         required: false
         type: bool
+      squid_firewall_zone:
+        description:
+        - Controls `squid_firewall_zone` for the `squid` role.
+        required: false
+        type: str
+      squid_manage_selinux:
+        description:
+        - Controls `squid_manage_selinux` for the `squid` role.
+        required: false
+        type: bool
       squid_port:
         description:
         - Controls `squid_port` for the `squid` role.

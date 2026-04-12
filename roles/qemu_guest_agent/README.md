@@ -12,7 +12,12 @@ Install the QEMU guest agent package.
 
 The role interface is validated through `meta/argument_specs.yml`. Defaults are defined in `defaults/main.yml`.
 
-This role does not define defaults in `defaults/main.yml`.
+```yaml
+---
+qemu_guest_agent_manage_service: true
+qemu_guest_agent_service_enabled: true
+qemu_guest_agent_service_state: started
+```
 
 ## Example Playbook
 

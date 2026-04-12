@@ -14,6 +14,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+nfs_manage_service: true
+nfs_service_enabled: '{{ nfs_exports | bool }}'
+nfs_service_state: "{{ 'started' if nfs_exports else 'stopped' }}"
 nfs_exports: []
 nfs_mounts: []
 ```

@@ -10,6 +10,21 @@ argument_specs:
         - Controls `systemd_timesyncd` for the `systemd_timesyncd` role.
         required: false
         type: bool
+      systemd_timesyncd_manage_service:
+        description:
+        - Controls `systemd_timesyncd_manage_service` for the `systemd_timesyncd` role.
+        required: false
+        type: bool
+      systemd_timesyncd_service_enabled:
+        description:
+        - Controls `systemd_timesyncd_service_enabled` for the `systemd_timesyncd` role.
+        required: false
+        type: bool
+      systemd_timesyncd_service_state:
+        description:
+        - Controls `systemd_timesyncd_service_state` for the `systemd_timesyncd` role.
+        required: false
+        type: str
       systemd_timesyncd_time_zone:
         description:
         - Controls `systemd_timesyncd_time_zone` for the `systemd_timesyncd` role.

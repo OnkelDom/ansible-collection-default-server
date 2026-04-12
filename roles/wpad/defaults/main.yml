@@ -5,6 +5,11 @@ wpad_state: present
 wpad_webserver: nginx
 wpad_manage_webserver_config: true
 wpad_manage_service: true
+wpad_service_enabled: true
+wpad_service_state: started
+wpad_manage_firewall: false
+wpad_firewall_zone: public
+wpad_manage_selinux: true
 
 wpad_document_root: /var/www/wpad
 wpad_pac_filename: proxy.pac

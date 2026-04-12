@@ -79,7 +79,7 @@
 - name: Ensure SSH service is enabled
   ansible.builtin.service:
     name: "{{ sftp_server_service_name }}"
-    enabled: true
+    enabled: "{{ sftp_server_service_enabled }}"
     state: "{{ sftp_server_service_state }}"
   become: true
   when: sftp_server_manage_service | bool

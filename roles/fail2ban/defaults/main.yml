@@ -1,4 +1,7 @@
 ---
+fail2ban_manage_service: true
+fail2ban_service_enabled: true
+fail2ban_service_state: started
 fail2ban_mail_recipient: "root@localhost"
 fail2ban_loglevel: INFO
 fail2ban_logtarget: /var/log/fail2ban.log
@@ -24,10 +27,10 @@ fail2ban_backend: systemd
 fail2ban_destemail: "{{ fail2ban_mail_recipient }}"
 fail2ban_banaction: nftables-multiport
 fail2ban_allowipv6: auto
-fail2ban_sender: null
-fail2ban_mta: null
-fail2ban_protocol: null
-fail2ban_chain: null
+fail2ban_sender:
+fail2ban_mta:
+fail2ban_protocol:
+fail2ban_chain:
 fail2ban_jails:
 - name: sshd
   enabled: true

@@ -14,6 +14,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+multipath_manage_service: true
+multipath_service_enabled: true
+multipath_service_state: started
 multipath_friendly_names: yes
 multipath_blackbist: ^(ram|raw|loop|fd|md|dm-|sr|scd|st|sd[a-z])[0-9]*
 multipath_pathes: {}

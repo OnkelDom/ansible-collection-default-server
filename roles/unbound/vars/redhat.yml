@@ -4,4 +4,13 @@ unbound_packages:
 - python3-cryptography
 unbound_service_name: unbound
 unbound_group: unbound
+unbound_config_dir: /etc/unbound
+unbound_config_path: /etc/unbound/unbound.conf
+unbound_root_hints_path: /etc/unbound/root.hints
+unbound_local_zones_path: /etc/unbound/local-zones.conf
+unbound_blocklist_path: /etc/unbound/unbound.block.conf
+unbound_tls_cert_bundle: /etc/pki/tls/certs/ca-bundle.crt
+unbound_selinux_packages:
+- policycoreutils-python-utils
+unbound_selinux_port_type: dns_port_t
 unbound_checkconf_binary: /usr/sbin/unbound-checkconf

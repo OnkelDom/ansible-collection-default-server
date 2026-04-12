@@ -5,6 +5,15 @@ node_exporter_web_listen_address: 0.0.0.0
 node_exporter_binary_install_dir: /usr/local/bin
 node_exporter_binary_path: "{{ node_exporter_binary_install_dir }}/node_exporter"
 node_exporter_web_listen_port: 9100
+node_exporter_manage_service: true
+node_exporter_service_enabled: true
+node_exporter_service_state: started
+node_exporter_manage_firewall: false
+node_exporter_firewall_zone: public
+node_exporter_manage_selinux: true
+node_exporter_firewall_ports:
+- "{{ node_exporter_web_listen_port }}/tcp"
+node_exporter_selinux_ports: "{{ node_exporter_firewall_ports }}"
 node_exporter_system_user: "{{ prometheus_user | default('node_exporter') }}"
 node_exporter_system_group: "{{ prometheus_group | default('node_exporter') }}"
 node_exporter_user_additional_groups: "adm"

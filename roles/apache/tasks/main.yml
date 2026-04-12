@@ -17,6 +17,23 @@
   loop_control:
     loop_var: loop_vars
 
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The apache role supports Debian and RedHat families only."
+
+- name: Install SELinux tooling for apache
+  ansible.builtin.package:
+    name: "{{ apache_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - apache_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+
 - name: "Include tasks for install"
   ansible.builtin.include_tasks: install.yml
   tags: apache_install
@@ -79,3 +96,42 @@
     notify:
     - Reload apache daemon
     - Restart apache
+
+- name: Open apache ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ apache_firewall_zone }}"
+  loop: "{{ (apache_ports + apache_ssl_ports + apache_gnutls_ports) | unique }}"
+  when:
+  - apache_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+
+- name: Open apache ports in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    comment: Apache
+  loop: "{{ (apache_ports + apache_ssl_ports + apache_gnutls_ports) | unique }}"
+  when:
+  - apache_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+
+- name: Allow apache ports in SELinux
+  community.general.seport:
+    ports: "{{ item }}"
+    proto: tcp
+    setype: "{{ apache_selinux_port_type }}"
+    state: present
+  loop: "{{ (apache_ports + apache_ssl_ports + apache_gnutls_ports) | unique }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - apache_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true

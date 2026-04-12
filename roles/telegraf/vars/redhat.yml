@@ -1,0 +1,4 @@
+---
+telegraf_selinux_packages:
+- policycoreutils-python-utils
+telegraf_selinux_port_type: http_port_t

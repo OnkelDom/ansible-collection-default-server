@@ -11,6 +11,11 @@ argument_specs:
         required: false
         type: list
         elements: str
+      keepalived_manage_service:
+        description:
+        - Controls `keepalived_manage_service` for the `keepalived` role.
+        required: false
+        type: bool
       keepalived_service_enabled:
         description:
         - Controls `keepalived_service_enabled` for the `keepalived` role.

@@ -15,6 +15,21 @@ argument_specs:
         - Controls `unbound_blocklist_url` for the `unbound` role.
         required: false
         type: str
+      unbound_manage_service:
+        description:
+        - Controls `unbound_manage_service` for the `unbound` role.
+        required: false
+        type: bool
+      unbound_service_enabled:
+        description:
+        - Controls `unbound_service_enabled` for the `unbound` role.
+        required: false
+        type: bool
+      unbound_service_state:
+        description:
+        - Controls `unbound_service_state` for the `unbound` role.
+        required: false
+        type: str
       unbound_manage_firewall:
         description:
         - Controls `unbound_manage_firewall` for the `unbound` role.
@@ -25,6 +40,11 @@ argument_specs:
         - Controls `unbound_firewall_zone` for the `unbound` role.
         required: false
         type: str
+      unbound_manage_selinux:
+        description:
+        - Controls `unbound_manage_selinux` for the `unbound` role.
+        required: false
+        type: bool
       unbound_zones_dir:
         description:
         - Controls `unbound_zones_dir` for the `unbound` role.

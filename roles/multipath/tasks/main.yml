@@ -30,7 +30,8 @@
 - name: Enable and start multipathd service
   ansible.builtin.service:
     name: "{{ multipath_service }}"
-    state: started
-    enabled: true
+    state: "{{ multipath_service_state }}"
+    enabled: "{{ multipath_service_enabled }}"
   become: true
+  when: multipath_manage_service | bool
   tags: multipath

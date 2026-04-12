@@ -11,6 +11,13 @@
   - "{{ ansible_os_family | lower }}.yml"
   tags: sshd
 
+- name: Validate supported platform
+  ansible.builtin.assert:
+    that:
+    - ansible_os_family in ["Debian", "RedHat"]
+    fail_msg: "The sshd role supports Debian and RedHat families only."
+  tags: sshd
+
 - name: Combine ssh_server
   ansible.builtin.set_fact:
     sshd_server: >-
@@ -20,6 +27,23 @@
         combine(sshd_server_host_vars | default([]), list_merge='append') |
         combine(sshd_server_playbook | default([]), list_merge='append')
       }}
+  tags: sshd
+
+- name: Normalize sshd listen ports
+  ansible.builtin.set_fact:
+    __sshd_ports: "{{ [sshd_server.Port] if sshd_server.Port is number or sshd_server.Port is string else sshd_server.Port }}"
+  tags: sshd
+
+- name: Install SELinux tooling for sshd
+  ansible.builtin.package:
+    name: "{{ sshd_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - sshd_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
   tags: sshd
 
 - name: Combine ssh_client
@@ -58,15 +82,58 @@
     owner: root
     group: root
     mode: "0640"
-    validate: "/usr/sbin/sshd -t -f %s"
+    validate: "{{ sshd_validate_binary }} -t -f %s"
   notify: Restart sshd
+  become: true
+  tags: sshd
+
+- name: Open sshd ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ sshd_firewall_zone }}"
+  loop: "{{ __sshd_ports }}"
+  when:
+  - sshd_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+  tags: sshd
+
+- name: Open sshd ports in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    comment: OpenSSH
+  loop: "{{ __sshd_ports }}"
+  when:
+  - sshd_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: sshd
+
+- name: Allow sshd ports in SELinux
+  community.general.seport:
+    ports: "{{ item }}"
+    proto: tcp
+    setype: "{{ sshd_selinux_port_type }}"
+    state: present
+  loop: "{{ __sshd_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - sshd_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
   become: true
   tags: sshd
 
 - name: Start and enable service
   ansible.builtin.service:
     name: "{{ sshd_service_name }}"
-    state: started
-    enabled: true
+    state: "{{ sshd_service_state }}"
+    enabled: "{{ sshd_service_enabled }}"
+  when: sshd_manage_service | bool
   become: true
   tags: sshd

@@ -5,8 +5,12 @@
 apache_additional_packages: []
 
 # service
+apache_manage_service: true
 apache_service_enabled: true
 apache_service_state: started
+apache_manage_firewall: false
+apache_firewall_zone: public
+apache_manage_selinux: true
 
 # ports
 apache_ports: [80]

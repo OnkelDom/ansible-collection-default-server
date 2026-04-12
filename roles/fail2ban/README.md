@@ -14,6 +14,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+fail2ban_manage_service: true
+fail2ban_service_enabled: true
+fail2ban_service_state: started
 fail2ban_mail_recipient: root@localhost
 fail2ban_loglevel: INFO
 fail2ban_logtarget: /var/log/fail2ban.log

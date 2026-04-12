@@ -12,6 +12,9 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+dnf_automatic_manage_service: true
+dnf_automatic_service_enabled: true
+dnf_automatic_service_state: started
 dnf_automatic_apply_updates: yes
 dnf_automatic_emit_via: email
 dnf_automatic_email_from: '{{ smtp_user }}'

@@ -21,7 +21,8 @@
 - name: Start and enable service
   ansible.builtin.service:
     name: "{{ vmware_tools_service_name }}"
-    state: started
-    enabled: true
+    state: "{{ vmware_tools_service_state }}"
+    enabled: "{{ vmware_tools_service_enabled }}"
   become: true
+  when: vmware_tools_manage_service | bool
   tags: vmware_tools

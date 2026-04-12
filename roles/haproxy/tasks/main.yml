@@ -6,6 +6,23 @@
     fail_msg: "The haproxy role supports Debian and RedHat families only."
   tags: haproxy
 
+- name: Include RedHat-specific variables for haproxy
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: haproxy
+
+- name: Install SELinux tooling for haproxy
+  ansible.builtin.package:
+    name: "{{ haproxy_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - haproxy_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: haproxy
+
 - name: Install haproxy package
   ansible.builtin.package:
     name: "{{ haproxy_package_name }}"
@@ -104,14 +121,43 @@
 
 - name: Open firewall for haproxy on RedHat
   ansible.posix.firewalld:
-    service: http
+    port: "{{ item }}"
     state: enabled
     permanent: true
     immediate: true
     zone: "{{ haproxy_firewall_zone }}"
+  loop: "{{ haproxy_firewall_ports }}"
   when:
   - haproxy_manage_firewall | bool
   - ansible_os_family == "RedHat"
+  become: true
+  tags: haproxy
+
+- name: Open firewall for haproxy on Debian
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    comment: HAProxy
+  loop: "{{ haproxy_firewall_ports }}"
+  when:
+  - haproxy_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: haproxy
+
+- name: Allow haproxy ports in SELinux
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: "{{ haproxy_selinux_port_type }}"
+    state: present
+  loop: "{{ haproxy_selinux_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - haproxy_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
   become: true
   tags: haproxy
 
@@ -120,5 +166,6 @@
     name: "{{ haproxy_service_name }}"
     enabled: "{{ haproxy_service_enabled }}"
     state: "{{ haproxy_service_state }}"
+  when: haproxy_manage_service | bool
   become: true
   tags: haproxy

@@ -6,6 +6,23 @@
     fail_msg: "The telegraf role supports Debian and RedHat families only."
   tags: telegraf
 
+- name: Include RedHat-specific variables for telegraf
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: telegraf
+
+- name: Install SELinux tooling for telegraf
+  ansible.builtin.package:
+    name: "{{ telegraf_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - telegraf_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: telegraf
+
 - name: Ensure apt keyring directory exists
   ansible.builtin.file:
     path: /etc/apt/keyrings
@@ -97,7 +114,50 @@
   ansible.builtin.systemd:
     daemon_reload: true
     name: "{{ telegraf_service_name }}"
-    enabled: true
-    state: started
+    enabled: "{{ telegraf_service_enabled }}"
+    state: "{{ telegraf_service_state }}"
+  when: telegraf_manage_service | bool
+  become: true
+  tags: telegraf
+
+- name: Open telegraf ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ telegraf_firewall_zone }}"
+  loop: "{{ telegraf_firewall_ports }}"
+  when:
+  - telegraf_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+  tags: telegraf
+
+- name: Open telegraf ports in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    comment: Telegraf
+  loop: "{{ telegraf_firewall_ports }}"
+  when:
+  - telegraf_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: telegraf
+
+- name: Allow telegraf ports in SELinux
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: "{{ telegraf_selinux_port_type }}"
+    state: present
+  loop: "{{ telegraf_firewall_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - telegraf_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
   become: true
   tags: telegraf

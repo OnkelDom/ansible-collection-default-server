@@ -23,10 +23,10 @@ auth-zone:
 {% endfor %}
 {% endif %}
 {% if unbound_local_zones | length > 0 %}
-include: "/etc/unbound/local-zones.conf"
+include: "{{ unbound_local_zones_path }}"
 {% endif %}
 {% if unbound_use_blocklist | bool %}
-include: "/etc/unbound/unbound.block.conf"
+include: "{{ unbound_blocklist_path }}"
 {% endif %}
 {% if unbound_config['remote-control'] is defined %}
 remote-control:

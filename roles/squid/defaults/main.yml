@@ -4,9 +4,11 @@ squid_manage_service: true
 squid_service_enabled: true
 squid_service_state: started
 squid_manage_firewall: false
+squid_firewall_zone: public
+squid_manage_selinux: true
 squid_port: 3128
-squid_config_dir: /etc/squid
-squid_conf_d_dir: /etc/squid/conf.d
+squid_config_dir: "{{ squid_os_config_dir }}"
+squid_conf_d_dir: "{{ squid_os_conf_d_dir }}"
 squid_user: squid
 squid_group: squid
 squid_visible_hostname: "{{ ansible_fqdn | default(ansible_hostname) }}"

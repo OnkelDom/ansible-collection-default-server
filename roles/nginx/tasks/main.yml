@@ -18,6 +18,18 @@
     fail_msg: "The nginx role supports Debian and RedHat families only."
   tags: nginx
 
+- name: Install SELinux tooling for nginx
+  ansible.builtin.package:
+    name: "{{ nginx_selinux_packages }}"
+    state: present
+  when:
+  - ansible_os_family == "RedHat"
+  - nginx_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
+  become: true
+  tags: nginx
+
 - name: Define nginx_user.
   ansible.builtin.set_fact:
     nginx_user: "{{ __nginx_user }}"
@@ -53,8 +65,51 @@
     owner: root
     group: "{{ root_group }}"
     mode: "0644"
+    validate: "{{ nginx_validate_binary }} -t -c %s"
   notify:
   - Reload nginx
+  become: true
+  tags: nginx
+
+- name: Open nginx ports in firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ nginx_firewall_zone }}"
+  loop: "{{ nginx_firewall_ports }}"
+  when:
+  - nginx_manage_firewall | bool
+  - ansible_os_family == "RedHat"
+  become: true
+  tags: nginx
+
+- name: Open nginx ports in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    comment: Nginx
+  loop: "{{ nginx_firewall_ports }}"
+  when:
+  - nginx_manage_firewall | bool
+  - ansible_os_family == "Debian"
+  become: true
+  tags: nginx
+
+- name: Allow nginx ports in SELinux
+  community.general.seport:
+    ports: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+    setype: "{{ nginx_selinux_port_type }}"
+    state: present
+  loop: "{{ nginx_firewall_ports }}"
+  when:
+  - ansible_os_family == "RedHat"
+  - nginx_manage_selinux | bool
+  - ansible_selinux is defined
+  - ansible_selinux.status == "enabled"
   become: true
   tags: nginx
 
@@ -63,5 +118,6 @@
     name: "{{ nginx_service_name | default('nginx') }}"
     state: "{{ nginx_service_state }}"
     enabled: "{{ nginx_service_enabled }}"
+  when: nginx_manage_service | bool
   become: true
   tags: nginx
