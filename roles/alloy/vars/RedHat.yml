@@ -7,3 +7,4 @@ alloy_data_dir: /var/lib/alloy
 alloy_log_dir: /var/log/alloy
 alloy_selinux_packages:
 - policycoreutils-python-utils
+alloy_selinux_port_type: http_port_t

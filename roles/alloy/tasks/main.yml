@@ -135,7 +135,7 @@
   community.general.seport:
     ports: "{{ item.split('/')[0] }}"
     proto: "{{ item.split('/')[1] }}"
-    setype: "{{ alloy_selinux_port_type | default('http_port_t') }}"
+    setype: "{{ alloy_selinux_port_type }}"
     state: present
   loop: "{{ alloy_selinux_ports }}"
   become: true
