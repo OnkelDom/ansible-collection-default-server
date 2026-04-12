@@ -65,7 +65,7 @@
     owner: root
     group: "{{ root_group }}"
     mode: "0644"
-    validate: "nginx -t -c %s"
+    validate: "{{ nginx_validate_binary }} -t -c %s"
   notify:
   - Reload nginx
   become: true

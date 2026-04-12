@@ -6,9 +6,14 @@
     fail_msg: "The telegraf role supports Debian and RedHat families only."
   tags: telegraf
 
+- name: Include RedHat-specific variables for telegraf
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: telegraf
+
 - name: Install SELinux tooling for telegraf
   ansible.builtin.package:
-    name: policycoreutils-python-utils
+    name: "{{ telegraf_selinux_packages }}"
     state: present
   when:
   - ansible_os_family == "RedHat"
@@ -146,7 +151,7 @@
   community.general.seport:
     ports: "{{ item.split('/')[0] }}"
     proto: "{{ item.split('/')[1] }}"
-    setype: http_port_t
+    setype: "{{ telegraf_selinux_port_type }}"
     state: present
   loop: "{{ telegraf_firewall_ports }}"
   when:

@@ -1,0 +1,4 @@
+---
+traefik_selinux_packages:
+- policycoreutils-python-utils
+traefik_selinux_port_type: http_port_t

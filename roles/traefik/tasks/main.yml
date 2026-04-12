@@ -6,9 +6,14 @@
     fail_msg: "The traefik role supports Debian and RedHat families only."
   tags: traefik
 
+- name: Include RedHat-specific variables for traefik
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: traefik
+
 - name: Install SELinux tooling for traefik
   ansible.builtin.package:
-    name: policycoreutils-python-utils
+    name: "{{ traefik_selinux_packages }}"
     state: present
   when:
   - ansible_os_family == "RedHat"
@@ -208,7 +213,7 @@
   community.general.seport:
     ports: "{{ item.split('/')[0] }}"
     proto: "{{ item.split('/')[1] }}"
-    setype: http_port_t
+    setype: "{{ traefik_selinux_port_type }}"
     state: present
   loop: "{{ traefik_selinux_ports }}"
   when:

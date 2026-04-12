@@ -8,3 +8,6 @@ _wpad_webserver_map:
     service_name: nginx
     config_path: /etc/nginx/conf.d/wpad.conf
     enabled_path: ""
+wpad_selinux_packages:
+- policycoreutils-python-utils
+wpad_selinux_port_type: http_port_t

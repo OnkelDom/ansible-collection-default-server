@@ -75,7 +75,8 @@ argument_specs:
         description:
         - Controls `node_exporter_selinux_ports` for the `node_exporter` role.
         required: false
-        type: str
+        type: list
+        elements: str
       node_exporter_system_user:
         description:
         - Controls `node_exporter_system_user` for the `node_exporter` role.

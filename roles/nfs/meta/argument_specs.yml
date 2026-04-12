@@ -14,7 +14,7 @@ argument_specs:
         description:
         - Controls `nfs_service_enabled` for the `nfs` role.
         required: false
-        type: str
+        type: bool
       nfs_service_state:
         description:
         - Controls `nfs_service_state` for the `nfs` role.

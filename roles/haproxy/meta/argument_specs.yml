@@ -85,7 +85,8 @@ argument_specs:
         description:
         - Controls `haproxy_selinux_ports` for the `haproxy` role.
         required: false
-        type: str
+        type: list
+        elements: str
       haproxy_frontends_list:
         description:
         - Controls `haproxy_frontends_list` for the `haproxy` role.

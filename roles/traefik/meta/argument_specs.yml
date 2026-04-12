@@ -75,7 +75,8 @@ argument_specs:
         description:
         - Controls `traefik_selinux_ports` for the `traefik` role.
         required: false
-        type: str
+        type: list
+        elements: str
       traefik_user:
         description:
         - Controls `traefik_user` for the `traefik` role.

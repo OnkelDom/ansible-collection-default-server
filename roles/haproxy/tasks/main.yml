@@ -6,9 +6,14 @@
     fail_msg: "The haproxy role supports Debian and RedHat families only."
   tags: haproxy
 
+- name: Include RedHat-specific variables for haproxy
+  ansible.builtin.include_vars: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: haproxy
+
 - name: Install SELinux tooling for haproxy
   ansible.builtin.package:
-    name: policycoreutils-python-utils
+    name: "{{ haproxy_selinux_packages }}"
     state: present
   when:
   - ansible_os_family == "RedHat"
@@ -145,7 +150,7 @@
   community.general.seport:
     ports: "{{ item.split('/')[0] }}"
     proto: "{{ item.split('/')[1] }}"
-    setype: http_port_t
+    setype: "{{ haproxy_selinux_port_type }}"
     state: present
   loop: "{{ haproxy_selinux_ports }}"
   when:
