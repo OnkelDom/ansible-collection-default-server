@@ -46,12 +46,49 @@ frontend {{ frontend.name }}
 {% endfor %}
 {% for acl in frontend.acl | default([]) %}    acl {{ acl }}
 {% endfor %}
+{% for http_request in frontend.http_request | default([]) %}    http-request {{ http_request }}
+{% endfor %}
 {% for redirect in frontend.redirect | default([]) %}    redirect {{ redirect }}
 {% endfor %}
 {% for use_backend in frontend.use_backend | default([]) %}    use_backend {{ use_backend }}
 {% endfor %}
+{% for custom in frontend.custom | default([]) %}    {{ custom }}
+{% endfor %}
 {% if frontend.default_backend is defined %}    default_backend {{ frontend.default_backend }}
 {% endif %}
+{% endfor %}
+
+{% for listen in haproxy_listens_list %}
+listen {{ listen.name }}
+{% for bind in listen.bind if listen.bind is iterable and listen.bind is not mapping %}
+    bind {{ bind.address | default('') }}:{{ bind.port }}{% if bind.ssl | default(false) %} ssl crt-list {{ bind.crt_list | default(haproxy_server_tls_crt_list_path) }}{% endif %}
+{% endfor %}
+{% if listen.bind is mapping %}
+    bind {{ listen.bind.address | default('') }}:{{ listen.bind.port }}{% if listen.bind.ssl | default(false) %} ssl crt-list {{ listen.bind.crt_list | default(haproxy_server_tls_crt_list_path) }}{% endif %}
+{% endif %}
+{% if listen.mode is defined %}    mode {{ listen.mode }}
+{% endif %}
+{% if listen.balance is defined %}    balance {{ listen.balance }}
+{% endif %}
+{% for option in listen.options | default([]) %}    option {{ option }}
+{% endfor %}
+{% for acl in listen.acl | default([]) %}    acl {{ acl }}
+{% endfor %}
+{% for http_request in listen.http_request | default([]) %}    http-request {{ http_request }}
+{% endfor %}
+{% for redirect in listen.redirect | default([]) %}    redirect {{ redirect }}
+{% endfor %}
+{% for stats in listen.stats | default([]) %}    stats {{ stats }}
+{% endfor %}
+{% for use_backend in listen.use_backend | default([]) %}    use_backend {{ use_backend }}
+{% endfor %}
+{% for custom in listen.custom | default([]) %}    {{ custom }}
+{% endfor %}
+{% if listen.default_backend is defined %}    default_backend {{ listen.default_backend }}
+{% endif %}
+{% for server in listen.backend_server_list | default([]) %}
+    server {{ server.name }} {{ server.address }}:{{ server.port }}{% if server.maxconn is defined %} maxconn {{ server.maxconn }}{% endif %}{% if server.weight is defined %} weight {{ server.weight }}{% endif %}{% if server.check | default(listen.check_all_servers | default(false)) %} check{% endif %}{% if server.custom is defined %} {{ server.custom }}{% endif %}
+{% endfor %}
 {% endfor %}
 
 {% for backend in haproxy_backends_list %}

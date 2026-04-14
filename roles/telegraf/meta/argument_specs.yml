@@ -46,6 +46,26 @@ argument_specs:
         required: false
         type: list
         elements: str
+      telegraf_manage_main_config:
+        description:
+        - Controls whether the role manages `telegraf.conf`.
+        required: false
+        type: bool
+      telegraf_manage_plugin_configs:
+        description:
+        - Controls whether the role manages files in `telegraf.d`.
+        required: false
+        type: bool
+      telegraf_manage_main_config:
+        description:
+        - Controls whether the role manages `telegraf.conf`.
+        required: false
+        type: bool
+      telegraf_manage_plugin_configs:
+        description:
+        - Controls whether the role manages files in `telegraf.d`.
+        required: false
+        type: bool
       telegraf_apt_repo:
         description:
         - Controls `telegraf_apt_repo` for the `telegraf` role.
@@ -83,9 +103,64 @@ argument_specs:
         type: str
       telegraf_plugins:
         description:
-        - Controls `telegraf_plugins` for the `telegraf` role.
+        - Legacy structured plugin snippets rendered into `telegraf.d`.
         required: false
         type: list
+      telegraf_plugins_group_vars:
+        description:
+        - Group-level legacy plugin snippets rendered into `telegraf.d`.
+        required: false
+        type: list
+      telegraf_plugins_host_vars:
+        description:
+        - Host-level legacy plugin snippets rendered into `telegraf.d`.
+        required: false
+        type: list
+      telegraf_plugins_playbook:
+        description:
+        - Playbook-level legacy plugin snippets rendered into `telegraf.d`.
+        required: false
+        type: list
+      telegraf_plugin_files:
+        description:
+        - Preferred snippet interface for files in `telegraf.d`.
+        required: false
+        type: list
+      telegraf_plugin_files_group_vars:
+        description:
+        - Group-level `telegraf.d` snippet files.
+        required: false
+        type: list
+      telegraf_plugin_files_host_vars:
+        description:
+        - Host-level `telegraf.d` snippet files.
+        required: false
+        type: list
+      telegraf_plugin_files_playbook:
+        description:
+        - Playbook-level `telegraf.d` snippet files.
+        required: false
+        type: list
+      telegraf_global_tags:
+        description:
+        - Base global tags rendered into `telegraf.conf`.
+        required: false
+        type: dict
+      telegraf_global_tags_group_vars:
+        description:
+        - Group-level global tags rendered into `telegraf.conf`.
+        required: false
+        type: dict
+      telegraf_global_tags_host_vars:
+        description:
+        - Host-level global tags rendered into `telegraf.conf`.
+        required: false
+        type: dict
+      telegraf_global_tags_playbook:
+        description:
+        - Playbook-level global tags rendered into `telegraf.conf`.
+        required: false
+        type: dict
       telegraf_config:
         description:
         - Controls `telegraf_config` for the `telegraf` role.

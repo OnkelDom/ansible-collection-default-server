@@ -75,6 +75,39 @@
   become: true
   tags: telegraf
 
+- name: Combine telegraf global tags
+  ansible.builtin.set_fact:
+    telegraf_effective_global_tags: >-
+      {{
+        (telegraf_global_tags | default({}))
+        | combine(telegraf_global_tags_group_vars | default({}), recursive=True)
+        | combine(telegraf_global_tags_host_vars | default({}), recursive=True)
+        | combine(telegraf_global_tags_playbook | default({}), recursive=True)
+      }}
+  tags: telegraf
+
+- name: Combine legacy telegraf plugin definitions
+  ansible.builtin.set_fact:
+    telegraf_effective_plugins: >-
+      {{
+        (telegraf_plugins | default([]))
+        + (telegraf_plugins_group_vars | default([]))
+        + (telegraf_plugins_host_vars | default([]))
+        + (telegraf_plugins_playbook | default([]))
+      }}
+  tags: telegraf
+
+- name: Combine telegraf snippet files
+  ansible.builtin.set_fact:
+    telegraf_effective_plugin_files: >-
+      {{
+        (telegraf_plugin_files | default([]))
+        + (telegraf_plugin_files_group_vars | default([]))
+        + (telegraf_plugin_files_host_vars | default([]))
+        + (telegraf_plugin_files_playbook | default([]))
+      }}
+  tags: telegraf
+
 - name: Create plugins directory
   ansible.builtin.file:
     path: "{{ telegraf_plugins_path }}"
@@ -93,20 +126,37 @@
     group: root
     mode: '0644'
   notify: Restart Telegraf
+  when: telegraf_manage_main_config | bool
   become: true
   tags: telegraf
 
-- name: Deploy Telegraf plugin configurations
+- name: Deploy legacy Telegraf plugin configurations
   ansible.builtin.template:
     src: plugins.conf.j2
-    dest: "{{ telegraf_plugins_path }}/{{ item.type }}.conf"
+    dest: "{{ telegraf_plugins_path }}/{{ item.filename | default(item.type ~ '.conf') }}"
     owner: root
     group: root
     mode: '0644'
-  loop: "{{ telegraf_plugins }}"
+  loop: "{{ telegraf_effective_plugins }}"
   loop_control:
-    label: "{{ item.type }}"
+    label: "{{ item.filename | default(item.type ~ '.conf') }}"
   notify: Restart Telegraf
+  when: telegraf_manage_plugin_configs | bool
+  become: true
+  tags: telegraf
+
+- name: Deploy Telegraf snippet files
+  ansible.builtin.template:
+    src: plugins.conf.j2
+    dest: "{{ telegraf_plugins_path }}/{{ item.name }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ telegraf_effective_plugin_files }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Restart Telegraf
+  when: telegraf_manage_plugin_configs | bool
   become: true
   tags: telegraf
 

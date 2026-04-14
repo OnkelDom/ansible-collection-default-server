@@ -15,7 +15,20 @@
 {%- endfor -%}
 {%- endmacro %}
 
-# Plugin configuration for {{ item.type }}
-{% for key, value in item.config.items() %}
+{% macro render_section(section) -%}
+[[{{ section.plugin_type | default(item.plugin_type | default('inputs')) }}.{{ section.type | default(item.type) }}]]
+{% for key, value in (section.config | default(item.config | default({}))).items() %}
 {{ key }} = {{ toml_value(value) }}
 {% endfor %}
+{%- endmacro %}
+
+{% if item.content is defined %}
+{{ item.content | trim }}
+{% elif item.sections is defined %}
+{% for section in item.sections %}
+{{ render_section(section) }}
+
+{% endfor %}
+{% else %}
+{{ render_section(item) }}
+{% endif %}

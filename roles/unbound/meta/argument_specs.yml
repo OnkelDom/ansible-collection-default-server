@@ -55,6 +55,16 @@ argument_specs:
         - Controls `unbound_local_zones` for the `unbound` role.
         required: false
         type: list
+      unbound_stub_zones:
+        description:
+        - Controls `unbound_stub_zones` for the `unbound` role.
+        required: false
+        type: list
+      unbound_forward_zones:
+        description:
+        - Controls `unbound_forward_zones` for the `unbound` role.
+        required: false
+        type: list
       unbound_auth_zones:
         description:
         - Controls `unbound_auth_zones` for the `unbound` role.

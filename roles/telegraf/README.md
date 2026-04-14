@@ -23,6 +23,8 @@ telegraf_firewall_zone: public
 telegraf_manage_selinux: true
 telegraf_firewall_ports:
 - 9273/tcp
+telegraf_manage_main_config: true
+telegraf_manage_plugin_configs: true
 telegraf_apt_repo: deb [signed-by=/etc/apt/keyrings/influxdata.gpg] https://repos.influxdata.com/debian stable main
 telegraf_yum_repo_baseurl: https://repos.influxdata.com/rhel/$releasever/$basearch/stable
 telegraf_gpg_key_url: https://repos.influxdata.com/influxdb.key
@@ -31,6 +33,7 @@ telegraf_plugins_path: /etc/telegraf/telegraf.d
 telegraf_service_name: telegraf
 telegraf_package_name: telegraf
 telegraf_plugins: []
+telegraf_plugin_files: []
 telegraf_config:
   agent:
     interval: 10s
@@ -44,12 +47,6 @@ telegraf_config:
     hostname: '{{ ansible_hostname }}'
     omit_hostname: false
   outputs:
-  - type: loki
-    config:
-      url: http://loki.local:3100/loki/api/v1/push
-      labels:
-        job: telegraf
-        host: '{{ ansible_hostname }}'
   - type: prometheus_client
     config:
       listen: :9273
@@ -68,40 +65,46 @@ telegraf_config:
       ignore_fs:
       - tmpfs
       - devtmpfs
+      - overlay
+      - squashfs
   - type: net
     config: {}
   - type: system
     config: {}
-  - type: smart
-    config:
-      attributes: true
-      devices:
-      - /dev/sda
-      - /dev/vda
-      - /dev/sdb
-      - /dev/vdb
-  - type: procstat
-    config:
-      pid_file: /var/run/sshd.pid
-  - type: service
-    config:
-      services:
-      - sshd
-      - cron
-      - systemd-journald
-  - type: journald
-    config:
-      files:
-      - /var/log/journal
-      from_beginning: false
-      max_entries: 5000
-  - type: logparser
-    config:
-      files:
-      - /var/log/syslog
-      - /var/log/messages
-      from_beginning: true
-      name_override: journald
+```
+
+## Snippets in `telegraf.d`
+
+For small host- or group-specific extensions, prefer `telegraf_plugin_files` over
+replacing the full `telegraf_config`.
+
+Raw TOML snippet:
+
+```yaml
+telegraf_plugin_files:
+  - name: inputs_procstat.conf
+    content: |
+      [[inputs.procstat]]
+        pid_file = "/var/run/sshd.pid"
+```
+
+Structured snippet rendering:
+
+```yaml
+telegraf_plugin_files:
+  - name: inputs_services.conf
+    sections:
+      - plugin_type: inputs
+        type: procstat
+        config:
+          pid_file: /var/run/sshd.pid
+      - plugin_type: inputs
+        type: service
+        config:
+          services:
+            - ssh
+            - cron
+            - telegraf
 ```
 
 ## Example Playbook

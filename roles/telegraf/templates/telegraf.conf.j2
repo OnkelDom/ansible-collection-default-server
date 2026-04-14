@@ -20,6 +20,14 @@
   {{ key }} = {{ toml_value(value) }}
 {% endfor %}
 
+{% if telegraf_effective_global_tags | default({}) %}
+[global_tags]
+{% for key, value in telegraf_effective_global_tags.items() %}
+  {{ key }} = {{ toml_value(value) }}
+{% endfor %}
+
+{% endif %}
+
 {% for output in telegraf_config.outputs %}
 [[outputs.{{ output.type }}]]
 {% for key, value in output.config.items() %}

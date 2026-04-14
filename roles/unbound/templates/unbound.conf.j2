@@ -22,6 +22,24 @@ auth-zone:
   zonefile: "{{ unbound_zones_dir }}/{{ zone.name }}.zone"
 {% endfor %}
 {% endif %}
+{% if unbound_forward_zones | length > 0 %}
+{% for zone in unbound_forward_zones %}
+forward-zone:
+  name: "{{ zone.name }}"
+{% for server in zone.servers | default([]) %}
+  forward-addr: {{ server }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if unbound_stub_zones | length > 0 %}
+{% for zone in unbound_stub_zones %}
+stub-zone:
+  name: "{{ zone.name }}"
+{% for server in zone.servers | default([]) %}
+  stub-addr: {{ server }}
+{% endfor %}
+{% endfor %}
+{% endif %}
 {% if unbound_local_zones | length > 0 %}
 include: "{{ unbound_local_zones_path }}"
 {% endif %}
