@@ -31,7 +31,7 @@ sysctl_playbook: {}
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.sysctl
+    - role: onkeldom.default_server.sysctl
 ```
 
 ## Testing

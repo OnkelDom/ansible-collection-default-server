@@ -53,7 +53,7 @@ unattended_updates_only_on_ac_power: false
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.unattended_updates
+    - role: onkeldom.default_server.unattended_updates
 ```
 
 ## Testing

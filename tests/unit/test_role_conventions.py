@@ -85,8 +85,8 @@ def test_role_readmes_include_core_sections_and_examples() -> None:
         if "```yaml" not in text:
             invalid.append(f"{role_dir.name}: README.md must contain at least one YAML example block")
 
-        if f"lenmail.default_server.{role_dir.name}" not in text:
-            invalid.append(f"{role_dir.name}: README.md example playbook must reference lenmail.default_server.{role_dir.name}")
+        if f"onkeldom.default_server.{role_dir.name}" not in text:
+            invalid.append(f"{role_dir.name}: README.md example playbook must reference onkeldom.default_server.{role_dir.name}")
 
     assert not invalid, "\n".join(invalid)
 

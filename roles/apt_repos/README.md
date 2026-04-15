@@ -28,7 +28,7 @@ apt_repos_list: []
   hosts: debian_hosts
   become: true
   roles:
-    - role: lenmail.default_server.apt_repos
+    - role: onkeldom.default_server.apt_repos
       vars:
         apt_repos_list:
           - name: docker

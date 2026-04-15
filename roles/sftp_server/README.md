@@ -40,7 +40,7 @@ sftp_server_users: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.sftp_server
+    - role: onkeldom.default_server.sftp_server
 ```
 
 ## Testing

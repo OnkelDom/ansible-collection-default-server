@@ -27,7 +27,7 @@ mounts_playbook: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.mounts
+    - role: onkeldom.default_server.mounts
 ```
 
 ## Testing

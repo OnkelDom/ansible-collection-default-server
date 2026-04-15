@@ -1,4 +1,4 @@
-# Ansible Collection: `lenmail.default_server`
+# Ansible Collection: `onkeldom.default_server`
 
 Diese Collection bundelt Basisrollen fuer Linux-Server und ist auf eine saubere, wiederholbare Rollenstruktur ausgelegt.
 Jede Rolle erhaelt ein einheitliches Geruest mit:
@@ -32,14 +32,14 @@ Die Collection enthaelt unter anderem Rollen fuer:
 ## Installation
 
 ```bash
-ansible-galaxy collection install git+https://github.com/lenmail/ansible-collection-default-server.git
+ansible-galaxy collection install git+https://github.com/onkeldom/ansible-collection-default-server.git
 ```
 
 Oder ueber eine `requirements.yml`:
 
 ```yaml
 collections:
-  - name: git+https://github.com/lenmail/ansible-collection-default-server.git
+  - name: git+https://github.com/onkeldom/ansible-collection-default-server.git
 ```
 
 ## Verwendung
@@ -49,8 +49,8 @@ collections:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.chrony
-    - role: lenmail.default_server.users
+    - role: onkeldom.default_server.chrony
+    - role: onkeldom.default_server.users
 ```
 
 ## Entwicklung

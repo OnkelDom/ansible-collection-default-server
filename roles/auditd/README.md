@@ -27,7 +27,7 @@ auditd_extra_rules: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.auditd
+    - role: onkeldom.default_server.auditd
 ```
 
 ## Testing

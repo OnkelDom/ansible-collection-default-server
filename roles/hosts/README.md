@@ -29,7 +29,7 @@ hosts_entrys: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.hosts
+    - role: onkeldom.default_server.hosts
 ```
 
 ## Testing

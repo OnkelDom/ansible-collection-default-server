@@ -40,7 +40,7 @@ ufw_config:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.ufw
+    - role: onkeldom.default_server.ufw
 ```
 
 ## Testing

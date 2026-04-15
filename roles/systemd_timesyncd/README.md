@@ -29,7 +29,7 @@ systemd_timesyncd_time_server_fallback: 0.de.pool.ntp.org 1.de.pool.ntp.org 2.de
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.systemd_timesyncd
+    - role: onkeldom.default_server.systemd_timesyncd
 ```
 
 ## Testing

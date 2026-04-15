@@ -40,7 +40,7 @@ dnf_automatic_reboot: when-needed
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.dnf_automatic
+    - role: onkeldom.default_server.dnf_automatic
 ```
 
 ## Testing

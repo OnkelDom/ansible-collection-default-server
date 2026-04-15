@@ -26,7 +26,7 @@ dnf_repos_list: []
   hosts: el_hosts
   become: true
   roles:
-    - role: lenmail.default_server.dnf_repos
+    - role: onkeldom.default_server.dnf_repos
       vars:
         dnf_repos_list:
           - name: epel

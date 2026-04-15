@@ -27,7 +27,7 @@ vmware_tools_service_state: started
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.vmware_tools
+    - role: onkeldom.default_server.vmware_tools
 ```
 
 ## Testing

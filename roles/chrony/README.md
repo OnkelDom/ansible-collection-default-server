@@ -37,7 +37,7 @@ chrony_allowed:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.chrony
+    - role: onkeldom.default_server.chrony
 ```
 
 ## Testing
