@@ -41,7 +41,7 @@ msmtp_aliases:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.msmtp
+    - role: onkeldom.default_server.msmtp
 ```
 
 ## Testing

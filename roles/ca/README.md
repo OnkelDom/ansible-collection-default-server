@@ -24,7 +24,7 @@ ca_source_path: ca/*
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.ca
+    - role: onkeldom.default_server.ca
 ```
 
 ## Testing

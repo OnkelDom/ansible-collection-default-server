@@ -58,7 +58,7 @@ wpad_extra_pac_logic: ''
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.wpad
+    - role: onkeldom.default_server.wpad
 ```
 
 ## Testing

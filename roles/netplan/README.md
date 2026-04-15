@@ -32,7 +32,7 @@ netplan_wipe: true
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.netplan
+    - role: onkeldom.default_server.netplan
 ```
 
 ## Testing

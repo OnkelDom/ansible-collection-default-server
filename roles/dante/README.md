@@ -45,7 +45,7 @@ dante_socks_rules: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.dante
+    - role: onkeldom.default_server.dante
 ```
 
 ## Testing

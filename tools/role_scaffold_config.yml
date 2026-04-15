@@ -1,5 +1,5 @@
 ---
-collection_namespace: lenmail
+collection_namespace: onkeldom
 collection_name: default_server
 min_ansible_version: "2.16"
 common_platforms:
@@ -82,7 +82,7 @@ role_example_playbooks:
       hosts: debian_hosts
       become: true
       roles:
-        - role: lenmail.default_server.apt_repos
+        - role: onkeldom.default_server.apt_repos
           vars:
             apt_repos_list:
               - name: docker
@@ -108,7 +108,7 @@ role_example_playbooks:
       hosts: el_hosts
       become: true
       roles:
-        - role: lenmail.default_server.dnf_repos
+        - role: onkeldom.default_server.dnf_repos
           vars:
             dnf_repos_list:
               - name: epel

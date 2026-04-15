@@ -24,7 +24,7 @@ systemd_resolved_dns_stublistener: no
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.systemd_resolved
+    - role: onkeldom.default_server.systemd_resolved
 ```
 
 ## Testing

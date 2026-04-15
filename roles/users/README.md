@@ -29,7 +29,7 @@ users_copy_msmtp_config: true
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.users
+    - role: onkeldom.default_server.users
 ```
 
 ## Testing

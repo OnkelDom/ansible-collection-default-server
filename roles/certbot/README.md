@@ -36,7 +36,7 @@ certbot_certs:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.certbot
+    - role: onkeldom.default_server.certbot
 ```
 
 ## Testing

@@ -52,36 +52,36 @@
   tasks:
   - name: Apply baseline package role
     ansible.builtin.import_role:
-      name: lenmail.default_server.packages
+      name: onkeldom.default_server.packages
 
   - name: Apply CA role
     ansible.builtin.import_role:
-      name: lenmail.default_server.ca
+      name: onkeldom.default_server.ca
 
   - name: Apply MOTD role
     ansible.builtin.import_role:
-      name: lenmail.default_server.motd
+      name: onkeldom.default_server.motd
 
   - name: Apply users role
     ansible.builtin.import_role:
-      name: lenmail.default_server.users
+      name: onkeldom.default_server.users
 
   - name: Apply msmtp role on Debian family
     ansible.builtin.import_role:
-      name: lenmail.default_server.msmtp
+      name: onkeldom.default_server.msmtp
     when: ansible_os_family == "Debian"
 
   - name: Apply proxy role
     ansible.builtin.import_role:
-      name: lenmail.default_server.proxy
+      name: onkeldom.default_server.proxy
 
   - name: Apply resolvconf role
     ansible.builtin.import_role:
-      name: lenmail.default_server.resolvconf
+      name: onkeldom.default_server.resolvconf
 
   - name: Apply sftp_server role
     ansible.builtin.import_role:
-      name: lenmail.default_server.sftp_server
+      name: onkeldom.default_server.sftp_server
 
   - name: Check proxy environment file
     ansible.builtin.stat:

@@ -46,7 +46,7 @@ squid_extra_config: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.squid
+    - role: onkeldom.default_server.squid
 ```
 
 ## Testing

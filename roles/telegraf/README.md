@@ -114,7 +114,7 @@ telegraf_plugin_files:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.telegraf
+    - role: onkeldom.default_server.telegraf
 ```
 
 ## Testing

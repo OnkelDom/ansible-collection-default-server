@@ -21,7 +21,7 @@ This role does not define defaults in `defaults/main.yml`.
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.motd
+    - role: onkeldom.default_server.motd
 ```
 
 ## Testing

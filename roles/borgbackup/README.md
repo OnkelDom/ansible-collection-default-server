@@ -35,7 +35,7 @@ borgbackup_cron_hour: '2'
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.borgbackup
+    - role: onkeldom.default_server.borgbackup
 ```
 
 ## Testing

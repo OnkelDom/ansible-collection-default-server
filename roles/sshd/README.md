@@ -78,7 +78,7 @@ sshd_server_playbook: {}
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.sshd
+    - role: onkeldom.default_server.sshd
 ```
 
 ## Testing

@@ -26,7 +26,7 @@ ifcfg_interfaces:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.ifcfg
+    - role: onkeldom.default_server.ifcfg
 ```
 
 ## Testing

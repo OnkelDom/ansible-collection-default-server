@@ -33,7 +33,7 @@ nmcli_interfaces:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.nmcli
+    - role: onkeldom.default_server.nmcli
 ```
 
 ## Testing

@@ -50,7 +50,7 @@ keepalived_logrotate_config:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.keepalived
+    - role: onkeldom.default_server.keepalived
 ```
 
 ## Testing

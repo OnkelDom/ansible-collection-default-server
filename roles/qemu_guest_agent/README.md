@@ -26,7 +26,7 @@ qemu_guest_agent_service_state: started
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.qemu_guest_agent
+    - role: onkeldom.default_server.qemu_guest_agent
 ```
 
 ## Testing

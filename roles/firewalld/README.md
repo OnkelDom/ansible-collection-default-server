@@ -46,7 +46,7 @@ firewalld_playbook_rules: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.firewalld
+    - role: onkeldom.default_server.firewalld
 ```
 
 ## Testing

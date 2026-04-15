@@ -130,7 +130,7 @@ apache_systemd_unit_template: ''
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.apache
+    - role: onkeldom.default_server.apache
 ```
 
 ## Testing

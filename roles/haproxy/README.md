@@ -62,7 +62,7 @@ haproxy_defaults_config:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.haproxy
+    - role: onkeldom.default_server.haproxy
 ```
 
 ## Testing

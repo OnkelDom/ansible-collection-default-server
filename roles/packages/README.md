@@ -34,7 +34,7 @@ packages_playbook_remove: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.packages
+    - role: onkeldom.default_server.packages
 ```
 
 ## Testing

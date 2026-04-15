@@ -37,7 +37,7 @@ sssd_bind_password: ''
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.sssd
+    - role: onkeldom.default_server.sssd
 ```
 
 ## Testing

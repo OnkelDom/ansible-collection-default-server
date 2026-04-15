@@ -27,7 +27,7 @@ lvm_config_playbook: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.lvm
+    - role: onkeldom.default_server.lvm
 ```
 
 ## Testing

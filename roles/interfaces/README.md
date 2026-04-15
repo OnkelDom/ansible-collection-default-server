@@ -29,7 +29,7 @@ interfaces_config:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.interfaces
+    - role: onkeldom.default_server.interfaces
 ```
 
 ## Testing

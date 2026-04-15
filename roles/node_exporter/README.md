@@ -69,7 +69,7 @@ node_exporter_webconfig: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.node_exporter
+    - role: onkeldom.default_server.node_exporter
 ```
 
 ## Testing

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Dieses Repository enthaelt die Ansible Collection `lenmail.default_server`.
+Dieses Repository enthaelt die Ansible Collection `onkeldom.default_server`.
 
 Das Ziel dieses Dokuments ist nicht nur Stil vorzugeben, sondern eine belastbare Arbeitsdefinition fuer den gesamten Rollenbestand festzulegen. Es beschreibt, wie wir Rollen einordnen, aendern, reviewen, testen und bei Plattformunterschieden stabil halten.
 
@@ -318,7 +318,7 @@ Neue Rollen werden nur aufgenommen, wenn:
 
 ## Doku- und Namespace-Regeln
 
-- Collection-Referenzen immer als `lenmail.default_server.*`
+- Collection-Referenzen immer als `onkeldom.default_server.*`
 - keine neuen Verweise auf den alten Namespace oder alte Repository-Namen
 - Beispiel-Playbooks und Rollen-READMEs nach jeder Namespace-Aenderung regenerieren
 - README und Meta duerfen keine Plattformen oder Verhaltensweisen behaupten, die Tasks real nicht abbilden

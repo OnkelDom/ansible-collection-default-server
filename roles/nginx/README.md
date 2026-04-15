@@ -61,7 +61,7 @@ nginx_log_format: "'$remote_addr - $remote_user [$time_local] \"$request\" '\n'$
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.nginx
+    - role: onkeldom.default_server.nginx
 ```
 
 ## Testing

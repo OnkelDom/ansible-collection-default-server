@@ -60,7 +60,7 @@ fail2ban_jails:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.fail2ban
+    - role: onkeldom.default_server.fail2ban
 ```
 
 ## Testing

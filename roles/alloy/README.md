@@ -132,7 +132,7 @@ alloy_config:
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.alloy
+    - role: onkeldom.default_server.alloy
 ```
 
 ## Testing

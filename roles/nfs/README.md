@@ -28,7 +28,7 @@ nfs_mounts: []
   hosts: all
   become: true
   roles:
-    - role: lenmail.default_server.nfs
+    - role: onkeldom.default_server.nfs
 ```
 
 ## Testing
