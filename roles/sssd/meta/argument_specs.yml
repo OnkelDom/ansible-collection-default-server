@@ -59,7 +59,7 @@ argument_specs:
         description:
         - Controls `sssd_ad_group_allowd_ssh_and_sudo_extra` for the `sssd` role.
         required: false
-        type: str
+        type: list
       sssd_ou_to_join_servers:
         description:
         - Controls `sssd_ou_to_join_servers` for the `sssd` role.

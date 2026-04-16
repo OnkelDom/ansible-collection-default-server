@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import io
+import re
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,7 @@ from ruamel.yaml import YAML
 ROOT = Path(__file__).resolve().parents[1]
 ROLES_DIR = ROOT / "roles"
 CONFIG_PATH = ROOT / "tools" / "role_scaffold_config.yml"
+JINJA_EXPRESSION_RE = re.compile(r"^\s*\{\{\s*(.+?)\s*\}\}\s*$")
 
 
 def yaml_dump(data: Any) -> str:
@@ -67,6 +69,45 @@ def infer_elements(value: Any) -> str | None:
     first = value[0]
     value_type = infer_type(first)
     return value_type if value_type != "float" else "raw"
+
+
+def resolve_templated_default(value: Any, defaults: dict[str, Any], seen: set[str] | None = None) -> Any:
+    if not isinstance(value, str):
+        return value
+
+    match = JINJA_EXPRESSION_RE.match(value)
+    if not match:
+        return value
+
+    expression = match.group(1).strip()
+    parts = [part.strip() for part in expression.split("|")]
+    if not parts:
+        return value
+
+    variable_name = parts[0]
+    filters = parts[1:]
+
+    if "bool" in filters:
+        return False
+    if "int" in filters:
+        return 0
+
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", variable_name):
+        return value
+
+    resolved_seen = seen or set()
+    if variable_name in resolved_seen or variable_name not in defaults:
+        return value
+
+    return resolve_templated_default(defaults[variable_name], defaults, resolved_seen | {variable_name})
+
+
+def infer_type_from_defaults(value: Any, defaults: dict[str, Any]) -> str:
+    return infer_type(resolve_templated_default(value, defaults))
+
+
+def infer_elements_from_defaults(value: Any, defaults: dict[str, Any]) -> str | None:
+    return infer_elements(resolve_templated_default(value, defaults))
 
 
 def get_platforms(config: dict[str, Any], role_name: str) -> list[dict[str, Any]]:
@@ -137,9 +178,9 @@ def build_argument_specs(role_name: str, defaults: Any) -> str:
             entry: dict[str, Any] = {
                 "description": [f"Controls `{variable_name}` for the `{role_name}` role."],
                 "required": False,
-                "type": infer_type(value),
+                "type": infer_type_from_defaults(value, defaults),
             }
-            elements = infer_elements(value)
+            elements = infer_elements_from_defaults(value, defaults)
             if elements:
                 entry["elements"] = elements
             options[variable_name] = entry

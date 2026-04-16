@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  author: Dominik Lenhardt
+  description: Install and configure borgmatic backup jobs and timers.
+  license: MIT
+  min_ansible_version: '2.16'
+  platforms:
+  - name: Ubuntu
+    versions:
+    - jammy
+    - noble
+  - name: Debian
+    versions:
+    - bookworm
+  - name: EL
+    versions:
+    - '9'
+  galaxy_tags:
+  - linux
+  - system
+  - infrastructure
+  - backup
+  - borg
+  - borgmatic
+  - systemd
+dependencies: []

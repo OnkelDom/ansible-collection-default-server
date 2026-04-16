@@ -1,0 +1,53 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the docker role.
+    description:
+    - Validate variables for the `docker` role.
+    options:
+      docker_manage_repository:
+        description:
+        - Controls `docker_manage_repository` for the `docker` role.
+        required: false
+        type: bool
+      docker_remove_conflicting_packages:
+        description:
+        - Controls `docker_remove_conflicting_packages` for the `docker` role.
+        required: false
+        type: bool
+      docker_manage_daemon_config:
+        description:
+        - Controls `docker_manage_daemon_config` for the `docker` role.
+        required: false
+        type: bool
+      docker_manage_service:
+        description:
+        - Controls `docker_manage_service` for the `docker` role.
+        required: false
+        type: bool
+      docker_service_enabled:
+        description:
+        - Controls `docker_service_enabled` for the `docker` role.
+        required: false
+        type: bool
+      docker_service_state:
+        description:
+        - Controls `docker_service_state` for the `docker` role.
+        required: false
+        type: str
+      docker_users:
+        description:
+        - Controls `docker_users` for the `docker` role.
+        required: false
+        type: list
+      docker_packages:
+        description:
+        - Controls `docker_packages` for the `docker` role.
+        required: false
+        type: list
+        elements: str
+      docker_daemon_config:
+        description:
+        - Controls `docker_daemon_config` for the `docker` role.
+        required: false
+        type: dict

@@ -1,0 +1,97 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the borgmatic role.
+    description:
+    - Validate variables for the `borgmatic` role.
+    options:
+      borgmatic_manage_packages:
+        description:
+        - Controls `borgmatic_manage_packages` for the `borgmatic` role.
+        required: false
+        type: bool
+      borgmatic_package_state:
+        description:
+        - Controls `borgmatic_package_state` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_install_method:
+        description:
+        - Controls `borgmatic_install_method` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_version:
+        description:
+        - Controls `borgmatic_version` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_config_dir:
+        description:
+        - Controls `borgmatic_config_dir` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_config_file:
+        description:
+        - Controls `borgmatic_config_file` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_environment_file:
+        description:
+        - Controls `borgmatic_environment_file` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_manage_local_repositories:
+        description:
+        - Controls `borgmatic_manage_local_repositories` for the `borgmatic` role.
+        required: false
+        type: bool
+      borgmatic_manage_timer:
+        description:
+        - Controls `borgmatic_manage_timer` for the `borgmatic` role.
+        required: false
+        type: bool
+      borgmatic_timer_enabled:
+        description:
+        - Controls `borgmatic_timer_enabled` for the `borgmatic` role.
+        required: false
+        type: bool
+      borgmatic_timer_state:
+        description:
+        - Controls `borgmatic_timer_state` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_timer_on_calendar:
+        description:
+        - Controls `borgmatic_timer_on_calendar` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_timer_randomized_delay_sec:
+        description:
+        - Controls `borgmatic_timer_randomized_delay_sec` for the `borgmatic` role.
+        required: false
+        type: str
+      borgmatic_timer_persistent:
+        description:
+        - Controls `borgmatic_timer_persistent` for the `borgmatic` role.
+        required: false
+        type: bool
+      borgmatic_verbosity:
+        description:
+        - Controls `borgmatic_verbosity` for the `borgmatic` role.
+        required: false
+        type: int
+      borgmatic_actions:
+        description:
+        - Controls `borgmatic_actions` for the `borgmatic` role.
+        required: false
+        type: list
+      borgmatic_environment:
+        description:
+        - Controls `borgmatic_environment` for the `borgmatic` role.
+        required: false
+        type: dict
+      borgmatic_config:
+        description:
+        - Controls `borgmatic_config` for the `borgmatic` role.
+        required: false
+        type: dict
