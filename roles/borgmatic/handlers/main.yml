@@ -1,0 +1,15 @@
+---
+- name: Reload borgmatic systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+- name: Restart borgmatic timer
+  ansible.builtin.systemd:
+    name: "{{ borgmatic_timer_unit_name }}"
+    enabled: "{{ borgmatic_timer_enabled }}"
+    state: restarted
+  when:
+  - borgmatic_manage_timer | bool
+  - borgmatic_timer_enabled | bool
+  become: true

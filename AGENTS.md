@@ -198,6 +198,8 @@ Der aktuelle Rollenbestand wird architektonisch in diese Klassen eingeordnet.
 - `nfs`: NFS Client und Server-Anteile je nach Rolleingang
 - `multipath`: Multipath-Storage
 - `borgbackup`: Backup-Agent
+- `borgmatic`: Backup-Orchestrierung fuer Borg
+- `docker`: Container-Runtime und Host-Daemon
 - `msmtp`: SMTP-Relay fuer Systemmail
 
 ## Umgang mit jeder Rollen-Klasse
@@ -267,11 +269,11 @@ Fuer jede Rolle gilt bei Review und Aenderungen dieselbe Checkliste:
 
 So wollen wir den vorhandenen Bestand kuenftig behandeln:
 
-- `portable` und strategisch wichtig: `alloy`, `apache`, `auditd`, `borgbackup`, `ca`, `certbot`, `chrony`, `dante`, `fail2ban`, `haproxy`, `hosts`, `keepalived`, `lvm`, `mounts`, `msmtp`, `multipath`, `nfs`, `nginx`, `nmcli`, `node_exporter`, `packages`, `proxy`, `qemu_guest_agent`, `resolvconf`, `sftp_server`, `squid`, `sshd`, `sssd`, `sysctl`, `telegraf`, `traefik`, `unbound`, `users`, `vmware_tools`, `wpad`.
+- `portable` und strategisch wichtig: `alloy`, `apache`, `auditd`, `borgbackup`, `borgmatic`, `ca`, `certbot`, `chrony`, `dante`, `docker`, `fail2ban`, `haproxy`, `hosts`, `keepalived`, `lvm`, `mounts`, `msmtp`, `multipath`, `nfs`, `nginx`, `nmcli`, `node_exporter`, `packages`, `proxy`, `qemu_guest_agent`, `resolvconf`, `sftp_server`, `squid`, `sshd`, `sssd`, `sysctl`, `telegraf`, `traefik`, `unbound`, `users`, `vmware_tools`, `wpad`.
 - `family-scoped` Debian: `apt_repos`, `interfaces`, `netplan`, `systemd_resolved`, `systemd_timesyncd`, `ufw`, `unattended_updates`.
 - `family-scoped` RedHat: `dnf_automatic`, `dnf_repos`, `firewalld`, `ifcfg`.
 - Rollen mit moeglichem Architekturabgleich bei Gelegenheit: `proxy`, `resolvconf`, `systemd_resolved`, `unbound`, `wpad`, weil sie alle in denselben DNS- oder Proxy-Fluss eingreifen koennen.
-- Rollen mit hohem Kompositionsrisiko: `netplan`, `interfaces`, `ifcfg`, `nmcli`, `ufw`, `firewalld`, `keepalived`, `haproxy`, `nginx`, `apache`, `traefik`, `unbound`, `squid`, `dante`.
+- Rollen mit hohem Kompositionsrisiko: `netplan`, `interfaces`, `ifcfg`, `nmcli`, `ufw`, `firewalld`, `docker`, `keepalived`, `haproxy`, `nginx`, `apache`, `traefik`, `unbound`, `squid`, `dante`.
 
 ## Aenderungsregeln fuer bestehende Rollen
 

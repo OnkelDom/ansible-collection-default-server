@@ -1,0 +1,9 @@
+[Unit]
+Description=Run borgmatic backup jobs
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-{{ borgmatic_environment_file }}
+ExecStart={{ borgmatic_binary_path }} --config {{ borgmatic_config_file }} --verbosity {{ borgmatic_verbosity }}{% if borgmatic_actions | length > 0 %} {{ borgmatic_actions | join(' ') }}{% endif %}

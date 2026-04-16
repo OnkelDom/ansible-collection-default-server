@@ -33,7 +33,17 @@ telegraf_plugins_path: /etc/telegraf/telegraf.d
 telegraf_service_name: telegraf
 telegraf_package_name: telegraf
 telegraf_plugins: []
+telegraf_plugins_group_vars: []
+telegraf_plugins_host_vars: []
+telegraf_plugins_playbook: []
 telegraf_plugin_files: []
+telegraf_plugin_files_group_vars: []
+telegraf_plugin_files_host_vars: []
+telegraf_plugin_files_playbook: []
+telegraf_global_tags: {}
+telegraf_global_tags_group_vars: {}
+telegraf_global_tags_host_vars: {}
+telegraf_global_tags_playbook: {}
 telegraf_config:
   agent:
     interval: 10s
@@ -71,40 +81,6 @@ telegraf_config:
     config: {}
   - type: system
     config: {}
-```
-
-## Snippets in `telegraf.d`
-
-For small host- or group-specific extensions, prefer `telegraf_plugin_files` over
-replacing the full `telegraf_config`.
-
-Raw TOML snippet:
-
-```yaml
-telegraf_plugin_files:
-  - name: inputs_procstat.conf
-    content: |
-      [[inputs.procstat]]
-        pid_file = "/var/run/sshd.pid"
-```
-
-Structured snippet rendering:
-
-```yaml
-telegraf_plugin_files:
-  - name: inputs_services.conf
-    sections:
-      - plugin_type: inputs
-        type: procstat
-        config:
-          pid_file: /var/run/sshd.pid
-      - plugin_type: inputs
-        type: service
-        config:
-          services:
-            - ssh
-            - cron
-            - telegraf
 ```
 
 ## Example Playbook

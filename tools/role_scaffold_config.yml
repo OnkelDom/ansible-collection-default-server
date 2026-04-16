@@ -22,10 +22,12 @@ role_descriptions:
   apt_repos: Manage APT repository definitions and signing keys on Debian-based systems.
   auditd: Manage additional auditd rules.
   borgbackup: Install and configure BorgBackup jobs and defaults.
+  borgmatic: Install and configure borgmatic backup jobs and timers.
   ca: Deploy custom certificate authorities.
   certbot: Request and renew TLS certificates with Certbot.
   chrony: Install and configure Chrony for time synchronization.
   dante: Install and configure the Dante SOCKS proxy service.
+  docker: Install Docker Engine from the official Docker repositories and manage daemon settings.
   dnf_automatic: Configure automatic package updates on EL systems.
   dnf_repos: Manage YUM and DNF repository definitions and signing keys on EL systems.
   fail2ban: Install and configure Fail2ban jails and actions.
@@ -70,6 +72,16 @@ role_galaxy_tags:
   - repository
   - packages
   - debian
+  borgmatic:
+  - backup
+  - borg
+  - borgmatic
+  - systemd
+  docker:
+  - docker
+  - containers
+  - runtime
+  - compose
   dnf_repos:
   - dnf
   - yum
@@ -123,6 +135,20 @@ role_example_playbooks:
                 gpgcheck: true
                 key_path: /etc/pki/rpm-gpg/RPM-GPG-KEY-internal-base
                 gpgkey_url: https://repo.example.com/keys/RPM-GPG-KEY-internal-base
+  docker: |
+    - name: Install and configure Docker Engine
+      hosts: container_hosts
+      become: true
+      roles:
+        - role: onkeldom.default_server.docker
+          vars:
+            docker_users:
+              - deploy
+            docker_daemon_config:
+              log-driver: json-file
+              log-opts:
+                max-size: "10m"
+                max-file: "3"
 role_platform_overrides:
   certbot:
   - name: Ubuntu

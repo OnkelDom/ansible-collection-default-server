@@ -89,7 +89,7 @@ argument_specs:
         description:
         - Controls `alloy_selinux_ports` for the `alloy` role.
         required: false
-        type: str
+        type: list
       alloy_service_override:
         description:
         - Controls `alloy_service_override` for the `alloy` role.

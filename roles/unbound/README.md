@@ -24,6 +24,8 @@ unbound_firewall_zone: public
 unbound_manage_selinux: true
 unbound_zones_dir: '{{ unbound_config_dir }}/zones.d'
 unbound_local_zones: []
+unbound_stub_zones: []
+unbound_forward_zones: []
 unbound_auth_zones: []
 unbound_config:
   server:
