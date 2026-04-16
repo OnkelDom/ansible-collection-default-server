@@ -4,7 +4,9 @@ _wpad_webserver_map:
     service_name: apache2
     config_path: /etc/apache2/sites-available/wpad.conf
     enabled_path: /etc/apache2/sites-enabled/wpad.conf
+    validate_command: /usr/sbin/apache2ctl -t
   nginx:
     service_name: nginx
     config_path: /etc/nginx/sites-enabled/wpad.conf
     enabled_path: ""
+    validate_command: /usr/sbin/nginx -t -c /etc/nginx/nginx.conf

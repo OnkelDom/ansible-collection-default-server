@@ -1,0 +1,62 @@
+---
+- name: Functional test for dante
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+  vars:
+    proxy_env: {}
+    dante_manage_service: false
+    dante_manage_firewall: false
+    dante_manage_selinux: false
+    dante_client_rules:
+    - from: 127.0.0.1/32
+      to: 0.0.0.0/0
+      log: error
+    dante_socks_rules:
+    - from: 127.0.0.1/32
+      to: 0.0.0.0/0
+      command: bind connect udpassociate
+      log: error
+
+  tasks:
+  - name: Apply dante role
+    ansible.builtin.import_role:
+      name: ..
+
+  - name: Define dante verification variables
+    ansible.builtin.set_fact:
+      __dante_config_path: "{{ '/etc/danted.conf' if ansible_os_family == 'Debian' else '/etc/sockd.conf' }}"
+      __dante_validate_binary: "{{ '/usr/sbin/danted' if ansible_os_family == 'Debian' else '/usr/sbin/sockd' }}"
+      __dante_packages: >-
+        {{ ['dante-client', 'dante-server'] if ansible_os_family == 'Debian'
+        else ['dante', 'dante-server'] }}
+
+  - name: Gather installed package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Check rendered dante configuration file
+    ansible.builtin.stat:
+      path: "{{ __dante_config_path }}"
+    register: __dante_config_stat
+
+  - name: Read rendered dante configuration file
+    ansible.builtin.slurp:
+      path: "{{ __dante_config_path }}"
+    register: __dante_config_content
+
+  - name: Validate rendered dante configuration
+    ansible.builtin.command: "{{ __dante_validate_binary }} -V -f {{ __dante_config_path }}"
+    changed_when: false
+
+  - name: Assert dante package and configuration state
+    ansible.builtin.assert:
+      that:
+      - __dante_config_stat.stat.exists
+      - '__dante_packages | difference(ansible_facts.packages.keys() | list) | length == 0'
+      - '(__dante_config_content.content | b64decode) is search("internal: 0.0.0.0 port = 1080")'
+      - '(__dante_config_content.content | b64decode) is search("external: ")'
+      - '(__dante_config_content.content | b64decode) is search("socksmethod: none")'
+      - '(__dante_config_content.content | b64decode) is search("command: bind connect udpassociate")'
+      fail_msg: "The dante role did not install its packages or render the expected SOCKS configuration."

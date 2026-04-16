@@ -32,10 +32,12 @@
   - ansible_selinux is defined
   - ansible_selinux.status == "enabled"
   become: true
+  tags: wpad
 
 - name: Select wpad webserver implementation
   ansible.builtin.set_fact:
     _wpad_webserver: "{{ _wpad_webserver_map[wpad_webserver] }}"
+  tags: wpad
 
 - name: Ensure wpad document root exists
   ansible.builtin.file:
@@ -45,6 +47,8 @@
     group: root
     mode: "0755"
   when: wpad_state == "present"
+  become: true
+  tags: wpad
 
 - name: Render proxy auto-configuration file
   ansible.builtin.template:
@@ -54,12 +58,16 @@
     group: root
     mode: "0644"
   when: wpad_state == "present"
+  become: true
+  tags: wpad
 
 - name: Remove proxy auto-configuration file
   ansible.builtin.file:
     path: "{{ wpad_document_root }}/{{ wpad_pac_filename }}"
     state: absent
   when: wpad_state == "absent"
+  become: true
+  tags: wpad
 
 - name: Render wpad webserver configuration
   ansible.builtin.template:
@@ -71,7 +79,11 @@
   when:
   - wpad_manage_webserver_config | bool
   - wpad_state == "present"
-  notify: Reload wpad webserver
+  notify:
+  - Validate wpad webserver configuration
+  - Reload wpad webserver
+  become: true
+  tags: wpad
 
 - name: Enable apache site on Debian
   ansible.builtin.file:
@@ -83,7 +95,11 @@
   - wpad_state == "present"
   - wpad_webserver == "apache"
   - ansible_os_family == "Debian"
-  notify: Reload wpad webserver
+  notify:
+  - Validate wpad webserver configuration
+  - Reload wpad webserver
+  become: true
+  tags: wpad
 
 - name: Disable apache site on Debian
   ansible.builtin.file:
@@ -95,7 +111,11 @@
   - ansible_os_family == "Debian"
   - _wpad_webserver.enabled_path | length > 0
   - wpad_state == "absent"
-  notify: Reload wpad webserver
+  notify:
+  - Validate wpad webserver configuration
+  - Reload wpad webserver
+  become: true
+  tags: wpad
 
 - name: Remove wpad webserver configuration
   ansible.builtin.file:
@@ -104,7 +124,11 @@
   when:
   - wpad_manage_webserver_config | bool
   - wpad_state == "absent"
-  notify: Reload wpad webserver
+  notify:
+  - Validate wpad webserver configuration
+  - Reload wpad webserver
+  become: true
+  tags: wpad
 
 - name: Ensure wpad webserver service state
   ansible.builtin.service:
@@ -115,6 +139,7 @@
   - wpad_manage_service | bool
   - wpad_state == "present"
   become: true
+  tags: wpad
 
 - name: Open WPAD port in firewalld
   ansible.posix.firewalld:
@@ -127,6 +152,7 @@
   - wpad_manage_firewall | bool
   - ansible_os_family == "RedHat"
   become: true
+  tags: wpad
 
 - name: Open WPAD port in UFW
   community.general.ufw:
@@ -139,6 +165,7 @@
   - wpad_manage_firewall | bool
   - ansible_os_family == "Debian"
   become: true
+  tags: wpad
 
 - name: Allow WPAD port in SELinux
   community.general.seport:
@@ -152,3 +179,4 @@
   - ansible_selinux is defined
   - ansible_selinux.status == "enabled"
   become: true
+  tags: wpad

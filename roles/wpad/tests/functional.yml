@@ -1,0 +1,78 @@
+---
+- name: Functional test for wpad with nginx
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+  vars:
+    proxy_env: {}
+    wpad_webserver: nginx
+    wpad_manage_service: false
+    wpad_manage_firewall: false
+    wpad_manage_selinux: false
+    wpad_server_names:
+    - wpad.example.test
+    - proxy.example.test
+    wpad_proxy_targets:
+    - type: PROXY
+      host: squid.example.test
+      port: 3128
+    - type: SOCKS
+      host: socks.example.test
+      port: 1080
+    wpad_bypass_domain_suffixes:
+    - .example.internal
+
+  tasks:
+  - name: Install nginx package for wpad functional test
+    ansible.builtin.package:
+      name: nginx
+      state: present
+
+  - name: Apply wpad role
+    ansible.builtin.import_role:
+      name: ..
+
+  - name: Define wpad verification variables
+    ansible.builtin.set_fact:
+      __wpad_config_path: >-
+        {{ '/etc/nginx/sites-enabled/wpad.conf' if ansible_os_family == 'Debian'
+        else '/etc/nginx/conf.d/wpad.conf' }}
+      __wpad_validate_binary: /usr/sbin/nginx
+      __wpad_pac_path: "{{ wpad_document_root }}/{{ wpad_pac_filename }}"
+
+  - name: Check rendered wpad PAC file
+    ansible.builtin.stat:
+      path: "{{ __wpad_pac_path }}"
+    register: __wpad_pac_stat
+
+  - name: Check rendered nginx wpad configuration
+    ansible.builtin.stat:
+      path: "{{ __wpad_config_path }}"
+    register: __wpad_nginx_config_stat
+
+  - name: Read rendered wpad PAC file
+    ansible.builtin.slurp:
+      path: "{{ __wpad_pac_path }}"
+    register: __wpad_pac_content
+
+  - name: Read rendered nginx wpad configuration
+    ansible.builtin.slurp:
+      path: "{{ __wpad_config_path }}"
+    register: __wpad_nginx_config_content
+
+  - name: Validate nginx configuration with wpad site enabled
+    ansible.builtin.command: "{{ __wpad_validate_binary }} -t -c /etc/nginx/nginx.conf"
+    changed_when: false
+
+  - name: Assert wpad nginx integration output
+    ansible.builtin.assert:
+      that:
+      - __wpad_pac_stat.stat.exists
+      - __wpad_nginx_config_stat.stat.exists
+      - '(__wpad_pac_content.content | b64decode) is search("PROXY squid.example.test:3128; SOCKS socks.example.test:1080; DIRECT")'
+      - '(__wpad_pac_content.content | b64decode) is search(".example.internal")'
+      - '(__wpad_nginx_config_content.content | b64decode) is search("server_name wpad.example.test proxy.example.test;")'
+      - '(__wpad_nginx_config_content.content | b64decode) is search("location = /wpad.dat")'
+      - '(__wpad_nginx_config_content.content | b64decode) is search("default_type application/x-ns-proxy-autoconfig;")'
+      fail_msg: "The wpad role did not render the expected PAC payload or nginx site configuration."
