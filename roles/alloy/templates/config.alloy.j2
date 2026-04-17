@@ -51,13 +51,35 @@ discovery.{{ discovery_type }} "{{ discovery_type }}" {
 {% if alloy_config.loki.write is defined %}
 {% for write_config in alloy_config.loki.write %}
 loki.write "loki_{{ loop.index0 }}" {
+{% if write_config.endpoint is defined %}
+  endpoint {
+{% if write_config.endpoint is string %}
+    url = "{{ write_config.endpoint }}"
+{% elif write_config.endpoint is mapping %}
+{% for endpoint_key, endpoint_value in write_config.endpoint.items() %}
+{% if endpoint_value is string %}
+    {{ endpoint_key }} = "{{ endpoint_value }}"
+{% elif endpoint_value is iterable and endpoint_value is not string %}
+    {{ endpoint_key }} = {{ endpoint_value | to_json }}
+{% else %}
+    {{ endpoint_key }} = {{ endpoint_value }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if write_config.tenant_id is defined %}
+    tenant_id = "{{ write_config.tenant_id }}"
+{% endif %}
+  }
+{% endif %}
 {% for key, value in write_config.items() %}
+{% if key not in ["endpoint", "tenant_id"] %}
 {% if value is string %}
   {{ key }} = "{{ value }}"
 {% elif value is iterable and value is not string %}
   {{ key }} = {{ value | to_json }}
 {% else %}
   {{ key }} = {{ value }}
+{% endif %}
 {% endif %}
 {% endfor %}
 }

@@ -11,9 +11,11 @@ telegraf_firewall_ports:
 - 9273/tcp
 telegraf_manage_main_config: true
 telegraf_manage_plugin_configs: true
-telegraf_apt_repo: "deb [signed-by=/etc/apt/keyrings/influxdata.gpg] https://repos.influxdata.com/debian stable main"
+telegraf_apt_repo: "deb [signed-by={{ telegraf_apt_keyring_path }}] https://repos.influxdata.com/debian stable main"
 telegraf_yum_repo_baseurl: "https://repos.influxdata.com/rhel/$releasever/$basearch/stable"
-telegraf_gpg_key_url: "https://repos.influxdata.com/influxdb.key"
+telegraf_gpg_key_url: "https://repos.influxdata.com/influxdata-archive.key"
+telegraf_apt_keyring_path: /etc/apt/keyrings/influxdata-archive.gpg
+telegraf_apt_key_download_path: /etc/apt/keyrings/influxdata-archive.key
 telegraf_config_path: /etc/telegraf/telegraf.conf
 telegraf_plugins_path: /etc/telegraf/telegraf.d
 telegraf_service_name: telegraf

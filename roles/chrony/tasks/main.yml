@@ -52,6 +52,7 @@
     cmd: timedatectl show -p Timezone --value
   register: __chrony_current_timezone
   changed_when: false
+  failed_when: false
   when: chrony_set_time_zone | bool
   become: true
   tags: chrony
@@ -70,6 +71,7 @@
     cmd: timedatectl show -p NTP --value
   register: __chrony_ntp_status
   changed_when: false
+  failed_when: false
   when:
   - chrony_manage_ntp | bool
   - ansible_service_mgr == "systemd"
@@ -82,6 +84,7 @@
   when:
   - chrony_manage_ntp | bool
   - ansible_service_mgr == "systemd"
+  - __chrony_ntp_status.rc == 0
   - __chrony_ntp_status.stdout != "yes"
   changed_when: true
   become: true

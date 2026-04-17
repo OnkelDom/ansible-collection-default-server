@@ -39,10 +39,26 @@
 - name: Install GPG key
   ansible.builtin.get_url:
     url: "{{ telegraf_gpg_key_url }}"
-    dest: "{{ '/etc/apt/keyrings/influxdata.gpg' if ansible_os_family == 'Debian' else '/etc/pki/rpm-gpg/RPM-GPG-KEY-influxdata' }}"
+    dest: "{{ telegraf_apt_key_download_path if ansible_os_family == 'Debian' else '/etc/pki/rpm-gpg/RPM-GPG-KEY-influxdata' }}"
     mode: '0644'
   when: telegraf_manage_repository | bool
   become: true
+  tags: telegraf
+
+- name: Dearmor InfluxData archive key for Debian
+  ansible.builtin.command:
+    argv:
+    - gpg
+    - --dearmor
+    - --yes
+    - -o
+    - "{{ telegraf_apt_keyring_path }}"
+    - "{{ telegraf_apt_key_download_path }}"
+  when:
+  - telegraf_manage_repository | bool
+  - ansible_os_family == 'Debian'
+  become: true
+  changed_when: true
   tags: telegraf
 
 - name: Add Telegraf repository (Debian)

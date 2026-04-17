@@ -13,6 +13,50 @@
   - alloy
   - alloy-config
 
+- name: Ensure apt keyring directory exists for Grafana Alloy
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  when:
+  - ansible_os_family == "Debian"
+  - alloy_manage_repository | bool
+  tags:
+  - alloy
+  - alloy-install
+
+- name: Download Grafana repository key for Alloy
+  ansible.builtin.get_url:
+    url: "{{ alloy_repository_key_url }}"
+    dest: "{{ alloy_repository_keyring }}"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  when:
+  - ansible_os_family == "Debian"
+  - alloy_manage_repository | bool
+  tags:
+  - alloy
+  - alloy-install
+
+- name: Configure Grafana repository for Alloy on Debian
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by={{ alloy_repository_keyring }}] {{ alloy_repository_url }} stable main"
+    filename: grafana
+    state: present
+    update_cache: true
+  become: true
+  when:
+  - ansible_os_family == "Debian"
+  - alloy_manage_repository | bool
+  tags:
+  - alloy
+  - alloy-install
+
 - name: Install SELinux tooling for alloy
   ansible.builtin.package:
     name: "{{ alloy_selinux_packages }}"

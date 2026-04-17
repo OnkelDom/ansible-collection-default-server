@@ -27,7 +27,7 @@ packages_defaults_install:
 - screen
 - pastebinit
 - build-essential
-- dnsutils
+- bind9-dnsutils
 - ipcalc
 - unrar-free
 - tofrodos
@@ -45,7 +45,6 @@ packages_defaults_install:
 - socat
 - iftop
 - xclip
-- software-properties-common
 - realmd
 - adcli
 - xfsprogs
