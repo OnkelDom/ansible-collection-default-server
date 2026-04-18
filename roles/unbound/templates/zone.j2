@@ -1,4 +1,4 @@
-; {{ ansible_managed }}
+{{ ansible_managed | comment('; ') }}
 $TTL {{ zone.minimum | default(86400) }}
 {{ zone.name }}. IN SOA {{ (zone.nameservers | default(['ns1.' ~ zone.name ~ '.']))[0] }} hostmaster.{{ zone.name }}. (
         {{ zone.serial | default(ansible_date_time.epoch) }}
