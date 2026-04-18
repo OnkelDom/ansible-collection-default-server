@@ -15,6 +15,11 @@ argument_specs:
         - Controls `certbot_cloudflare_api_key` for the `certbot` role.
         required: false
         type: str
+      certbot_cloudflare_api_token:
+        description:
+        - Controls `certbot_cloudflare_api_token` for the `certbot` role.
+        required: false
+        type: str
       certbot_cloudflare_credentials_path:
         description:
         - Controls `certbot_cloudflare_credentials_path` for the `certbot` role.
@@ -38,6 +43,11 @@ argument_specs:
       certbot_renew_hook:
         description:
         - Controls `certbot_renew_hook` for the `certbot` role.
+        required: false
+        type: str
+      certbot_acme_email:
+        description:
+        - Controls `certbot_acme_email` for the `certbot` role.
         required: false
         type: str
       certbot_certs:
