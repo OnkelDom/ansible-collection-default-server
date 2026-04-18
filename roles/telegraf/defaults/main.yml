@@ -42,7 +42,36 @@ telegraf_plugins_playbook: []
 #         type: procstat
 #         config:
 #           pid_file: /var/run/sshd.pid
-telegraf_plugin_files: []
+telegraf_plugin_files:
+  - name: "10-inputs-host-base.conf"
+    sections:
+      - plugin_type: inputs
+        type: procstat
+        config:
+          pid_file: "/var/run/sshd.pid"
+      - plugin_type: inputs
+        type: diskio
+        config: {}
+      - plugin_type: inputs
+        type: kernel
+        config: {}
+      - plugin_type: inputs
+        type: processes
+        config: {}
+      - plugin_type: inputs
+        type: netstat
+        config: {}
+      - plugin_type: inputs
+        type: lvm
+        config: {}
+      - plugin_type: inputs
+        type: cgroup
+        config:
+          paths:
+            - "/sys/fs/cgroup/cpu,cpuacct/cpuacct.usage"
+            - "/sys/fs/cgroup/cpu,cpuacct/cpuacct.stat"
+            - "/sys/fs/cgroup/memory/memory.usage_in_bytes"
+            - "/sys/fs/cgroup/memory/memory.stat"
 telegraf_plugin_files_group_vars: []
 telegraf_plugin_files_host_vars: []
 telegraf_plugin_files_playbook: []
