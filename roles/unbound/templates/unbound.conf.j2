@@ -2,6 +2,7 @@
 {% macro unbound_value(value) -%}
 {%- if value is sameas true -%}yes
 {%- elif value is sameas false -%}no
+{%- elif value is string and value == '' -%}""
 {%- else -%}{{ value }}
 {%- endif -%}
 {%- endmacro %}
