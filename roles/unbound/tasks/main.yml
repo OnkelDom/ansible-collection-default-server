@@ -211,6 +211,24 @@
   become: true
   tags: unbound
 
+- name: Ensure remote-control certificate permissions
+  ansible.builtin.file:
+    path: "{{ unbound_config_dir }}/{{ item.name }}"
+    owner: root
+    group: "{{ unbound_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+  - { name: "unbound_control.key", mode: "0640" }
+  - { name: "unbound_control.pem", mode: "0640" }
+  - { name: "unbound_server.key", mode: "0640" }
+  - { name: "unbound_server.pem", mode: "0640" }
+  when:
+  - unbound_config['remote-control'] is defined
+  - unbound_config['remote-control']['control-enable'] | default(false) | bool
+  become: true
+  notify: Restart unbound
+  tags: unbound
+
 - name: Configure unbound service
   ansible.builtin.template:
     src: unbound.conf.j2

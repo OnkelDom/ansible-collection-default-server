@@ -102,6 +102,29 @@
       }}
   tags: telegraf
 
+- name: Combine telegraf supplementary groups
+  ansible.builtin.set_fact:
+    telegraf_effective_extra_groups: >-
+      {{
+        (
+          (telegraf_extra_groups | default([]))
+          + (telegraf_extra_groups_group_vars | default([]))
+          + (telegraf_extra_groups_host_vars | default([]))
+          + (telegraf_extra_groups_playbook | default([]))
+        ) | unique
+      }}
+  tags: telegraf
+
+- name: Ensure telegraf user supplementary groups
+  ansible.builtin.user:
+    name: "{{ telegraf_user }}"
+    groups: "{{ telegraf_effective_extra_groups | join(',') }}"
+    append: true
+  when: telegraf_effective_extra_groups | length > 0
+  become: true
+  notify: Restart Telegraf
+  tags: telegraf
+
 - name: Combine legacy telegraf plugin definitions
   ansible.builtin.set_fact:
     telegraf_effective_plugins: >-
