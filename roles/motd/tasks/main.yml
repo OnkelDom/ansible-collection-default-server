@@ -1,4 +1,14 @@
 ---
+- name: Empty /etc/motd
+  ansible.builtin.copy:
+    content: ""
+    dest: "/etc/motd"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  tags: motd
+
 - name: Configure /etc/update-motd.d/00-header
   ansible.builtin.template:
     src: "debian.j2"
