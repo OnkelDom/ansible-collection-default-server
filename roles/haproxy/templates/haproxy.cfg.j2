@@ -1,141 +1,150 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
-{{ ansible_managed | comment }}
-{% macro bind_line(bind) -%}
-    bind {{ bind.address | default('') }}:{{ bind.port }}{% if bind.ssl | default(false) %} ssl crt-list {{ bind.crt_list | default(haproxy_server_tls_crt_list_path) }}{% endif %}
-{%- endmacro %}
-global
-{% for key, value in haproxy_global_config.items() -%}
-{% if value is sameas true -%}
-    {{ key }}
-{% elif value is sameas false or value is none -%}
-{% elif value is iterable and value is not string and value is not mapping -%}
-{% for item in value -%}
-    {{ key }} {{ item }}
-{% endfor -%}
-{% else -%}
-    {{ key }} {{ value }}
-{% endif -%}
+{%- set ns = namespace(lines=[]) %}
+{% set ns.lines = ns.lines + ['global'] %}
+{% for key, value in haproxy_global_config.items() %}
+{% if value is sameas true %}
+{% set ns.lines = ns.lines + ['    ' ~ key] %}
+{% elif value is sameas false or value is none %}
+{% elif value is iterable and value is not string and value is not mapping %}
+{% for item in value %}
+{% set ns.lines = ns.lines + ['    ' ~ key ~ ' ' ~ item] %}
+{% endfor %}
+{% else %}
+{% set ns.lines = ns.lines + ['    ' ~ key ~ ' ' ~ value] %}
+{% endif %}
 {% endfor %}
 
-defaults
-{% for key, value in haproxy_defaults_config.items() -%}
-{% if key == 'timeout' -%}
-{% for timeout_key, timeout_value in value.items() -%}
-    timeout {{ timeout_key }} {{ timeout_value }}
-{% endfor -%}
-{% elif value is sameas true -%}
-    {{ key }}
-{% elif value is sameas false or value is none -%}
-{% elif value is iterable and value is not string and value is not mapping -%}
-{% for item in value -%}
-    {{ key }} {{ item }}
-{% endfor -%}
-{% else -%}
-    {{ key }} {{ value }}
-{% endif -%}
+{% set ns.lines = ns.lines + ['', 'defaults'] %}
+{% for key, value in haproxy_defaults_config.items() %}
+{% if key == 'timeout' %}
+{% for timeout_key, timeout_value in value.items() %}
+{% set ns.lines = ns.lines + ['    timeout ' ~ timeout_key ~ ' ' ~ timeout_value] %}
 {% endfor %}
+{% elif value is sameas true %}
+{% set ns.lines = ns.lines + ['    ' ~ key] %}
+{% elif value is sameas false or value is none %}
+{% elif value is iterable and value is not string and value is not mapping %}
+{% for item in value %}
+{% set ns.lines = ns.lines + ['    ' ~ key ~ ' ' ~ item] %}
+{% endfor %}
+{% else %}
+{% set ns.lines = ns.lines + ['    ' ~ key ~ ' ' ~ value] %}
+{% endif %}
+{% endfor %}
+
 {% for userlist in haproxy_userlists_list %}
-
-userlist {{ userlist.name }}
-{% for user in userlist.users -%}
-    user {{ user.username }} {{ 'insecure-password' if user.insecure_password | default(false) else 'password' }} {{ user.password }}
-{% endfor -%}
-{% endfor -%}
-{% for frontend in haproxy_frontends_list %}
-
-frontend {{ frontend.name }}
-{% if frontend.bind is mapping -%}
-{{ bind_line(frontend.bind) }}
-{% else -%}
-{% for bind in frontend.bind | default([]) -%}
-{{ bind_line(bind) }}
-{% endfor -%}
-{% endif -%}
-{% if frontend.mode is defined -%}
-    mode {{ frontend.mode }}
-{% endif -%}
-{% for option in frontend.options | default([]) -%}
-    option {{ option }}
-{% endfor -%}
-{% for acl in frontend.acl | default([]) -%}
-    acl {{ acl }}
-{% endfor -%}
-{% for http_request in frontend.http_request | default([]) -%}
-    http-request {{ http_request }}
-{% endfor -%}
-{% for redirect in frontend.redirect | default([]) -%}
-    redirect {{ redirect }}
-{% endfor -%}
-{% for use_backend in frontend.use_backend | default([]) -%}
-    use_backend {{ use_backend }}
-{% endfor -%}
-{% for custom in frontend.custom | default([]) -%}
-    {{ custom }}
-{% endfor -%}
-{% if frontend.default_backend is defined -%}
-    default_backend {{ frontend.default_backend }}
-{% endif -%}
-{% endfor -%}
-{% for listen in haproxy_listens_list %}
-
-listen {{ listen.name }}
-{% if listen.bind is mapping -%}
-{{ bind_line(listen.bind) }}
-{% else -%}
-{% for bind in listen.bind | default([]) -%}
-{{ bind_line(bind) }}
-{% endfor -%}
-{% endif -%}
-{% if listen.mode is defined -%}
-    mode {{ listen.mode }}
-{% endif -%}
-{% if listen.balance is defined -%}
-    balance {{ listen.balance }}
-{% endif -%}
-{% for option in listen.options | default([]) -%}
-    option {{ option }}
-{% endfor -%}
-{% for acl in listen.acl | default([]) -%}
-    acl {{ acl }}
-{% endfor -%}
-{% for http_request in listen.http_request | default([]) -%}
-    http-request {{ http_request }}
-{% endfor -%}
-{% for redirect in listen.redirect | default([]) -%}
-    redirect {{ redirect }}
-{% endfor -%}
-{% for stats in listen.stats | default([]) -%}
-    stats {{ stats }}
-{% endfor -%}
-{% for use_backend in listen.use_backend | default([]) -%}
-    use_backend {{ use_backend }}
-{% endfor -%}
-{% for custom in listen.custom | default([]) -%}
-    {{ custom }}
-{% endfor -%}
-{% if listen.default_backend is defined -%}
-    default_backend {{ listen.default_backend }}
-{% endif -%}
-{% for server in listen.backend_server_list | default([]) -%}
-    server {{ server.name }} {{ server.address }}:{{ server.port }}{% if server.maxconn is defined %} maxconn {{ server.maxconn }}{% endif %}{% if server.weight is defined %} weight {{ server.weight }}{% endif %}{% if server.check | default(listen.check_all_servers | default(false)) %} check{% endif %}{% if server.custom is defined %} {{ server.custom }}{% endif %}
-{% endfor -%}
-{% endfor -%}
-{% for backend in haproxy_backends_list %}
-
-backend {{ backend.name }}
-{% if backend.mode is defined -%}
-    mode {{ backend.mode }}
-{% endif -%}
-{% if backend.balance is defined -%}
-    balance {{ backend.balance }}
-{% endif -%}
-{% for option in backend.options | default([]) -%}
-    option {{ option }}
-{% endfor -%}
-{% for custom in backend.custom | default([]) -%}
-    {{ custom }}
-{% endfor -%}
-{% for server in backend.backend_server_list | default([]) -%}
-    server {{ server.name }} {{ server.address }}:{{ server.port }}{% if server.maxconn is defined %} maxconn {{ server.maxconn }}{% endif %}{% if server.weight is defined %} weight {{ server.weight }}{% endif %}{% if server.check | default(backend.check_all_servers | default(false)) %} check{% endif %}{% if server.custom is defined %} {{ server.custom }}{% endif %}
-{% endfor -%}
+{% set ns.lines = ns.lines + ['', 'userlist ' ~ userlist.name] %}
+{% for user in userlist.users %}
+{% set ns.lines = ns.lines + ['    user ' ~ user.username ~ ' ' ~ ('insecure-password' if user.insecure_password | default(false) else 'password') ~ ' ' ~ user.password] %}
 {% endfor %}
+{% endfor %}
+
+{% for frontend in haproxy_frontends_list %}
+{% set ns.lines = ns.lines + ['', 'frontend ' ~ frontend.name] %}
+{% if frontend.bind is mapping %}
+{% set ns.lines = ns.lines + ['    bind ' ~ (frontend.bind.address | default('')) ~ ':' ~ frontend.bind.port ~ ((' ssl crt-list ' ~ (frontend.bind.crt_list | default(haproxy_server_tls_crt_list_path))) if frontend.bind.ssl | default(false) else '')] %}
+{% else %}
+{% for bind in frontend.bind | default([]) %}
+{% set ns.lines = ns.lines + ['    bind ' ~ (bind.address | default('')) ~ ':' ~ bind.port ~ ((' ssl crt-list ' ~ (bind.crt_list | default(haproxy_server_tls_crt_list_path))) if bind.ssl | default(false) else '')] %}
+{% endfor %}
+{% endif %}
+{% if frontend.mode is defined %}
+{% set ns.lines = ns.lines + ['    mode ' ~ frontend.mode] %}
+{% endif %}
+{% for option in frontend.options | default([]) %}
+{% set ns.lines = ns.lines + ['    option ' ~ option] %}
+{% endfor %}
+{% for acl in frontend.acl | default([]) %}
+{% set ns.lines = ns.lines + ['    acl ' ~ acl] %}
+{% endfor %}
+{% for http_request in frontend.http_request | default([]) %}
+{% set ns.lines = ns.lines + ['    http-request ' ~ http_request] %}
+{% endfor %}
+{% for redirect in frontend.redirect | default([]) %}
+{% set ns.lines = ns.lines + ['    redirect ' ~ redirect] %}
+{% endfor %}
+{% for use_backend in frontend.use_backend | default([]) %}
+{% set ns.lines = ns.lines + ['    use_backend ' ~ use_backend] %}
+{% endfor %}
+{% for custom in frontend.custom | default([]) %}
+{% set ns.lines = ns.lines + ['    ' ~ custom] %}
+{% endfor %}
+{% if frontend.default_backend is defined %}
+{% set ns.lines = ns.lines + ['    default_backend ' ~ frontend.default_backend] %}
+{% endif %}
+{% endfor %}
+
+{% for listen in haproxy_listens_list %}
+{% set ns.lines = ns.lines + ['', 'listen ' ~ listen.name] %}
+{% if listen.bind is mapping %}
+{% set ns.lines = ns.lines + ['    bind ' ~ (listen.bind.address | default('')) ~ ':' ~ listen.bind.port ~ ((' ssl crt-list ' ~ (listen.bind.crt_list | default(haproxy_server_tls_crt_list_path))) if listen.bind.ssl | default(false) else '')] %}
+{% else %}
+{% for bind in listen.bind | default([]) %}
+{% set ns.lines = ns.lines + ['    bind ' ~ (bind.address | default('')) ~ ':' ~ bind.port ~ ((' ssl crt-list ' ~ (bind.crt_list | default(haproxy_server_tls_crt_list_path))) if bind.ssl | default(false) else '')] %}
+{% endfor %}
+{% endif %}
+{% if listen.mode is defined %}
+{% set ns.lines = ns.lines + ['    mode ' ~ listen.mode] %}
+{% endif %}
+{% if listen.balance is defined %}
+{% set ns.lines = ns.lines + ['    balance ' ~ listen.balance] %}
+{% endif %}
+{% for option in listen.options | default([]) %}
+{% set ns.lines = ns.lines + ['    option ' ~ option] %}
+{% endfor %}
+{% for acl in listen.acl | default([]) %}
+{% set ns.lines = ns.lines + ['    acl ' ~ acl] %}
+{% endfor %}
+{% for http_request in listen.http_request | default([]) %}
+{% set ns.lines = ns.lines + ['    http-request ' ~ http_request] %}
+{% endfor %}
+{% for redirect in listen.redirect | default([]) %}
+{% set ns.lines = ns.lines + ['    redirect ' ~ redirect] %}
+{% endfor %}
+{% for stats in listen.stats | default([]) %}
+{% set ns.lines = ns.lines + ['    stats ' ~ stats] %}
+{% endfor %}
+{% for use_backend in listen.use_backend | default([]) %}
+{% set ns.lines = ns.lines + ['    use_backend ' ~ use_backend] %}
+{% endfor %}
+{% for custom in listen.custom | default([]) %}
+{% set ns.lines = ns.lines + ['    ' ~ custom] %}
+{% endfor %}
+{% if listen.default_backend is defined %}
+{% set ns.lines = ns.lines + ['    default_backend ' ~ listen.default_backend] %}
+{% endif %}
+{% for server in listen.backend_server_list | default([]) %}
+{% set line = '    server ' ~ server.name ~ ' ' ~ server.address ~ ':' ~ server.port %}
+{% if server.maxconn is defined %}{% set line = line ~ ' maxconn ' ~ server.maxconn %}{% endif %}
+{% if server.weight is defined %}{% set line = line ~ ' weight ' ~ server.weight %}{% endif %}
+{% if server.check | default(listen.check_all_servers | default(false)) %}{% set line = line ~ ' check' %}{% endif %}
+{% if server.custom is defined %}{% set line = line ~ ' ' ~ server.custom %}{% endif %}
+{% set ns.lines = ns.lines + [line] %}
+{% endfor %}
+{% endfor %}
+
+{% for backend in haproxy_backends_list %}
+{% set ns.lines = ns.lines + ['', 'backend ' ~ backend.name] %}
+{% if backend.mode is defined %}
+{% set ns.lines = ns.lines + ['    mode ' ~ backend.mode] %}
+{% endif %}
+{% if backend.balance is defined %}
+{% set ns.lines = ns.lines + ['    balance ' ~ backend.balance] %}
+{% endif %}
+{% for option in backend.options | default([]) %}
+{% set ns.lines = ns.lines + ['    option ' ~ option] %}
+{% endfor %}
+{% for custom in backend.custom | default([]) %}
+{% set ns.lines = ns.lines + ['    ' ~ custom] %}
+{% endfor %}
+{% for server in backend.backend_server_list | default([]) %}
+{% set line = '    server ' ~ server.name ~ ' ' ~ server.address ~ ':' ~ server.port %}
+{% if server.maxconn is defined %}{% set line = line ~ ' maxconn ' ~ server.maxconn %}{% endif %}
+{% if server.weight is defined %}{% set line = line ~ ' weight ' ~ server.weight %}{% endif %}
+{% if server.check | default(backend.check_all_servers | default(false)) %}{% set line = line ~ ' check' %}{% endif %}
+{% if server.custom is defined %}{% set line = line ~ ' ' ~ server.custom %}{% endif %}
+{% set ns.lines = ns.lines + [line] %}
+{% endfor %}
+{% endfor %}
+{{ ansible_managed | comment | trim }}
+{{ ns.lines | join('\n') }}
