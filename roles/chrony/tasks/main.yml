@@ -58,11 +58,23 @@
   tags: chrony
 
 - name: Configure timezone if not set
+  ansible.builtin.command:
+    cmd: timedatectl set-timezone {{ chrony_timezone }}
+  when:
+  - chrony_set_time_zone | bool
+  - ansible_service_mgr == "systemd"
+  - __chrony_current_timezone.stdout | trim != chrony_timezone
+  changed_when: true
+  become: true
+  tags: chrony
+
+- name: Configure timezone if not set on non-systemd hosts
   community.general.timezone:
     name: "{{ chrony_timezone }}"
   when:
   - chrony_set_time_zone | bool
-  - __chrony_current_timezone.stdout != chrony_timezone
+  - ansible_service_mgr != "systemd"
+  - __chrony_current_timezone.stdout | trim != chrony_timezone
   become: true
   tags: chrony
 
@@ -85,7 +97,7 @@
   - chrony_manage_ntp | bool
   - ansible_service_mgr == "systemd"
   - __chrony_ntp_status.rc == 0
-  - __chrony_ntp_status.stdout != "yes"
+  - __chrony_ntp_status.stdout | trim != "yes"
   changed_when: true
   become: true
   tags: chrony
