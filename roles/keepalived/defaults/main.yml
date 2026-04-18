@@ -1,7 +1,6 @@
 ---
 keepalived_packages:
 - keepalived
-- iproute
 keepalived_manage_service: true
 keepalived_service_enabled: false
 keepalived_service_state: stopped

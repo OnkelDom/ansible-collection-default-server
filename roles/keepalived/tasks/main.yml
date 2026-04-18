@@ -39,7 +39,7 @@
 
 - name: Install keepalived packages
   ansible.builtin.package:
-    name: "{{ keepalived_packages }}"
+    name: "{{ (keepalived_packages | default([])) + (keepalived_os_packages | default([])) }}"
     state: present
   become: true
   tags: keepalived

@@ -16,7 +16,6 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ---
 keepalived_packages:
 - keepalived
-- iproute
 keepalived_manage_service: true
 keepalived_service_enabled: false
 keepalived_service_state: stopped

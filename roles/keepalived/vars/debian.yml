@@ -1,3 +1,5 @@
 ---
 keepalived_binary: /usr/sbin/keepalived
 keepalived_service: keepalived
+keepalived_os_packages:
+- iproute2
