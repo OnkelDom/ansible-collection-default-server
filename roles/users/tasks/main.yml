@@ -108,6 +108,71 @@
   become: true
   tags: users
 
+- name: Check user bashrc for legacy powerline-go blocks
+  ansible.builtin.stat:
+    path: "/home/{{ bashrc_stat_user.name }}/.bashrc"
+  loop: "{{ users_list }}"
+  loop_control:
+    loop_var: bashrc_stat_user
+  when:
+  - users_list is defined
+  - users_list | length > 0
+  - bashrc_stat_user.state | default('present') == 'present'
+  register: users_bashrc_stats
+  become: true
+  tags: users
+
+- name: Remove legacy powerline-go blocks from user bashrc
+  ansible.builtin.replace:
+    path: "{{ bashrc_cleanup_item.stat.path }}"
+    regexp: '(?ms)^# BEGIN POWERLINE-GO\n.*?\n# END POWERLINE-GO\n?'
+    replace: ''
+  loop: "{{ users_bashrc_stats.results | default([]) }}"
+  loop_control:
+    loop_var: bashrc_cleanup_item
+  when:
+  - bashrc_cleanup_item.stat.exists | default(false)
+  become: true
+  tags: users
+
+- name: Determine powerline-go architecture
+  ansible.builtin.set_fact:
+    users_powerline_go_arch_effective: "{{ users_powerline_go_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+  when: users_powerline_go_enabled | bool
+  tags: users
+
+- name: Install powerline-go binary
+  ansible.builtin.get_url:
+    url: "https://github.com/justjanne/powerline-go/releases/download/v{{ users_powerline_go_version }}/powerline-go-{{ ansible_system | lower }}-{{ users_powerline_go_arch_effective }}"
+    dest: "{{ users_powerline_go_install_dir }}/{{ users_powerline_go_binary_name }}"
+    mode: "0755"
+    owner: root
+    group: root
+    checksum: "{{ users_powerline_go_checksum if users_powerline_go_checksum | length > 0 else omit }}"
+  when:
+  - users_powerline_go_enabled | bool
+  - ansible_system | lower == 'linux'
+  become: true
+  tags: users
+
+- name: Remove legacy git prompt profile script
+  ansible.builtin.file:
+    path: "/etc/profile.d/git-prompt.sh"
+    state: absent
+  become: true
+  tags: users
+
+- name: Install powerline-go profile script
+  ansible.builtin.template:
+    src: powerline-go.sh.j2
+    dest: "/etc/profile.d/powerline-go.sh"
+    owner: root
+    group: root
+    mode: "0644"
+  when: users_powerline_go_enabled | bool
+  become: true
+  tags: users
+
 - name: Copy scripts
   ansible.builtin.copy:
     src: "{{ item.source }}"
@@ -116,9 +181,6 @@
     group: root
     mode: "{{ item.mode }}"
   loop:
-  - source: git-prompt.sh
-    dest: "/etc/profile.d/git-prompt.sh"
-    mode: "0755"
   - source: ssh-agent.sh
     dest: "/etc/profile.d/ssh-agent.sh"
     mode: "0755"

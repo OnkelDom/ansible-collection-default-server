@@ -1,0 +1,13 @@
+if [ -n "${BASH_VERSION:-}" ] && [ "$TERM" != "linux" ] && [ -x "{{ users_powerline_go_install_dir }}/{{ users_powerline_go_binary_name }}" ]; then
+  _powerline_go_update_ps1() {
+    local last_exit="$?"
+    PS1="$({{ users_powerline_go_install_dir }}/{{ users_powerline_go_binary_name }} -error "$last_exit" -jobs "$(jobs -p | wc -l)")"
+  }
+
+  case ";${PROMPT_COMMAND:-};" in
+    *";_powerline_go_update_ps1;"*) ;;
+    *)
+      PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND}; }_powerline_go_update_ps1"
+      ;;
+  esac
+fi

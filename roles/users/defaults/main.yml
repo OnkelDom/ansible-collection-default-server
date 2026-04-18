@@ -5,6 +5,14 @@ users_host_vars: []
 users_playbook: []
 users_manage_root_dotfiles: true
 users_copy_msmtp_config: true
+users_powerline_go_enabled: true
+users_powerline_go_version: "1.26"
+users_powerline_go_install_dir: "/usr/local/bin"
+users_powerline_go_binary_name: "powerline-go"
+users_powerline_go_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+users_powerline_go_checksum: ""
 
 # users_defaults:
 #   - name: "litsadmin"
