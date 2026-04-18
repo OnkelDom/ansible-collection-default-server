@@ -42,6 +42,7 @@ packages_defaults_install:
 - acl
 - nmap
 - cron
+- dbus
 - socat
 - iftop
 - xclip
