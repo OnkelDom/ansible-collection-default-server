@@ -22,6 +22,15 @@ unbound_service_state: started
 unbound_manage_firewall: false
 unbound_firewall_zone: public
 unbound_manage_selinux: true
+unbound_service_name: unbound
+unbound_group: unbound
+unbound_config_dir: /etc/unbound
+unbound_config_path: /etc/unbound/unbound.conf
+unbound_root_hints_path: /etc/unbound/root.hints
+unbound_local_zones_path: /etc/unbound/local-zones.conf
+unbound_blocklist_path: /etc/unbound/unbound.block.conf
+unbound_tls_cert_bundle: /etc/ssl/certs/ca-certificates.crt
+unbound_checkconf_binary: /usr/sbin/unbound-checkconf
 unbound_zones_dir: '{{ unbound_config_dir }}/zones.d'
 unbound_local_zones: []
 unbound_stub_zones: []
@@ -48,6 +57,8 @@ unbound_config:
   remote-control:
     control-enable: false
 ```
+
+The role ships generic path defaults so argument validation can run before OS-specific vars are loaded. Platform-specific values from `vars/` still override these defaults where needed.
 
 ## Example Playbook
 
