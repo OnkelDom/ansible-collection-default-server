@@ -155,13 +155,6 @@
   become: true
   tags: users
 
-- name: Remove legacy git prompt profile script
-  ansible.builtin.file:
-    path: "/etc/profile.d/git-prompt.sh"
-    state: absent
-  become: true
-  tags: users
-
 - name: Install powerline-go profile script
   ansible.builtin.template:
     src: powerline-go.sh.j2
