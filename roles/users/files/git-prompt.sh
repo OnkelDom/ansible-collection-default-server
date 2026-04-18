@@ -62,4 +62,6 @@ set_bash_prompt() {
   PS1="${now_str} ${exit_str}${user_color}\u${PS1_RESET}@${PS1_LIGHTBLUE}\h${PS1_RESET}:${PS1_CYAN}\w${PS1_RESET}\$(parse_git_branch)\n\$ "
 }
 
-PROMPT_COMMAND=set_bash_prompt
+if [[ -z "${PROMPT_COMMAND:-}" ]]; then
+  PROMPT_COMMAND=set_bash_prompt
+fi
