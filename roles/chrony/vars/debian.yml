@@ -1,7 +1,9 @@
 ---
 chrony_config_file: /etc/chrony/chrony.conf
 chrony_service_name: chrony
-chrony_package_name: chrony
+chrony_package_name:
+- chrony
+- util-linux-extra
 chrony_uninstall_packages:
 - ntp
 - ntpdate
