@@ -58,6 +58,45 @@
   become: true
   tags: unbound
 
+- name: Ensure trust anchor parent directory exists
+  ansible.builtin.file:
+    path: "{{ (unbound_config.server['auto-trust-anchor-file'] | dirname) }}"
+    state: directory
+    owner: "{{ unbound_user | default(unbound_group) }}"
+    group: "{{ unbound_group }}"
+    mode: "0755"
+  when:
+  - unbound_config.server is defined
+  - unbound_config.server['auto-trust-anchor-file'] is defined
+  become: true
+  tags: unbound
+
+- name: Check packaged DNSSEC trust anchor
+  ansible.builtin.stat:
+    path: /usr/share/dns/root.key
+  register: __unbound_packaged_root_key
+  when:
+  - unbound_config.server is defined
+  - unbound_config.server['auto-trust-anchor-file'] is defined
+  become: true
+  tags: unbound
+
+- name: Bootstrap trust anchor from packaged root key
+  ansible.builtin.copy:
+    src: /usr/share/dns/root.key
+    dest: "{{ unbound_config.server['auto-trust-anchor-file'] }}"
+    remote_src: true
+    owner: "{{ unbound_user | default(unbound_group) }}"
+    group: "{{ unbound_group }}"
+    mode: "0644"
+    force: false
+  when:
+  - unbound_config.server is defined
+  - unbound_config.server['auto-trust-anchor-file'] is defined
+  - __unbound_packaged_root_key.stat.exists | default(false)
+  become: true
+  tags: unbound
+
 - name: Ensure blocklist file exists when disabled
   ansible.builtin.file:
     path: "{{ unbound_blocklist_path }}"

@@ -2,6 +2,7 @@
 unbound_packages:
 - unbound
 - python3-cryptography
+- dns-root-data
 unbound_service_name: unbound
 unbound_group: unbound
 unbound_config_dir: /etc/unbound
