@@ -190,6 +190,27 @@
   become: true
   tags: unbound
 
+- name: Check for remote-control server key
+  ansible.builtin.stat:
+    path: "{{ unbound_config_dir }}/unbound_server.key"
+  register: __unbound_remote_control_server_key
+  when:
+  - unbound_config['remote-control'] is defined
+  - unbound_config['remote-control']['control-enable'] | default(false) | bool
+  become: true
+  tags: unbound
+
+- name: Generate remote-control certificates
+  ansible.builtin.command:
+    cmd: unbound-control-setup
+    creates: "{{ unbound_config_dir }}/unbound_server.key"
+  when:
+  - unbound_config['remote-control'] is defined
+  - unbound_config['remote-control']['control-enable'] | default(false) | bool
+  - not __unbound_remote_control_server_key.stat.exists | default(false)
+  become: true
+  tags: unbound
+
 - name: Configure unbound service
   ansible.builtin.template:
     src: unbound.conf.j2
