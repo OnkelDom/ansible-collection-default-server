@@ -5,8 +5,15 @@
 {{ record.name }}.{{ zone.name }}.
 {%- endif -%}
 {%- endmacro %}
-{% macro rr_line(owner, rtype, rdata) -%}
-{{ "%-32s IN %-5s %s" | format(owner, rtype, rdata) }}
+{% set zone_ns = namespace(owner_width=((zone.name ~ '.') | length)) %}
+{% for record in zone.records | default([]) %}
+{% set owner = record_owner(record, zone) %}
+{% if owner | length > zone_ns.owner_width %}
+{% set zone_ns.owner_width = owner | length %}
+{% endif %}
+{% endfor %}
+{% macro rr_line(owner, rtype, rdata, owner_width) -%}
+{{ "%-*s IN %-5s %s" | format(owner_width + 2, owner, rtype, rdata) }}
 {%- endmacro %}
 {% for line in ansible_managed.splitlines() -%}
 ; {{ line }}
@@ -23,14 +30,14 @@ $TTL {{ zone.minimum | default(86400) }}
         {{ zone.minimum | default(86400) }} ; minimum
 )
 {% for ns in zone.nameservers | default([]) %}
-{{ rr_line(zone.name ~ '.', 'NS', ns) }}
+{{ rr_line(zone.name ~ '.', 'NS', ns, zone_ns.owner_width) }}
 {% endfor %}
 {% for record in zone.records | default([]) %}
 {% if record.type == 'MX' %}
-{{ rr_line(record_owner(record, zone), 'MX', (record.priority | default(10) ~ ' ' ~ record.value)) }}
+{{ rr_line(record_owner(record, zone), 'MX', ((record.priority | default(10)) ~ ' ' ~ record.value), zone_ns.owner_width) }}
 {% elif record.type == 'SRV' %}
-{{ rr_line(record_owner(record, zone), 'SRV', (record.priority | default(10) ~ ' ' ~ record.weight | default(0) ~ ' ' ~ record.port ~ ' ' ~ record.value)) }}
+{{ rr_line(record_owner(record, zone), 'SRV', ((record.priority | default(10)) ~ ' ' ~ (record.weight | default(0)) ~ ' ' ~ record.port ~ ' ' ~ record.value), zone_ns.owner_width) }}
 {% else %}
-{{ rr_line(record_owner(record, zone), record.type, record.value) }}
+{{ rr_line(record_owner(record, zone), record.type, record.value, zone_ns.owner_width) }}
 {% endif %}
 {% endfor %}
