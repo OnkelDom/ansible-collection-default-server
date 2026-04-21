@@ -1,23 +1,36 @@
-{% for line in ansible_managed.splitlines() %}
+{% macro record_owner(record, zone) -%}
+{%- if record.name == '@' -%}
+{{ zone.name }}.
+{%- else -%}
+{{ record.name }}.{{ zone.name }}.
+{%- endif -%}
+{%- endmacro %}
+{% macro rr_line(owner, rtype, rdata) -%}
+{{ "%-32s IN %-5s %s" | format(owner, rtype, rdata) }}
+{%- endmacro %}
+{% for line in ansible_managed.splitlines() -%}
 ; {{ line }}
 {% endfor %}
+
+; Zone: {{ zone.name }}
 $TTL {{ zone.minimum | default(86400) }}
+
 {{ zone.name }}. IN SOA {{ (zone.nameservers | default(['ns1.' ~ zone.name ~ '.']))[0] }} hostmaster.{{ zone.name }}. (
-        {{ zone.serial | default(ansible_date_time.epoch) }}
-        {{ zone.refresh | default(3600) }}
-        {{ zone.retry | default(1800) }}
-        {{ zone.expire | default(604800) }}
-        {{ zone.minimum | default(86400) }}
+        {{ zone.serial | default(ansible_date_time.epoch) }} ; serial
+        {{ zone.refresh | default(3600) }} ; refresh
+        {{ zone.retry | default(1800) }} ; retry
+        {{ zone.expire | default(604800) }} ; expire
+        {{ zone.minimum | default(86400) }} ; minimum
 )
 {% for ns in zone.nameservers | default([]) %}
-{{ zone.name }}. IN NS {{ ns }}
+{{ rr_line(zone.name ~ '.', 'NS', ns) }}
 {% endfor %}
 {% for record in zone.records | default([]) %}
 {% if record.type == 'MX' %}
-{{ record.name if record.name != '@' else zone.name }}. IN MX {{ record.priority | default(10) }} {{ record.value }}
+{{ rr_line(record_owner(record, zone), 'MX', (record.priority | default(10) ~ ' ' ~ record.value)) }}
 {% elif record.type == 'SRV' %}
-{{ record.name }}.{{ zone.name }}. IN SRV {{ record.priority | default(10) }} {{ record.weight | default(0) }} {{ record.port }} {{ record.value }}
+{{ rr_line(record_owner(record, zone), 'SRV', (record.priority | default(10) ~ ' ' ~ record.weight | default(0) ~ ' ' ~ record.port ~ ' ' ~ record.value)) }}
 {% else %}
-{{ zone.name ~ '.' if record.name == '@' else record.name ~ '.' ~ zone.name ~ '.' }} IN {{ record.type }} {{ record.value }}
+{{ rr_line(record_owner(record, zone), record.type, record.value) }}
 {% endif %}
 {% endfor %}

@@ -1,4 +1,6 @@
-{{ ansible_managed | comment }}
+{% for line in ansible_managed.splitlines() %}
+; {{ line }}
+{% endfor %}
 {% macro unbound_value(value) -%}
 {%- if value is sameas true -%}yes
 {%- elif value is sameas false -%}no
@@ -18,6 +20,7 @@ server:
 {% endfor %}
 {% if unbound_auth_zones | length > 0 %}
 {% for zone in unbound_auth_zones %}
+
 auth-zone:
   name: "{{ zone.name }}"
   zonefile: "{{ unbound_zones_dir }}/{{ zone.name }}.zone"
@@ -25,6 +28,7 @@ auth-zone:
 {% endif %}
 {% if unbound_forward_zones | length > 0 %}
 {% for zone in unbound_forward_zones %}
+
 forward-zone:
   name: "{{ zone.name }}"
 {% for server in zone.servers | default([]) %}
@@ -34,6 +38,7 @@ forward-zone:
 {% endif %}
 {% if unbound_stub_zones | length > 0 %}
 {% for zone in unbound_stub_zones %}
+
 stub-zone:
   name: "{{ zone.name }}"
 {% for server in zone.servers | default([]) %}
@@ -45,6 +50,7 @@ stub-zone:
 include: "{{ unbound_local_zones_path }}"
 {% endif %}
 {% if unbound_use_blocklist | bool %}
+
 include: "{{ unbound_blocklist_path }}"
 {% endif %}
 {% if unbound_config['remote-control'] is defined %}
