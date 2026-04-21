@@ -38,6 +38,7 @@ role_descriptions:
   interfaces: Manage /etc/network/interfaces based network configuration.
   keepalived: Install and configure Keepalived VRRP instances and helper scripts.
   lvm: Create and manage LVM volume groups and logical volumes.
+  logrotate: Manage custom logrotate rules for application and service logs.
   motd: Configure the login message of the day.
   mounts: Manage filesystem and network mounts.
   msmtp: Configure msmtp relay accounts and aliases.
@@ -149,6 +150,28 @@ role_example_playbooks:
               log-opts:
                 max-size: "10m"
                 max-file: "3"
+  logrotate: |
+    - name: Configure custom log rotation policies
+      hosts: linux_hosts
+      become: true
+      roles:
+        - role: onkeldom.default_server.logrotate
+          vars:
+            logrotate_rules:
+              - name: myapp
+                paths:
+                  - /var/log/myapp/*.log
+                frequency: daily
+                rotate: 14
+                compress: true
+                delaycompress: true
+                create: true
+                create_mode: "0640"
+                create_owner: myapp
+                create_group: myapp
+                sharedscripts: true
+                postrotate: |
+                  systemctl reload myapp.service >/dev/null 2>&1 || true
 role_platform_overrides:
   certbot:
   - name: Ubuntu

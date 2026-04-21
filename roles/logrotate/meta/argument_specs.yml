@@ -1,0 +1,42 @@
+---
+argument_specs:
+  main:
+    short_description: Entry point for the logrotate role.
+    description:
+    - Validate variables for the `logrotate` role.
+    options:
+      logrotate_manage_package:
+        description:
+        - Controls `logrotate_manage_package` for the `logrotate` role.
+        required: false
+        type: bool
+      logrotate_package_state:
+        description:
+        - Controls `logrotate_package_state` for the `logrotate` role.
+        required: false
+        type: str
+      logrotate_config_dir:
+        description:
+        - Controls `logrotate_config_dir` for the `logrotate` role.
+        required: false
+        type: str
+      logrotate_file_prefix:
+        description:
+        - Controls `logrotate_file_prefix` for the `logrotate` role.
+        required: false
+        type: str
+      logrotate_prune_managed_files:
+        description:
+        - Controls `logrotate_prune_managed_files` for the `logrotate` role.
+        required: false
+        type: bool
+      logrotate_rule_defaults:
+        description:
+        - Controls `logrotate_rule_defaults` for the `logrotate` role.
+        required: false
+        type: dict
+      logrotate_rules:
+        description:
+        - Controls `logrotate_rules` for the `logrotate` role.
+        required: false
+        type: list

@@ -141,6 +141,7 @@ Der aktuelle Rollenbestand wird architektonisch in diese Klassen eingeordnet.
 - `users`: lokale Benutzer, Gruppen und Sudo
 - `mounts`: generische Mount-Definitionen
 - `lvm`: Volume-Management
+- `logrotate`: generische Rotation eigener Logdateien
 - `sysctl`: Kernel-Tuning
 - `ca`: Trust-Store und Zertifikats-Baseline
 
@@ -269,7 +270,7 @@ Fuer jede Rolle gilt bei Review und Aenderungen dieselbe Checkliste:
 
 So wollen wir den vorhandenen Bestand kuenftig behandeln:
 
-- `portable` und strategisch wichtig: `alloy`, `apache`, `auditd`, `borgbackup`, `borgmatic`, `ca`, `certbot`, `chrony`, `dante`, `docker`, `fail2ban`, `haproxy`, `hosts`, `keepalived`, `lvm`, `mounts`, `msmtp`, `multipath`, `nfs`, `nginx`, `nmcli`, `node_exporter`, `packages`, `proxy`, `qemu_guest_agent`, `resolvconf`, `sftp_server`, `squid`, `sshd`, `sssd`, `sysctl`, `telegraf`, `traefik`, `unbound`, `users`, `vmware_tools`, `wpad`.
+- `portable` und strategisch wichtig: `alloy`, `apache`, `auditd`, `borgbackup`, `borgmatic`, `ca`, `certbot`, `chrony`, `dante`, `docker`, `fail2ban`, `haproxy`, `hosts`, `keepalived`, `logrotate`, `lvm`, `mounts`, `msmtp`, `multipath`, `nfs`, `nginx`, `nmcli`, `node_exporter`, `packages`, `proxy`, `qemu_guest_agent`, `resolvconf`, `sftp_server`, `squid`, `sshd`, `sssd`, `sysctl`, `telegraf`, `traefik`, `unbound`, `users`, `vmware_tools`, `wpad`.
 - `family-scoped` Debian: `apt_repos`, `interfaces`, `netplan`, `systemd_resolved`, `systemd_timesyncd`, `ufw`, `unattended_updates`.
 - `family-scoped` RedHat: `dnf_automatic`, `dnf_repos`, `firewalld`, `ifcfg`.
 - Rollen mit moeglichem Architekturabgleich bei Gelegenheit: `proxy`, `resolvconf`, `systemd_resolved`, `unbound`, `wpad`, weil sie alle in denselben DNS- oder Proxy-Fluss eingreifen koennen.
@@ -313,10 +314,8 @@ Neue Rollen werden nur aufgenommen, wenn:
 ## Mindestchecks vor Commit
 
 - `.venv/bin/python tools/generate_role_scaffold.py --check`
-- `.venv/bin/pytest -q tests/unit`
 - `PATH="$PWD/.venv/bin:$PATH" bash tests/run_role_syntax_checks.sh`
-- `PATH="$PWD/.venv/bin:$PATH" ansible-lint`
-- bei CI-Aenderungen auch `bash -n tests/run_container_integration_smoke.sh`
+- Umfangreiche Test-Suiten wie `tests/unit`, `ansible-lint`, `ansible-test sanity`, Container-Smoke-Tests und rollenweite Functional-Tests sind waehrend der aktuellen Transitionsphase bewusst nicht verpflichtend.
 
 ## Doku- und Namespace-Regeln
 

@@ -1,0 +1,99 @@
+{{ item.paths | join(' ') }} {
+{% if item.frequency %}
+    {{ item.frequency }}
+{% endif %}
+{% if item.rotate is not none %}
+    rotate {{ item.rotate }}
+{% endif %}
+{% if item.size %}
+    size {{ item.size }}
+{% endif %}
+{% if item.minsize %}
+    minsize {{ item.minsize }}
+{% endif %}
+{% if item.maxsize %}
+    maxsize {{ item.maxsize }}
+{% endif %}
+{% if item.minage is not none %}
+    minage {{ item.minage }}
+{% endif %}
+{% if item.maxage is not none %}
+    maxage {{ item.maxage }}
+{% endif %}
+{% if item.start is not none %}
+    start {{ item.start }}
+{% endif %}
+{% if item.missingok | bool %}
+    missingok
+{% endif %}
+{% if item.notifempty | bool %}
+    notifempty
+{% else %}
+    ifempty
+{% endif %}
+{% if item.compress | bool %}
+    compress
+{% endif %}
+{% if item.delaycompress | bool %}
+    delaycompress
+{% endif %}
+{% if item.copytruncate | bool %}
+    copytruncate
+{% endif %}
+{% if item.sharedscripts | bool %}
+    sharedscripts
+{% endif %}
+{% if item.dateext | bool %}
+    dateext
+{% endif %}
+{% if item.dateyesterday | bool %}
+    dateyesterday
+{% endif %}
+{% if item.extension %}
+    extension {{ item.extension }}
+{% endif %}
+{% if item.dateformat %}
+    dateformat {{ item.dateformat }}
+{% endif %}
+{% if item.olddir %}
+    olddir {{ item.olddir }}
+{% endif %}
+{% if item.mail %}
+    mail {{ item.mail }}
+{% endif %}
+{% if item.mailfirst | bool %}
+    mailfirst
+{% endif %}
+{% if item.maillast | bool %}
+    maillast
+{% endif %}
+{% if item.su_user and item.su_group %}
+    su {{ item.su_user }} {{ item.su_group }}
+{% endif %}
+{% if item.create | bool %}
+    create {{ item.create_mode }} {{ item.create_owner }} {{ item.create_group }}
+{% endif %}
+{% for directive in item.extra_directives %}
+    {{ directive }}
+{% endfor %}
+{% if item.firstaction %}
+    firstaction
+{{ item.firstaction | trim | indent(8, true) }}
+    endscript
+{% endif %}
+{% if item.prerotate %}
+    prerotate
+{{ item.prerotate | trim | indent(8, true) }}
+    endscript
+{% endif %}
+{% if item.postrotate %}
+    postrotate
+{{ item.postrotate | trim | indent(8, true) }}
+    endscript
+{% endif %}
+{% if item.lastaction %}
+    lastaction
+{{ item.lastaction | trim | indent(8, true) }}
+    endscript
+{% endif %}
+}

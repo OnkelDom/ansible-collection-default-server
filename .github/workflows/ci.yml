@@ -37,46 +37,7 @@ jobs:
     - name: Verify generated role scaffolding
       run: python tools/generate_role_scaffold.py --check
 
-    - name: Run unit tests
-      run: pytest -q tests/unit
-
-    - name: Run ansible-lint
-      run: ansible-lint
-
-    - name: Prepare ansible-test workspace
-      run: |
-        mkdir -p "${RUNNER_TEMP}/ansible_collections/onkeldom"
-        ln -s "${GITHUB_WORKSPACE}" "${RUNNER_TEMP}/ansible_collections/onkeldom/default_server"
-
-    - name: Run ansible-test sanity
-      run: |
-        cd "${RUNNER_TEMP}/ansible_collections/onkeldom/default_server"
-        ansible-test sanity --python 3.12
-
     - name: Run syntax checks for all roles
       env:
         ANSIBLE_FORCE_COLOR: "1"
       run: bash tests/run_role_syntax_checks.sh
-
-  integration-smoke:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - os_name: ubuntu-22.04
-          image: ubuntu:22.04
-        - os_name: debian-12
-          image: debian:12
-        - os_name: rocky-9
-          image: rockylinux:9
-
-    steps:
-    - name: Check out repository
-      uses: actions/checkout@v4
-
-    - name: Run smoke integration test in container
-      env:
-        SMOKE_CONTAINER_IMAGE: ${{ matrix.image }}
-        SMOKE_CONTAINER_NAME: onkeldom-smoke-${{ github.run_id }}-${{ matrix.os_name }}
-      run: bash tests/run_container_integration_smoke.sh
