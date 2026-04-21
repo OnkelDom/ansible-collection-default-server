@@ -1,5 +1,5 @@
 {% for line in ansible_managed.splitlines() %}
-; {{ line }}
+# {{ line }}
 {% endfor %}
 {% macro unbound_value(value) -%}
 {%- if value is sameas true -%}yes

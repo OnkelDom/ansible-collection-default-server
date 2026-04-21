@@ -1,5 +1,5 @@
 {% for line in ansible_managed.splitlines() %}
-; {{ line }}
+# {{ line }}
 {% endfor %}
 
 {% for zone in unbound_local_zones %}
