@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+
+import json
+import os
+import shlex
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+CREDENTIALS_PATH = "{{ certbot_hetzner_credentials_path }}"
+PROPAGATION_SECONDS = {{ certbot_dns_propagation_seconds | int }}
+
+
+def load_credentials(path):
+    values = {}
+    with open(path, "r", encoding="utf-8") as handle:
+        for raw_line in handle:
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            values[key.strip()] = shlex.split(value.strip())[0] if value.strip() else ""
+    return values
+
+
+def request_json(method, path, token, api_url, data=None):
+    url = api_url.rstrip("/") + path
+    body = None if data is None else json.dumps(data).encode("utf-8")
+    request = urllib.request.Request(url, data=body, method=method)
+    request.add_header("Authorization", f"Bearer {token}")
+    request.add_header("Accept", "application/json")
+    if body is not None:
+        request.add_header("Content-Type", "application/json")
+
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            payload = response.read().decode("utf-8")
+            return response.status, json.loads(payload) if payload else {}
+    except urllib.error.HTTPError as err:
+        payload = err.read().decode("utf-8")
+        try:
+            parsed = json.loads(payload) if payload else {}
+        except json.JSONDecodeError:
+            parsed = {"message": payload}
+        return err.code, parsed
+
+
+def candidate_zones(domain):
+    labels = domain.strip(".").lower().split(".")
+    if labels[0] == "*":
+        labels = labels[1:]
+    for index in range(0, max(len(labels) - 1, 0)):
+        yield ".".join(labels[index:])
+
+
+def find_zone(domain, token, api_url):
+    for candidate in candidate_zones(domain):
+        query = urllib.parse.urlencode({"name": candidate})
+        status, payload = request_json("GET", f"/zones?{query}", token, api_url)
+        if status != 200:
+            raise RuntimeError(f"Hetzner zone lookup failed for {candidate}: HTTP {status} {payload}")
+        for zone in payload.get("zones", []):
+            if zone.get("name", "").strip(".").lower() == candidate:
+                return zone
+    raise RuntimeError(f"No Hetzner DNS zone found for {domain}")
+
+
+def relative_record_name(fqdn, zone_name):
+    fqdn = fqdn.strip(".").lower()
+    zone_name = zone_name.strip(".").lower()
+    if fqdn == zone_name:
+        return "@"
+    suffix = "." + zone_name
+    if fqdn.endswith(suffix):
+        return fqdn[: -len(suffix)]
+    return fqdn
+
+
+def change_txt_record(action, token, api_url, ttl):
+    certbot_domain = os.environ.get("CERTBOT_DOMAIN", "")
+    validation = os.environ.get("CERTBOT_VALIDATION", "")
+    if not certbot_domain or not validation:
+        raise RuntimeError("CERTBOT_DOMAIN and CERTBOT_VALIDATION must be set")
+
+    domain = certbot_domain[2:] if certbot_domain.startswith("*.") else certbot_domain
+    full_record_name = "_acme-challenge." + domain.strip(".")
+    zone = find_zone(domain, token, api_url)
+    record_name = relative_record_name(full_record_name, zone["name"])
+    encoded_record_name = urllib.parse.quote(record_name, safe="")
+    endpoint = f"/zones/{zone['id']}/rrsets/{encoded_record_name}/TXT/actions/{action}_records"
+    payload = {"records": [{"value": f"\"{validation}\""}]}
+    if action == "add":
+        payload["ttl"] = ttl
+
+    status, response_payload = request_json("POST", endpoint, token, api_url, payload)
+    if status not in (200, 201, 202, 204):
+        raise RuntimeError(f"Hetzner TXT {action} failed for {full_record_name}: HTTP {status} {response_payload}")
+
+
+def main():
+    if len(sys.argv) != 2 or sys.argv[1] not in ("add", "remove"):
+        print("Usage: hetzner-dns-hook.py add|remove", file=sys.stderr)
+        return 2
+
+    credentials = load_credentials(CREDENTIALS_PATH)
+    token = credentials.get("HETZNER_TOKEN", "")
+    api_url = credentials.get("HETZNER_API", "https://api.hetzner.cloud/v1")
+    ttl = int(credentials.get("HETZNER_TTL", "120"))
+    if not token:
+        raise RuntimeError(f"HETZNER_TOKEN is missing in {CREDENTIALS_PATH}")
+
+    change_txt_record(sys.argv[1], token, api_url, ttl)
+    if sys.argv[1] == "add" and PROPAGATION_SECONDS > 0:
+        time.sleep(PROPAGATION_SECONDS)
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except Exception as exc:
+        print(str(exc), file=sys.stderr)
+        raise SystemExit(1)

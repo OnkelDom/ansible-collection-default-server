@@ -5,6 +5,14 @@ argument_specs:
     description:
     - Validate variables for the `certbot` role.
     options:
+      certbot_dns_provider:
+        description:
+        - DNS-01 provider for ACME validation.
+        choices:
+        - cloudflare
+        - hetzner
+        required: false
+        type: str
       certbot_cloudflare_api_email:
         description:
         - Controls `certbot_cloudflare_api_email` for the `certbot` role.
@@ -23,6 +31,31 @@ argument_specs:
       certbot_cloudflare_credentials_path:
         description:
         - Controls `certbot_cloudflare_credentials_path` for the `certbot` role.
+        required: false
+        type: str
+      certbot_hetzner_api_token:
+        description:
+        - Hetzner Cloud DNS API token for the `certbot` role.
+        required: false
+        type: str
+      certbot_hetzner_credentials_path:
+        description:
+        - Path for the Hetzner Cloud DNS credential file.
+        required: false
+        type: str
+      certbot_hetzner_api_url:
+        description:
+        - Hetzner Cloud DNS API base URL.
+        required: false
+        type: str
+      certbot_hetzner_ttl:
+        description:
+        - TTL for temporary Hetzner Cloud DNS TXT records.
+        required: false
+        type: int
+      certbot_hetzner_hook_path:
+        description:
+        - Path for the Hetzner Cloud DNS Certbot hook.
         required: false
         type: str
       certbot_dns_propagation_seconds:

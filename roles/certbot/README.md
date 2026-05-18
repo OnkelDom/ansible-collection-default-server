@@ -14,8 +14,12 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 
 ```yaml
 ---
+certbot_dns_provider: hetzner
+certbot_hetzner_api_token: '{{ encrypted_hetzner_dns_api_key }}'
+certbot_hetzner_credentials_path: /etc/letsencrypt/hetzner.ini
 certbot_cloudflare_api_email: ''
 certbot_cloudflare_api_key: ''
+certbot_cloudflare_api_token: ''
 certbot_cloudflare_credentials_path: /etc/letsencrypt/cloudflare.ini
 certbot_dns_propagation_seconds: 30
 certbot_copy_to_ssl: true

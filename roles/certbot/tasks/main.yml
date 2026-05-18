@@ -58,7 +58,9 @@
         )
         else ''
       }}
-  when: certbot_certs | length > 0
+  when:
+  - certbot_certs | length > 0
+  - certbot_dns_provider == "cloudflare"
   tags: certbot
 
 - name: Validate Cloudflare credentials
@@ -70,6 +72,29 @@
     fail_msg: >-
       certbot_acme_email and either certbot_cloudflare_api_token or certbot_cloudflare_api_key
       must be set. certbot_cloudflare_api_email is only required when using the legacy global API key.
+  when:
+  - certbot_certs | length > 0
+  - certbot_dns_provider == "cloudflare"
+  tags: certbot
+
+- name: Validate Hetzner credentials
+  ansible.builtin.assert:
+    that:
+    - certbot_acme_email | length > 0
+    - certbot_hetzner_api_token | length > 0
+    fail_msg: >-
+      certbot_acme_email and certbot_hetzner_api_token must be set when
+      certbot_dns_provider is hetzner.
+  when:
+  - certbot_certs | length > 0
+  - certbot_dns_provider == "hetzner"
+  tags: certbot
+
+- name: Validate DNS provider
+  ansible.builtin.assert:
+    that:
+    - certbot_dns_provider in ['cloudflare', 'hetzner']
+    fail_msg: "certbot_dns_provider must be one of: cloudflare, hetzner"
   when: certbot_certs | length > 0
   tags: certbot
 
@@ -85,17 +110,40 @@
 
 - name: Install Certbot and dependencies
   ansible.builtin.package:
-    name: "{{ certbot_packages }}"
+    name: "{{ certbot_packages_base + certbot_dns_provider_packages[certbot_dns_provider] }}"
     state: present
   become: true
   tags: certbot
 
-- name: Create Cloudflare credentials directory
+- name: Create Certbot credentials directory
   ansible.builtin.file:
     path: /etc/letsencrypt
     state: directory
     mode: '0700'
   become: true
+  tags: certbot
+
+- name: Create Hetzner INI file
+  ansible.builtin.template:
+    src: hetzner.ini.j2
+    dest: "{{ certbot_hetzner_credentials_path }}"
+    mode: '0600'
+    owner: root
+    group: root
+  become: true
+  no_log: true
+  when: certbot_dns_provider == "hetzner"
+  tags: certbot
+
+- name: Create Hetzner DNS hook
+  ansible.builtin.template:
+    src: hetzner-dns-hook.py.j2
+    dest: "{{ certbot_hetzner_hook_path }}"
+    mode: '0700'
+    owner: root
+    group: root
+  become: true
+  when: certbot_dns_provider == "hetzner"
   tags: certbot
 
 - name: Create certbot deploy hook log file
@@ -135,6 +183,8 @@
     dest: "{{ certbot_cloudflare_credentials_path }}"
     mode: '0600'
   become: true
+  no_log: true
+  when: certbot_dns_provider == "cloudflare"
   tags: certbot
 
 - name: Copy deployhook from template
@@ -147,7 +197,7 @@
   become: true
   tags: certbot
 
-- name: Run Certbot to generate certificate
+- name: Run Certbot to generate certificate with Cloudflare DNS
   ansible.builtin.command: >
     certbot certonly --dns-cloudflare
     --dns-cloudflare-credentials {{ certbot_cloudflare_credentials_path }}
@@ -165,6 +215,27 @@
     'not yet due for renewal' not in (((certbot_output.stdout | default('')) ~ (certbot_output.stderr | default(''))) | lower) and
     'no action taken' not in (((certbot_output.stdout | default('')) ~ (certbot_output.stderr | default(''))) | lower)
   become: true
+  when: certbot_dns_provider == "cloudflare"
+
+- name: Run Certbot to generate certificate with Hetzner DNS
+  ansible.builtin.command: >
+    certbot certonly --manual --preferred-challenges dns
+    --manual-auth-hook '{{ certbot_hetzner_hook_path }} add'
+    --manual-cleanup-hook '{{ certbot_hetzner_hook_path }} remove'
+    --non-interactive --agree-tos
+    --email {{ certbot_acme_email }}
+    --cert-name "{{ item.domains | first }}"
+    --expand
+    -d {{ item.domains | join(',') }}
+    --deploy-hook '/etc/letsencrypt/renewal-hooks/deploy/deployhook.sh'
+  loop: "{{ certbot_certs }}"
+  tags: certbot
+  register: certbot_output
+  changed_when: >
+    'not yet due for renewal' not in (((certbot_output.stdout | default('')) ~ (certbot_output.stderr | default(''))) | lower) and
+    'no action taken' not in (((certbot_output.stdout | default('')) ~ (certbot_output.stderr | default(''))) | lower)
+  become: true
+  when: certbot_dns_provider == "hetzner"
 
 - name: Modify Certbot renewal configuration file
   ansible.builtin.lineinfile:

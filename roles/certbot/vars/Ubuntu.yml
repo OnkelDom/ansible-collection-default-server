@@ -1,9 +1,13 @@
 ---
 # Ubuntu specific variables (inherits from Debian but can be customized)
-certbot_packages:
+certbot_packages_base:
 - certbot
 - python3-pip
-- python3-certbot-dns-cloudflare
+
+certbot_dns_provider_packages:
+  cloudflare:
+    - python3-certbot-dns-cloudflare
+  hetzner: []
 
 # Package manager specific settings
 certbot_package_manager: apt
