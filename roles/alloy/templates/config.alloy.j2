@@ -183,9 +183,18 @@ loki.source.file "local_logs" {
 }
 {% endif %}
 
+{% set alloy_rendered_custom_blocks = [] %}
 {% if alloy_config.custom is defined %}
+{% set alloy_rendered_custom_blocks = alloy_rendered_custom_blocks + alloy_config.custom %}
+{% endif %}
+{% set alloy_rendered_custom_blocks = alloy_rendered_custom_blocks + alloy_custom_blocks %}
+{% set alloy_rendered_custom_blocks = alloy_rendered_custom_blocks + alloy_custom_blocks_group_vars %}
+{% set alloy_rendered_custom_blocks = alloy_rendered_custom_blocks + alloy_custom_blocks_host_vars %}
+{% set alloy_rendered_custom_blocks = alloy_rendered_custom_blocks + alloy_custom_blocks_playbook %}
+
+{% if alloy_rendered_custom_blocks | length > 0 %}
 // Custom configuration blocks
-{% for custom_block in alloy_config.custom %}
+{% for custom_block in alloy_rendered_custom_blocks %}
 {{ custom_block }}
 {% endfor %}
 {% endif %}

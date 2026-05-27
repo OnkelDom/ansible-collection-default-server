@@ -7,14 +7,9 @@ unattended_updates_updates_cache_valid_time: 3600
 #  e.g.: 'o=Debian,a=stable', 'o=Debian,a=stable-updates'
 #
 #  Left unset, distribution-specific defaults will be used through
-#  __unattended_origins_patterns variable only if this variable
-#    is not provided externally
+#  __unattended_origins_patterns from vars/<distribution>.yml.
 #  REFS https://github.com/ansible/ansible/issues/8121
-unattended_updates_origins_patterns:
-- 'origin=Ubuntu,archive=${distro_codename}-security'
-- 'o=Ubuntu,a=${distro_codename}'
-- 'o=Ubuntu,a=${distro_codename}-updates'
-- 'o=Ubuntu,a=${distro_codename}-proposed-updates'
+# unattended_updates_origins_patterns: []
 
 # Unattended-Upgrade::Package-Blacklist
 #  List of packages to not update

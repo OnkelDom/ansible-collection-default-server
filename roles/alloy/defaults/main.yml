@@ -30,6 +30,15 @@ alloy_config:
     level: "{{ alloy_log_level }}"
     format: logfmt
 
+# Optional raw Alloy configuration blocks appended after the structured
+# `alloy_config` sections. The tiered variables make it possible to compose
+# baseline, group, host and playbook specific snippets without overriding one
+# another in inventory.
+alloy_custom_blocks: []
+alloy_custom_blocks_group_vars: []
+alloy_custom_blocks_host_vars: []
+alloy_custom_blocks_playbook: []
+
 # Firewall-Konfiguration (falls erforderlich)
 alloy_manage_firewall: false
 alloy_firewall_enabled: false

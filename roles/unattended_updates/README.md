@@ -14,11 +14,11 @@ The role interface is validated through `meta/argument_specs.yml`. Defaults are 
 ```yaml
 ---
 unattended_updates_updates_cache_valid_time: 3600
-unattended_updates_origins_patterns:
-- origin=Ubuntu,archive=${distro_codename}-security
-- o=Ubuntu,a=${distro_codename}
-- o=Ubuntu,a=${distro_codename}-updates
-- o=Ubuntu,a=${distro_codename}-proposed-updates
+# unattended_updates_origins_patterns:
+# - origin=Debian,codename=${distro_codename},label=Debian
+# - origin=Debian,codename=${distro_codename},label=Debian-Security
+# - origin=Debian,codename=${distro_codename}-security,label=Debian-Security
+# - origin=Debian,codename=${distro_codename}-updates,label=Debian
 unattended_updates_package_blacklist: []
 unattended_updates_autofix_interrupted_dpkg: true
 unattended_updates_minimal_steps: true

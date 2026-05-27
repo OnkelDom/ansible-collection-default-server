@@ -28,6 +28,10 @@ alloy_config:
   logging:
     level: '{{ alloy_log_level }}'
     format: logfmt
+alloy_custom_blocks: []
+alloy_custom_blocks_group_vars: []
+alloy_custom_blocks_host_vars: []
+alloy_custom_blocks_playbook: []
 alloy_manage_firewall: false
 alloy_firewall_enabled: false
 alloy_firewall_zone: public
@@ -36,6 +40,11 @@ alloy_firewall_ports: []
 alloy_selinux_ports: '{{ alloy_firewall_ports }}'
 alloy_service_override: {}
 ```
+
+`alloy_custom_blocks*` entries are raw Alloy snippets appended after the
+structured `alloy_config` sections. Use them for integration-specific pipelines
+that are easier to express directly in Alloy, while still keeping the role
+defaults and inventory layers composable.
 
 ## Example Playbook
 

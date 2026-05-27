@@ -60,6 +60,30 @@ argument_specs:
         - Controls `alloy_config` for the `alloy` role.
         required: false
         type: dict
+      alloy_custom_blocks:
+        description:
+        - Raw Alloy configuration blocks appended after structured role sections.
+        required: false
+        type: list
+        elements: str
+      alloy_custom_blocks_group_vars:
+        description:
+        - Group-level raw Alloy configuration blocks appended after structured role sections.
+        required: false
+        type: list
+        elements: str
+      alloy_custom_blocks_host_vars:
+        description:
+        - Host-level raw Alloy configuration blocks appended after structured role sections.
+        required: false
+        type: list
+        elements: str
+      alloy_custom_blocks_playbook:
+        description:
+        - Playbook-level raw Alloy configuration blocks appended after structured role sections.
+        required: false
+        type: list
+        elements: str
       alloy_manage_firewall:
         description:
         - Controls `alloy_manage_firewall` for the `alloy` role.
