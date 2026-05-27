@@ -30,7 +30,7 @@ unattended_updates_remove_unused_dependencies: true
 unattended_updates_remove_new_unused_dependencies: true
 unattended_updates_remove_unused_kernel_packages: true
 unattended_updates_automatic_reboot: "{{ unattended_updates_automatic_reboot_enabled | default('true') }}"
-unattended_updates_automatic_reboot_time: "{{ '02:' ~ '%02d' | format((range(0, 55) | random)) }}"
+unattended_updates_automatic_reboot_time: "{{ '02:%02d' | format(60 | random(seed=inventory_hostname)) }}"
 unattended_updates_ignore_apps_require_restart: false
 unattended_updates_syslog_enable: true
 unattended_updates_syslog_facility: updates

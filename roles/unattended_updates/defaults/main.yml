@@ -7,7 +7,7 @@ unattended_updates_updates_cache_valid_time: 3600
 #  e.g.: 'o=Debian,a=stable', 'o=Debian,a=stable-updates'
 #
 #  Left unset, distribution-specific defaults will be used through
-#  __unattended_origins_patterns from vars/<distribution>.yml.
+#  __unattended_updates_origins_patterns from vars/<distribution>.yml.
 #  REFS https://github.com/ansible/ansible/issues/8121
 # unattended_updates_origins_patterns: []
 
@@ -75,7 +75,7 @@ unattended_updates_automatic_reboot: "{{ unattended_updates_automatic_reboot_ena
 # Unattended-Upgrade::Automatic-Reboot-Time
 #  If automatic reboot is enabled and needed, reboot at the specific
 #  time instead of immediately
-unattended_updates_automatic_reboot_time: "{{ '02:' ~ '%02d' | format((range(0, 55) | random)) }}"
+unattended_updates_automatic_reboot_time: "{{ '02:%02d' | format(60 | random(seed=inventory_hostname)) }}"
 
 # Unattended-Upgrade::IgnoreAppsRequireRestart
 #  Do upgrade application even if it requires restart after upgrade

@@ -112,7 +112,7 @@ Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 Unattended-Upgrade::Automatic-Reboot "true";
 {% endif %}
 
-{% if unattended_updates_automatic_reboot_time %}
+{% if unattended_updates_automatic_reboot and unattended_updates_automatic_reboot_time %}
 // If automatic reboot is enabled and needed, reboot at the specific
 // time instead of immediately
 //  Default: "now"
