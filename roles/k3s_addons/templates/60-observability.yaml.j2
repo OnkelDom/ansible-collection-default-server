@@ -1101,6 +1101,8 @@ spec:
       grafana.ini:
         server:
           root_url: "https://{{ k3s_addons_grafana_domain }}"
+        plugins:
+          preinstall_disabled: true
         users:
           default_theme: dark
       ingress:
@@ -1116,6 +1118,7 @@ spec:
               - "{{ k3s_addons_grafana_domain }}"
     prometheus:
       prometheusSpec:
+        serviceDiscoveryRole: EndpointSlice
         retention: "{{ k3s_addons_prometheus_retention }}"
         storageSpec:
           volumeClaimTemplate:
