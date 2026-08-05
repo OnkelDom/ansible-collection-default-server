@@ -8,6 +8,7 @@ keepalived_service_state: stopped
 keepalived_config_group_vars: {}
 keepalived_config_host_vars: {}
 keepalived_config_playbook: {}
+keepalived_healthcheck_scripts: []
 keepalived_config_defaults:
   global_defs:
     router_id: "{{ inventory_hostname }}"

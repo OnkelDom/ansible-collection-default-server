@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: csi-rbd-secret
+  namespace: ceph-csi
+type: Opaque
+stringData:
+  userID: "{{ k3s_addons_ceph_user }}"
+  userKey: "{{ k3s_addons_ceph_user_key }}"
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: ceph-csi-rbd
+  namespace: kube-system
+spec:
+  repo: https://ceph.github.io/csi-charts
+  chart: ceph-csi-rbd
+{% if k3s_addons_ceph_csi_chart_version | length > 0 %}
+  version: "{{ k3s_addons_ceph_csi_chart_version }}"
+{% endif %}
+  targetNamespace: ceph-csi
+  createNamespace: true
+  valuesContent: |-
+    csiConfig:
+      - clusterID: "{{ k3s_addons_ceph_cluster_id }}"
+        monitors:
+{% for monitor in k3s_addons_ceph_monitors %}
+          - "{{ monitor }}"
+{% endfor %}
+    secret:
+      create: false
+      name: csi-rbd-secret
+    storageClass:
+      create: true
+      name: ceph-rbd
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "true"
+      clusterID: "{{ k3s_addons_ceph_cluster_id }}"
+      pool: "{{ k3s_addons_ceph_rbd_pool }}"
+      imageFeatures: "layering"
+      provisionerSecret: csi-rbd-secret
+      provisionerSecretNamespace: ceph-csi
+      controllerExpandSecret: csi-rbd-secret
+      controllerExpandSecretNamespace: ceph-csi
+      controllerPublishSecret: csi-rbd-secret
+      controllerPublishSecretNamespace: ceph-csi
+      nodeStageSecret: csi-rbd-secret
+      nodeStageSecretNamespace: ceph-csi
+      fstype: xfs
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+    volumeSnapshotClass:
+      create: {{ k3s_addons_snapshot_controller_enabled | bool | lower }}
+      name: ceph-rbd-snapclass
+      labels:
+        velero.io/csi-volumesnapshot-class: "true"
+      clusterID: "{{ k3s_addons_ceph_cluster_id }}"
+      snapshotterSecret: csi-rbd-secret
+      snapshotterSecretNamespace: ceph-csi
+      deletionPolicy: Retain

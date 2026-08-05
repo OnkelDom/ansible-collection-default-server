@@ -1,0 +1,63 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: csi-cephfs-secret
+  namespace: ceph-csi
+type: Opaque
+stringData:
+  userID: "{{ k3s_addons_ceph_user }}"
+  userKey: "{{ k3s_addons_ceph_user_key }}"
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: ceph-csi-cephfs
+  namespace: kube-system
+spec:
+  repo: https://ceph.github.io/csi-charts
+  chart: ceph-csi-cephfs
+{% if k3s_addons_ceph_csi_chart_version | length > 0 %}
+  version: "{{ k3s_addons_ceph_csi_chart_version }}"
+{% endif %}
+  targetNamespace: ceph-csi
+  createNamespace: true
+  valuesContent: |-
+    csiConfig:
+      - clusterID: "{{ k3s_addons_ceph_cluster_id }}"
+        monitors:
+{% for monitor in k3s_addons_ceph_monitors %}
+          - "{{ monitor }}"
+{% endfor %}
+    configMapName: ceph-csi-cephfs-config
+    cephConfConfigMapName: ceph-csi-cephfs-ceph-conf
+    kmsConfigMapName: ceph-csi-cephfs-encryption-kms-config
+    secret:
+      create: false
+      name: csi-cephfs-secret
+    storageClass:
+      create: true
+      name: cephfs
+      annotations: {}
+      clusterID: "{{ k3s_addons_ceph_cluster_id }}"
+      fsName: "{{ k3s_addons_cephfs_name }}"
+      pool: "{{ k3s_addons_cephfs_pool }}"
+      provisionerSecret: csi-cephfs-secret
+      provisionerSecretNamespace: ceph-csi
+      controllerExpandSecret: csi-cephfs-secret
+      controllerExpandSecretNamespace: ceph-csi
+      controllerPublishSecret: csi-cephfs-secret
+      controllerPublishSecretNamespace: ceph-csi
+      nodeStageSecret: csi-cephfs-secret
+      nodeStageSecretNamespace: ceph-csi
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+    volumeSnapshotClass:
+      create: {{ k3s_addons_snapshot_controller_enabled | bool | lower }}
+      name: cephfs-snapclass
+      labels:
+        velero.io/csi-volumesnapshot-class: "true"
+      clusterID: "{{ k3s_addons_ceph_cluster_id }}"
+      snapshotterSecret: csi-cephfs-secret
+      snapshotterSecretNamespace: ceph-csi
+      deletionPolicy: Retain

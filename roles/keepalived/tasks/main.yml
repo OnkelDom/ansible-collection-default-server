@@ -54,6 +54,20 @@
   become: true
   tags: keepalived
 
+- name: Deploy keepalived health check scripts
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: "/etc/keepalived/scripts/{{ item.name }}"
+    owner: root
+    group: root
+    mode: "0755"
+  loop: "{{ keepalived_healthcheck_scripts }}"
+  loop_control:
+    label: "{{ item.name }}"
+  notify: Restart keepalived
+  become: true
+  tags: keepalived
+
 - name: Configure keepalived
   ansible.builtin.template:
     src: keepalived.conf.j2

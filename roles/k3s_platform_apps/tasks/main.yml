@@ -1,0 +1,535 @@
+---
+- name: Validate k3s platform app inputs
+  ansible.builtin.assert:
+    that:
+      - k3s_platform_apps_namespace | length > 0
+      - k3s_platform_apps_homepage_domain | length > 0
+      - k3s_platform_apps_ingress_class | length > 0
+    fail_msg: "k3s_platform_apps requires namespace, homepage domain and ingress class."
+  tags: k3s_platform_apps
+
+- name: Ensure platform app work directory exists
+  ansible.builtin.file:
+    path: "{{ k3s_platform_apps_work_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+  become: true
+  tags: k3s_platform_apps
+
+- name: Remove stale rendered platform app manifests
+  ansible.builtin.command:
+    cmd: "find {{ k3s_platform_apps_work_dir }} -maxdepth 1 -type f -name '*.yaml' -delete"
+  changed_when: false
+  become: true
+  tags: k3s_platform_apps
+
+- name: Render sensitive platform runtime secret
+  ansible.builtin.template:
+    src: 05-runtime-secret.yaml.j2
+    dest: "{{ k3s_platform_apps_work_dir }}/05-runtime-secret.yaml"
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  no_log: true
+  when: k3s_platform_apps_runtime_env | length > 0
+  tags: k3s_platform_apps
+
+- name: Render platform app manifests
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ k3s_platform_apps_work_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0600"
+  loop:
+    - 00-namespace.yaml
+    - 01-network-policy.yaml
+    - 10-homepage.yaml
+    - 20-blackbox.yaml
+    - 30-grafana-dashboard.yaml
+    - 40-observability-runtime.yaml
+    - 41-data-services.yaml
+    - 50-n8n.yaml
+    - 51-outline.yaml
+    - 52-netbox.yaml
+    - 53-authentik.yaml
+    - 54-gitea.yaml
+    - 55-semaphore.yaml
+    - 56-product-aliases.yaml
+    - 57-external-services.yaml
+  become: true
+  tags: k3s_platform_apps
+
+- name: Apply platform app manifests
+  ansible.builtin.command:
+    cmd: "kubectl apply -f {{ k3s_platform_apps_work_dir }}"
+  register: k3s_platform_apps_apply
+  changed_when: "'configured' in k3s_platform_apps_apply.stdout or 'created' in k3s_platform_apps_apply.stdout"
+  become: true
+  tags: k3s_platform_apps
+
+- name: Remove undeclared platform blackbox probes
+  ansible.builtin.shell: |
+    set -euo pipefail
+    desired=(
+    {% for target in k3s_platform_apps_blackbox_targets %}
+      "platform-bus-{{ target.name }}"
+    {% endfor %}
+    )
+    deleted=0
+    while IFS= read -r current; do
+      [[ -n "$current" ]] || continue
+      keep=0
+      for expected in "${desired[@]}"; do
+        if [[ "$current" == "$expected" ]]; then
+          keep=1
+          break
+        fi
+      done
+      if [[ "$keep" == "0" ]]; then
+        kubectl -n monitoring delete probe "$current"
+        deleted=1
+      fi
+    done < <(
+      kubectl -n monitoring get probes \
+        -l app.kubernetes.io/part-of=platform-bus \
+        -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+    )
+    [[ "$deleted" == "0" ]] || echo deleted
+  args:
+    executable: /bin/bash
+  register: k3s_platform_apps_obsolete_probes
+  changed_when: "'deleted' in k3s_platform_apps_obsolete_probes.stdout"
+  become: true
+  when: k3s_platform_apps_blackbox_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Remove retired private registry and CA objects
+  ansible.builtin.command:
+    cmd: >-
+      kubectl -n {{ k3s_platform_apps_namespace }} delete
+      secret/registry-bus-lenmail configmap/platform-bus-ca-chain
+      --ignore-not-found=true
+  register: k3s_platform_apps_registry_secret_delete
+  changed_when: "'deleted' in k3s_platform_apps_registry_secret_delete.stdout"
+  become: true
+  tags: k3s_platform_apps
+
+- name: Remove legacy PostgreSQL resources after HA migration
+  ansible.builtin.command:
+    cmd: >-
+      kubectl -n {{ k3s_platform_apps_namespace }} delete
+      statefulset/postgres service/postgres configmap/postgres-init
+      pvc/data-postgres-0 --ignore-not-found=true
+  register: k3s_platform_apps_legacy_postgres_service_delete
+  changed_when: "'deleted' in k3s_platform_apps_legacy_postgres_service_delete.stdout"
+  become: true
+  when:
+    - k3s_platform_apps_data_services_enabled | bool
+    - not (k3s_platform_apps_postgres_enabled | bool)
+  tags: k3s_platform_apps
+
+- name: Wait for homepage rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/homepage --timeout=300s"
+  register: k3s_platform_apps_homepage_rollout
+  until: k3s_platform_apps_homepage_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_homepage_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for blackbox exporter rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n monitoring rollout status deployment/platform-bus-blackbox-exporter --timeout=300s"
+  register: k3s_platform_apps_blackbox_rollout
+  until: k3s_platform_apps_blackbox_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_blackbox_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for Loki rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n monitoring rollout status statefulset/loki --timeout=300s"
+  register: k3s_platform_apps_loki_rollout
+  until: k3s_platform_apps_loki_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_loki_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for Tempo rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n monitoring rollout status statefulset/tempo --timeout=300s"
+  register: k3s_platform_apps_tempo_rollout
+  until: k3s_platform_apps_tempo_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_tempo_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for platform PostgreSQL rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status statefulset/postgres --timeout=300s"
+  register: k3s_platform_apps_postgres_rollout
+  until: k3s_platform_apps_postgres_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_data_services_enabled | bool
+    - k3s_platform_apps_postgres_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Reconcile platform PostgreSQL logical databases and roles
+  ansible.builtin.shell: |
+    set -euo pipefail
+    kubectl -n {{ k3s_platform_apps_namespace }} exec postgres-0 -- bash -ec '
+      set -euo pipefail
+      export PGPASSWORD="$POSTGRES_PASSWORD"
+
+      create_db_and_user() {
+        local db="$1"
+        local user="$2"
+        local pass="$3"
+
+        psql -v ON_ERROR_STOP=1 \
+          -v app_db="$db" \
+          -v app_user="$user" \
+          -v app_pass="$pass" \
+          --username "$POSTGRES_USER" \
+          --dbname "$POSTGRES_DB" \
+          <<< "SELECT format('"'"'CREATE ROLE %I LOGIN PASSWORD %L'"'"', :'"'"'app_user'"'"', :'"'"'app_pass'"'"') WHERE NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = :'"'"'app_user'"'"')\\gexec"
+        psql -v ON_ERROR_STOP=1 \
+          -v app_db="$db" \
+          -v app_user="$user" \
+          --username "$POSTGRES_USER" \
+          --dbname "$POSTGRES_DB" \
+          <<< "SELECT format('"'"'CREATE DATABASE %I OWNER %I'"'"', :'"'"'app_db'"'"', :'"'"'app_user'"'"') WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = :'"'"'app_db'"'"')\\gexec"
+        psql -v ON_ERROR_STOP=1 \
+          -v app_db="$db" \
+          -v app_user="$user" \
+          --username "$POSTGRES_USER" \
+          --dbname "$POSTGRES_DB" \
+          <<< "SELECT format('"'"'GRANT ALL PRIVILEGES ON DATABASE %I TO %I'"'"', :'"'"'app_db'"'"', :'"'"'app_user'"'"')\\gexec"
+      }
+
+      create_from_prefix() {
+        local prefix="$1"
+        local db_var="${prefix}_DB"
+        local user_var="${prefix}_DB_USER"
+        local pass_var="${prefix}_DB_PASS"
+
+        if [[ -n "${!db_var:-}" && -n "${!user_var:-}" && -n "${!pass_var:-}" ]]; then
+          create_db_and_user "${!db_var}" "${!user_var}" "${!pass_var}"
+        fi
+      }
+
+      create_from_prefix AUTHENTIK
+      create_from_prefix GITEA
+      create_from_prefix SEMAPHORE
+      create_from_prefix OUTLINE
+      create_from_prefix NETBOX
+      create_from_prefix GRAFANA
+      create_from_prefix PDNS
+      create_from_prefix PDNS_ADMIN
+      create_from_prefix N8N
+
+      if [[ -n "${NETBOX_DB:-}" && -n "${NETBOX_DB_USER:-}" ]]; then
+        psql -v ON_ERROR_STOP=1 \
+          -v app_db="$NETBOX_DB" \
+          -v app_user="$NETBOX_DB_USER" \
+          --username "$POSTGRES_USER" \
+          --dbname "$POSTGRES_DB" \
+          <<< "SELECT format('"'"'GRANT CREATE ON DATABASE %I TO %I'"'"', :'"'"'app_db'"'"', :'"'"'app_user'"'"')\\gexec"
+      fi
+    '
+  args:
+    executable: /bin/bash
+  become: true
+  no_log: true
+  when:
+    - k3s_platform_apps_data_services_enabled | bool
+    - k3s_platform_apps_postgres_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for platform Redis rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status statefulset/redis --timeout=300s"
+  register: k3s_platform_apps_redis_rollout
+  until: k3s_platform_apps_redis_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_data_services_enabled | bool
+    - k3s_platform_apps_redis_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for n8n rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/n8n --timeout=300s"
+  register: k3s_platform_apps_n8n_rollout
+  until: k3s_platform_apps_n8n_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_n8n_enabled | bool
+    - k3s_platform_apps_n8n_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Outline rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/outline --timeout=300s"
+  register: k3s_platform_apps_outline_rollout
+  until: k3s_platform_apps_outline_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_outline_enabled | bool
+    - k3s_platform_apps_outline_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for NetBox rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/netbox --timeout=300s"
+  register: k3s_platform_apps_netbox_rollout
+  until: k3s_platform_apps_netbox_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_netbox_enabled | bool
+    - k3s_platform_apps_netbox_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for NetBox worker rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/netbox-worker --timeout=300s"
+  register: k3s_platform_apps_netbox_worker_rollout
+  until: k3s_platform_apps_netbox_worker_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_netbox_enabled | bool
+    - k3s_platform_apps_netbox_worker_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Authentik server rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/authentik-server --timeout=300s"
+  register: k3s_platform_apps_authentik_server_rollout
+  until: k3s_platform_apps_authentik_server_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_authentik_enabled | bool
+    - k3s_platform_apps_authentik_server_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Authentik worker rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/authentik-worker --timeout=300s"
+  register: k3s_platform_apps_authentik_worker_rollout
+  until: k3s_platform_apps_authentik_worker_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_authentik_enabled | bool
+    - k3s_platform_apps_authentik_worker_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Reconcile Authentik redirect URIs for k3s app domains
+  ansible.builtin.shell: |
+    set -euo pipefail
+    pod=$(kubectl -n {{ k3s_platform_apps_namespace }} get pod -l app.kubernetes.io/name=authentik-server -o name | head -n1 | cut -d/ -f2)
+    timeout 180s kubectl -n {{ k3s_platform_apps_namespace }} exec -i "$pod" -- env AUTHENTIK_LOG_LEVEL=warning python /manage.py shell <<'PY'
+    from authentik.providers.oauth2.models import OAuth2Provider
+
+    expected = {
+    {% if k3s_platform_apps_gitea_enabled | bool %}
+        "Gitea OIDC": [
+            {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_gitea_domain }}/user/oauth2/authentik/callback"},
+        ],
+    {% endif %}
+    {% if k3s_platform_apps_netbox_enabled | bool %}
+        "NetBox OIDC": [
+            {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_netbox_domain }}/oauth/complete/oidc/"},
+        ],
+    {% endif %}
+    {% if k3s_platform_apps_outline_enabled | bool %}
+        "Outline OIDC": [
+            {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_outline_domain }}/auth/oidc.callback"},
+        ],
+    {% endif %}
+    {% if k3s_platform_apps_semaphore_enabled | bool %}
+        "Semaphore OIDC": [
+            {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_semaphore_domain }}/api/auth/oidc/authentik/redirect/"},
+        ],
+    {% endif %}
+    {% if k3s_platform_apps_homepage_enabled | bool %}
+        "Portal ForwardAuth": [
+            {"matching_mode": "strict", "redirect_uri_type": "authorization", "url": "https://{{ k3s_platform_apps_homepage_domain }}/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},
+            {"matching_mode": "strict", "redirect_uri_type": "authorization", "url": "https://{{ k3s_platform_apps_homepage_domain }}?X-authentik-auth-callback=true"},
+        ],
+    {% endif %}
+    {% if k3s_platform_apps_n8n_enabled | bool %}
+        "n8n ForwardAuth": [
+            {"matching_mode": "strict", "redirect_uri_type": "authorization", "url": "https://{{ k3s_platform_apps_n8n_domain }}/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},
+            {"matching_mode": "strict", "redirect_uri_type": "authorization", "url": "https://{{ k3s_platform_apps_n8n_domain }}?X-authentik-auth-callback=true"},
+        ],
+    {% endif %}
+    }
+
+    changed = False
+    for provider_name, desired_entries in expected.items():
+        try:
+            provider = OAuth2Provider.objects.get(name=provider_name)
+        except OAuth2Provider.DoesNotExist:
+            print(f"SKIP missing provider {provider_name}")
+            continue
+        entries = list(provider._redirect_uris or [])
+        existing_urls = {entry.get("url") for entry in entries}
+        added = []
+        for entry in desired_entries:
+            if entry["url"] in existing_urls:
+                continue
+            entries.append(entry)
+            added.append(entry["url"])
+        if added:
+            provider._redirect_uris = entries
+            provider.save(update_fields=["_redirect_uris"])
+            changed = True
+            print(f"ADD {provider_name} {'|'.join(added)}")
+        else:
+            print(f"OK {provider_name}")
+    print(f"CHANGED {changed}")
+    PY
+  args:
+    executable: /bin/bash
+  register: k3s_platform_apps_authentik_redirects
+  changed_when: "'CHANGED True' in k3s_platform_apps_authentik_redirects.stdout"
+  become: true
+  when:
+    - k3s_platform_apps_authentik_enabled | bool
+    - k3s_platform_apps_authentik_server_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Gitea rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/gitea --timeout=300s"
+  register: k3s_platform_apps_gitea_rollout
+  until: k3s_platform_apps_gitea_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_gitea_enabled | bool
+    - k3s_platform_apps_gitea_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Reconcile Gitea OIDC discovery URL
+  ansible.builtin.shell: |
+    set -euo pipefail
+    source_id="$(
+      kubectl -n {{ k3s_platform_apps_namespace }} exec deploy/gitea -- su git -s /bin/sh -c 'gitea admin auth list --config /data/gitea/conf/app.ini' |
+      awk '$2 == "authentik" {print $1; exit}'
+    )"
+    test -n "$source_id"
+    kubectl -n {{ k3s_platform_apps_namespace }} exec deploy/gitea -- su git -s /bin/sh -c \
+      "gitea admin auth update-oauth --config /data/gitea/conf/app.ini --id '$source_id' --name authentik --provider openidConnect --auto-discover-url https://{{ k3s_platform_apps_authentik_domain }}/application/o/gitea/.well-known/openid-configuration --scopes openid --scopes profile --scopes email --scopes groups"
+  args:
+    executable: /bin/bash
+  register: k3s_platform_apps_gitea_oidc_reconcile
+  changed_when: "'Updated authentication source' in k3s_platform_apps_gitea_oidc_reconcile.stdout"
+  become: true
+  when:
+    - k3s_platform_apps_gitea_enabled | bool
+    - k3s_platform_apps_gitea_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Semaphore rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/semaphore --timeout=300s"
+  register: k3s_platform_apps_semaphore_rollout
+  until: k3s_platform_apps_semaphore_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_semaphore_enabled | bool
+    - k3s_platform_apps_semaphore_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Reconcile Gitea runner registration token
+  ansible.builtin.shell: |
+    set -euo pipefail
+    token="$(kubectl -n {{ k3s_platform_apps_namespace }} exec deploy/gitea -- su git -s /bin/sh -c 'gitea actions generate-runner-token' | tr -d '\r\n')"
+    test -n "$token"
+    b64="$(printf %s "$token" | base64 -w0)"
+    kubectl -n {{ k3s_platform_apps_namespace }} patch secret {{ k3s_platform_apps_runtime_secret_name }} --type merge -p "{\"data\":{\"GITEA_RUNNER_REGISTRATION_TOKEN\":\"$b64\"}}" >/dev/null
+  args:
+    executable: /bin/bash
+  changed_when: false
+  become: true
+  no_log: true
+  when:
+    - k3s_platform_apps_gitea_enabled | bool
+    - k3s_platform_apps_gitea_runner_enabled | bool
+    - k3s_platform_apps_gitea_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Gitea runner rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/gitea-runner --timeout=300s"
+  register: k3s_platform_apps_gitea_runner_rollout
+  until: k3s_platform_apps_gitea_runner_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_gitea_runner_enabled | bool
+    - k3s_platform_apps_gitea_runner_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Semaphore runner rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/semaphore-runner --timeout=300s"
+  register: k3s_platform_apps_semaphore_runner_rollout
+  until: k3s_platform_apps_semaphore_runner_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_semaphore_runner_enabled | bool
+    - k3s_platform_apps_semaphore_runner_replicas | int > 0
+  tags: k3s_platform_apps

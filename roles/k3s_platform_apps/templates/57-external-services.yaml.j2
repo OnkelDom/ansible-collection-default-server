@@ -1,0 +1,161 @@
+{% if k3s_platform_apps_homeassistant_enabled | bool %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  ports:
+    - name: http
+      port: {{ k3s_platform_apps_homeassistant_port }}
+      targetPort: {{ k3s_platform_apps_homeassistant_port }}
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: homeassistant-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    kubernetes.io/service-name: homeassistant-external
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: {{ k3s_platform_apps_homeassistant_port }}
+endpoints:
+  - addresses: ["{{ k3s_platform_apps_homeassistant_address }}"]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homeassistant-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  annotations:
+    cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+spec:
+  ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
+  tls:
+    - secretName: homeassistant-external-tls
+      hosts: ["{{ k3s_platform_apps_homeassistant_domain }}"]
+  rules:
+    - host: "{{ k3s_platform_apps_homeassistant_domain }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homeassistant-external
+                port:
+                  name: http
+{% endif %}
+{% if k3s_platform_apps_synology_enabled | bool %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: synology-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  ports:
+    - name: https
+      port: {{ k3s_platform_apps_synology_https_port }}
+      targetPort: {{ k3s_platform_apps_synology_https_port }}
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: synology-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    kubernetes.io/service-name: synology-external
+addressType: IPv4
+ports:
+  - name: https
+    protocol: TCP
+    port: {{ k3s_platform_apps_synology_https_port }}
+endpoints:
+  - addresses: ["{{ k3s_platform_apps_synology_address }}"]
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: synology-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: "{% for domain in k3s_platform_apps_synology_domains %}HostSNI(`{{ domain }}`){{ ' || ' if not loop.last else '' }}{% endfor %}"
+      services:
+        - name: synology-external
+          port: https
+  tls:
+    passthrough: true
+{% endif %}
+{% if k3s_platform_apps_ceph_dashboard_enabled | bool %}
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: ceph-dashboard-insecure
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-dashboard-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: https
+    traefik.ingress.kubernetes.io/service.serverstransport: "{{ k3s_platform_apps_namespace }}-ceph-dashboard-insecure@kubernetescrd"
+spec:
+  ports:
+    - name: https
+      port: {{ k3s_platform_apps_ceph_dashboard_port }}
+      targetPort: {{ k3s_platform_apps_ceph_dashboard_port }}
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: ceph-dashboard-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    kubernetes.io/service-name: ceph-dashboard-external
+addressType: IPv4
+ports:
+  - name: https
+    protocol: TCP
+    port: {{ k3s_platform_apps_ceph_dashboard_port }}
+endpoints:
+{% for address in k3s_platform_apps_ceph_dashboard_addresses %}
+  - addresses: ["{{ address }}"]
+{% endfor %}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ceph-dashboard-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  annotations:
+    cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+spec:
+  ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
+  tls:
+    - secretName: ceph-dashboard-external-tls
+      hosts: ["{{ k3s_platform_apps_ceph_dashboard_domain }}"]
+  rules:
+    - host: "{{ k3s_platform_apps_ceph_dashboard_domain }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ceph-dashboard-external
+                port:
+                  name: https
+{% endif %}

@@ -1,0 +1,9 @@
+---
+- name: Reload k3s extra interfaces
+  ansible.builtin.shell: |
+    set -e
+    ifreload -a || systemctl restart networking
+  args:
+    executable: /bin/bash
+  become: true
+
