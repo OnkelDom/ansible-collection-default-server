@@ -6,6 +6,8 @@ k3s_platform_apps_cluster_domain: k3s.lenmail.de
 k3s_platform_apps_product_domain: bus.lenmail.de
 k3s_platform_apps_acme_cluster_issuer: letsencrypt-hetzner
 k3s_platform_apps_network_policy_enabled: true
+k3s_platform_apps_forwardauth_enabled: true
+k3s_platform_apps_forwardauth_address: "http://authentik-server.platform-bus.svc.cluster.local:9000/outpost.goauthentik.io/auth/traefik"
 k3s_platform_apps_product_aliases_enabled: false
 k3s_platform_apps_homeassistant_enabled: false
 k3s_platform_apps_homeassistant_domain: assi.lenmail.de

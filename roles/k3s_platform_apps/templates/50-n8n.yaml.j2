@@ -152,6 +152,11 @@ metadata:
     app.kubernetes.io/part-of: platform-bus
   annotations:
     cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+{% if k3s_platform_apps_product_aliases_enabled | bool %}
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ k3s_platform_apps_namespace }}-n8n-product-alias@kubernetescrd"
+{% elif k3s_platform_apps_forwardauth_enabled | bool %}
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ k3s_platform_apps_namespace }}-authentik-forwardauth@kubernetescrd"
+{% endif %}
 spec:
   ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
   tls:
@@ -169,4 +174,30 @@ spec:
                 name: n8n
                 port:
                   name: http
+{% if k3s_platform_apps_forwardauth_enabled | bool %}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-machine-endpoints
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/part-of: platform-bus
+spec:
+  ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
+  rules:
+    - host: "{{ k3s_platform_apps_n8n_domain }}"
+      http:
+        paths:
+{% for path in ['/webhook/', '/webhook-test/', '/webhook-waiting/', '/form/', '/form-test/', '/healthz'] %}
+          - path: "{{ path }}"
+            pathType: Prefix
+            backend:
+              service:
+                name: n8n
+                port:
+                  name: http
+{% endfor %}
+{% endif %}
 {% endif %}

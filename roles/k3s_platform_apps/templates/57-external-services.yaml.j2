@@ -142,6 +142,9 @@ metadata:
   namespace: "{{ k3s_platform_apps_namespace }}"
   annotations:
     cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+{% if k3s_platform_apps_forwardauth_enabled | bool %}
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ k3s_platform_apps_namespace }}-authentik-forwardauth@kubernetescrd"
+{% endif %}
 spec:
   ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
   tls:
