@@ -1030,6 +1030,20 @@ data:
       "version": 1,
       "weekStart": ""
     }
+{% if k3s_addons_grafana_oidc_enabled | bool %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-oidc
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: observability
+type: Opaque
+stringData:
+  client-secret: "{{ k3s_addons_grafana_oidc_client_secret }}"
+{% endif %}
 ---
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
@@ -1066,6 +1080,13 @@ spec:
     grafana:
       enabled: true
       adminPassword: "{{ k3s_addons_grafana_admin_password | trim }}"
+{% if k3s_addons_grafana_oidc_enabled | bool %}
+      envValueFrom:
+        GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+          secretKeyRef:
+            name: grafana-oidc
+            key: client-secret
+{% endif %}
       defaultDashboardsEnabled: true
       defaultDashboardsTimezone: browser
       persistence:
@@ -1101,6 +1122,26 @@ spec:
       grafana.ini:
         server:
           root_url: "https://{{ k3s_addons_grafana_domain }}"
+{% if k3s_addons_grafana_oidc_enabled | bool %}
+        auth:
+          signout_redirect_url: "{{ k3s_addons_grafana_oidc_signout_redirect_url }}"
+          oauth_auto_login: {{ k3s_addons_grafana_oidc_auto_login | bool | lower }}
+        auth.generic_oauth:
+          enabled: true
+          name: "{{ k3s_addons_grafana_oidc_name }}"
+          allow_sign_up: {{ k3s_addons_grafana_oidc_allow_sign_up | bool | lower }}
+          client_id: "{{ k3s_addons_grafana_oidc_client_id }}"
+          client_secret: "$__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}"
+          scopes: "{{ k3s_addons_grafana_oidc_scopes }}"
+          auth_url: "{{ k3s_addons_grafana_oidc_auth_url }}"
+          token_url: "{{ k3s_addons_grafana_oidc_token_url }}"
+          api_url: "{{ k3s_addons_grafana_oidc_api_url }}"
+          allowed_groups: "{{ k3s_addons_grafana_oidc_allowed_groups | join(' ') }}"
+          groups_attribute_path: groups
+          role_attribute_path: "contains(groups[*], '{{ k3s_addons_grafana_oidc_admin_group }}') && 'GrafanaAdmin' || contains(groups[*], '{{ k3s_addons_grafana_oidc_editor_group }}') && 'Editor' || 'Viewer'"
+          role_attribute_strict: true
+          allow_assign_grafana_admin: {{ k3s_addons_grafana_oidc_allow_assign_grafana_admin | bool | lower }}
+{% endif %}
         plugins:
           preinstall_disabled: true
         users:

@@ -40,6 +40,24 @@ k3s_addons_observability_enabled: false
 k3s_addons_observability_chart_version: ""
 k3s_addons_grafana_domain: ""
 k3s_addons_grafana_admin_password: ""
+k3s_addons_grafana_oidc_enabled: false
+k3s_addons_grafana_oidc_name: Authentik
+k3s_addons_grafana_oidc_client_id: grafana
+k3s_addons_grafana_oidc_client_secret: ""
+k3s_addons_grafana_oidc_auth_url: ""
+k3s_addons_grafana_oidc_token_url: ""
+k3s_addons_grafana_oidc_api_url: ""
+k3s_addons_grafana_oidc_signout_redirect_url: ""
+k3s_addons_grafana_oidc_scopes: "openid profile email groups"
+k3s_addons_grafana_oidc_allowed_groups:
+  - grafana-users
+  - grafana-editors
+  - grafana-admins
+k3s_addons_grafana_oidc_admin_group: grafana-admins
+k3s_addons_grafana_oidc_editor_group: grafana-editors
+k3s_addons_grafana_oidc_allow_sign_up: true
+k3s_addons_grafana_oidc_auto_login: false
+k3s_addons_grafana_oidc_allow_assign_grafana_admin: true
 k3s_addons_grafana_storage_size: 5Gi
 k3s_addons_prometheus_storage_size: 30Gi
 k3s_addons_alertmanager_storage_size: 2Gi
