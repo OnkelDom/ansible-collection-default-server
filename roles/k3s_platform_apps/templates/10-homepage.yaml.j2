@@ -81,18 +81,6 @@ data:
             icon: semaphore.svg
             href: https://ops.{{ k3s_platform_apps_product_domain }}
             description: Ansible automation
-        - DBA:
-            icon: postgres.svg
-            href: https://dba.{{ k3s_platform_apps_product_domain }}
-            description: PostgreSQL administration
-        - DNS:
-            icon: powerdns.svg
-            href: https://dns.{{ k3s_platform_apps_product_domain }}
-            description: Authoritative DNS management
-        - Admin:
-            icon: docker.svg
-            href: https://admin.{{ k3s_platform_apps_product_domain }}
-            description: Runtime administration
     - Observability:
         - Dash:
             icon: grafana.svg
@@ -106,23 +94,11 @@ data:
             icon: alertmanager.svg
             href: https://alert.{{ k3s_platform_apps_product_domain }}
             description: Alert routing and silences
-        - Logs:
-            icon: loki.svg
-            href: https://logs.{{ k3s_platform_apps_product_domain }}
-            description: Log storage endpoint
-        - Traces:
-            icon: grafana-tempo.svg
-            href: https://traces.{{ k3s_platform_apps_product_domain }}
-            description: Trace storage endpoint
     - Runtime:
         - k3s API:
             icon: kubernetes.svg
             href: https://dash.{{ k3s_platform_apps_product_domain }}/d/platform-bus-k3s-ops/platform-bus-k3s-operations
             description: Cluster health, nodes and workloads
-        - Ingress:
-            icon: traefik.svg
-            href: https://proxy.{{ k3s_platform_apps_product_domain }}
-            description: Edge routing and certificates
         - Storage:
             icon: ceph.svg
             href: https://storage.{{ k3s_platform_apps_product_domain }}
@@ -131,6 +107,10 @@ data:
             icon: homepage.svg
             href: https://portal.{{ k3s_platform_apps_product_domain }}
             description: k3s operations portal
+        - DSM:
+            icon: synology.svg
+            href: https://dsm.lenmail.de
+            description: Synology storage administration
 ---
 apiVersion: apps/v1
 kind: Deployment
