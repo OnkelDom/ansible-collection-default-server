@@ -58,70 +58,78 @@ data:
     - Core:
         - Authentik:
             icon: authentik.svg
-            href: https://auth.{{ k3s_platform_apps_cluster_domain }}
+            href: https://auth.{{ k3s_platform_apps_product_domain }}
             description: Identity provider and SSO control plane
         - Git:
-            icon: gitea.svg
-            href: https://git.{{ k3s_platform_apps_cluster_domain }}
+            icon: gitlab.svg
+            href: https://git.{{ k3s_platform_apps_product_domain }}
             description: Source repositories and runners
         - Wiki:
             icon: outline.svg
-            href: https://wiki.{{ k3s_platform_apps_cluster_domain }}
+            href: https://wiki.{{ k3s_platform_apps_product_domain }}
             description: Platform documentation
+        - Dateien:
+            icon: owncloud.svg
+            href: https://cloud.{{ k3s_platform_apps_product_domain }}
+            description: Dateien, Freigaben und Online Office
+        - LenMail:
+            icon: stalwart-mail-server.svg
+            href: https://mail.{{ k3s_platform_apps_product_domain }}/admin
+            description: Mail- und Groupware-Plattform
         - CMDB:
             icon: netbox.svg
-            href: https://cmdb.{{ k3s_platform_apps_cluster_domain }}
+            href: https://cmdb.{{ k3s_platform_apps_product_domain }}
             description: Infrastructure source of truth
     - Operations:
         - n8n:
             icon: n8n.svg
-            href: https://n8n.{{ k3s_platform_apps_cluster_domain }}
+            href: https://n8n.{{ k3s_platform_apps_product_domain }}
             description: Process automation and webhooks
         - Ops:
             icon: semaphore.svg
-            href: https://ops.{{ k3s_platform_apps_cluster_domain }}
+            href: https://ops.{{ k3s_platform_apps_product_domain }}
             description: Ansible automation
         - DBA:
             icon: postgres.svg
-            href: https://dba.{{ k3s_platform_apps_cluster_domain }}
+            href: https://dba.{{ k3s_platform_apps_product_domain }}
             description: PostgreSQL administration
         - DNS:
             icon: powerdns.svg
-            href: https://dns.{{ k3s_platform_apps_cluster_domain }}
+            href: https://dns.{{ k3s_platform_apps_product_domain }}
             description: Authoritative DNS management
         - Admin:
             icon: docker.svg
-            href: https://admin.{{ k3s_platform_apps_cluster_domain }}
+            href: https://admin.{{ k3s_platform_apps_product_domain }}
             description: Runtime administration
     - Observability:
         - Dash:
             icon: grafana.svg
-            href: https://dash.{{ k3s_platform_apps_cluster_domain }}
+            href: https://dash.{{ k3s_platform_apps_product_domain }}
             description: Dashboards and visual analysis
         - Mon:
             icon: prometheus.svg
-            href: https://mon.{{ k3s_platform_apps_cluster_domain }}
+            href: https://mon.{{ k3s_platform_apps_product_domain }}
             description: Metrics query engine
         - Alert:
             icon: alertmanager.svg
-            href: https://alert.{{ k3s_platform_apps_cluster_domain }}
+            href: https://alert.{{ k3s_platform_apps_product_domain }}
             description: Alert routing and silences
         - Logs:
             icon: loki.svg
-            href: https://logs.{{ k3s_platform_apps_cluster_domain }}
+            href: https://logs.{{ k3s_platform_apps_product_domain }}
             description: Log storage endpoint
         - Traces:
             icon: grafana-tempo.svg
-            href: https://traces.{{ k3s_platform_apps_cluster_domain }}
+            href: https://traces.{{ k3s_platform_apps_product_domain }}
             description: Trace storage endpoint
     - Runtime:
         - k3s API:
             icon: kubernetes.svg
-            href: https://dash.{{ k3s_platform_apps_cluster_domain }}/d/platform-bus-k3s-ops/platform-bus-k3s-operations
+            href: https://dash.{{ k3s_platform_apps_product_domain }}/d/platform-bus-k3s-ops/platform-bus-k3s-operations
             description: Cluster health, nodes and workloads
         - Ingress:
             icon: traefik.svg
-            href: https://proxy.{{ k3s_platform_apps_cluster_domain }}
+            href: https://proxy.{{ k3s_platform_apps_product_domain }}
             description: Edge routing and certificates
         - Storage:
             icon: ceph.svg
