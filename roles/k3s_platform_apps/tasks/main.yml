@@ -512,8 +512,6 @@
     - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-aliases}
     - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-forwardauth-aliases}
     - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-n8n-machine-endpoints}
-    - {namespace: monitoring, name: product-observability-aliases}
-    - {namespace: monitoring, name: product-observability-forwardauth-aliases}
   register: k3s_platform_apps_legacy_alias_cleanup
   changed_when: "'deleted' in k3s_platform_apps_legacy_alias_cleanup.stdout"
   become: true
