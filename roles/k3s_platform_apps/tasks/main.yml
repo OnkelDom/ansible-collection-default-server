@@ -60,6 +60,7 @@
     - 55-semaphore.yaml
     - 56-product-aliases.yaml
     - 57-external-services.yaml
+    - 58-opencloud-monitoring.yaml
   become: true
   tags: k3s_platform_apps
 
@@ -484,6 +485,10 @@
     admin_group = Group.objects.filter(name="authentik Admins").first()
     if admin_group:
         for user in admin_group.users.all():
+            access_group.users.add(user)
+    platform_group = Group.objects.filter(name="platformbus-users").first()
+    if platform_group:
+        for user in platform_group.users.all():
             access_group.users.add(user)
     print("OPENCloud OIDC reconciled")
     PY

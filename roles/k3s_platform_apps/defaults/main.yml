@@ -27,6 +27,7 @@ k3s_platform_apps_opencloud_domain: cloud.bus.lenmail.de
 k3s_platform_apps_opencloud_port: 9200
 k3s_platform_apps_collabora_domain: office.bus.lenmail.de
 k3s_platform_apps_collabora_port: 9980
+k3s_platform_apps_opencloud_node_exporter_port: 9100
 
 k3s_platform_apps_homepage_enabled: true
 k3s_platform_apps_homepage_image: "ghcr.io/gethomepage/homepage:latest"
