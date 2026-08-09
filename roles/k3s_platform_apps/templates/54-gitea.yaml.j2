@@ -69,9 +69,9 @@ spec:
                   name: "{{ k3s_platform_apps_runtime_secret_name }}"
                   key: GITEA_DB_PASS
             - name: GITEA__server__ROOT_URL
-              value: "https://{{ k3s_platform_apps_gitea_domain }}/"
+              value: "https://{{ k3s_platform_apps_gitea_public_domain }}/"
             - name: GITEA__server__DOMAIN
-              value: "{{ k3s_platform_apps_gitea_domain }}"
+              value: "{{ k3s_platform_apps_gitea_public_domain }}"
             - name: GITEA__server__SSH_DOMAIN
               value: "{{ k3s_platform_apps_gitea_ssh_domain }}"
             - name: GITEA__server__SSH_PORT

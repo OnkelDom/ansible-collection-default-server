@@ -375,6 +375,7 @@
     {% if k3s_platform_apps_gitea_enabled | bool %}
         "Gitea OIDC": [
             {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_gitea_domain }}/user/oauth2/authentik/callback"},
+            {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_gitea_public_domain }}/user/oauth2/authentik/callback"},
         ],
     {% endif %}
     {% if k3s_platform_apps_netbox_enabled | bool %}
@@ -413,7 +414,12 @@
         except OAuth2Provider.DoesNotExist:
             print(f"SKIP missing provider {provider_name}")
             continue
-        entries = list(provider._redirect_uris or [])
+        original_entries = list(provider._redirect_uris or [])
+        entries = [
+            entry for entry in original_entries
+            if ".k3s.lenmail.de" not in entry.get("url", "")
+        ]
+        removed = len(original_entries) - len(entries)
         existing_urls = {entry.get("url") for entry in entries}
         added = []
         for entry in desired_entries:
@@ -421,11 +427,11 @@
                 continue
             entries.append(entry)
             added.append(entry["url"])
-        if added:
+        if added or removed:
             provider._redirect_uris = entries
             provider.save(update_fields=["_redirect_uris"])
             changed = True
-            print(f"ADD {provider_name} {'|'.join(added)}")
+            print(f"UPDATE {provider_name} add={'|'.join(added)} removed={removed}")
         else:
             print(f"OK {provider_name}")
     print(f"CHANGED {changed}")
@@ -438,6 +444,23 @@
   when:
     - k3s_platform_apps_authentik_enabled | bool
     - k3s_platform_apps_authentik_server_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Remove legacy product alias ingresses
+  ansible.builtin.command:
+    cmd: >-
+      kubectl -n {{ item.namespace }} delete ingress {{ item.name }}
+      --ignore-not-found=true
+  loop:
+    - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-aliases}
+    - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-forwardauth-aliases}
+    - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-n8n-machine-endpoints}
+    - {namespace: monitoring, name: product-observability-aliases}
+    - {namespace: monitoring, name: product-observability-forwardauth-aliases}
+  register: k3s_platform_apps_legacy_alias_cleanup
+  changed_when: "'deleted' in k3s_platform_apps_legacy_alias_cleanup.stdout"
+  become: true
+  when: not (k3s_platform_apps_product_aliases_enabled | bool)
   tags: k3s_platform_apps
 
 - name: Wait for Gitea rollout
