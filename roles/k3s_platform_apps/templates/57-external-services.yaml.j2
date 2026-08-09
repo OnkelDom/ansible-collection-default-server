@@ -50,6 +50,108 @@ spec:
                 port:
                   name: http
 {% endif %}
+{% if k3s_platform_apps_opencloud_enabled | bool %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opencloud-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  ports:
+    - name: http
+      port: {{ k3s_platform_apps_opencloud_port }}
+      targetPort: {{ k3s_platform_apps_opencloud_port }}
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: opencloud-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    kubernetes.io/service-name: opencloud-external
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: {{ k3s_platform_apps_opencloud_port }}
+endpoints:
+  - addresses: ["{{ k3s_platform_apps_opencloud_address }}"]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opencloud-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  annotations:
+    cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+spec:
+  ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
+  tls:
+    - secretName: opencloud-external-tls
+      hosts: ["{{ k3s_platform_apps_opencloud_domain }}"]
+  rules:
+    - host: "{{ k3s_platform_apps_opencloud_domain }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: opencloud-external
+                port:
+                  name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collabora-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  ports:
+    - name: http
+      port: {{ k3s_platform_apps_collabora_port }}
+      targetPort: {{ k3s_platform_apps_collabora_port }}
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: collabora-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    kubernetes.io/service-name: collabora-external
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: {{ k3s_platform_apps_collabora_port }}
+endpoints:
+  - addresses: ["{{ k3s_platform_apps_opencloud_address }}"]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: collabora-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  annotations:
+    cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+spec:
+  ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
+  tls:
+    - secretName: collabora-external-tls
+      hosts: ["{{ k3s_platform_apps_collabora_domain }}"]
+  rules:
+    - host: "{{ k3s_platform_apps_collabora_domain }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: collabora-external
+                port:
+                  name: http
+{% endif %}
 {% if k3s_platform_apps_synology_enabled | bool %}
 ---
 apiVersion: v1

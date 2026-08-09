@@ -56,6 +56,12 @@ data:
   services.yaml: |
     ---
     - Core:
+{% if k3s_platform_apps_opencloud_enabled | bool %}
+        - OpenCloud:
+            icon: opencloud.svg
+            href: https://{{ k3s_platform_apps_opencloud_domain }}
+            description: Files, sharing and collaborative documents
+{% endif %}
         - Authentik:
             icon: authentik.svg
             href: https://auth.{{ k3s_platform_apps_product_domain }}

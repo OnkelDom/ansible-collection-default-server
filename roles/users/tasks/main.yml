@@ -38,7 +38,8 @@
     name: "{{ user_item.name }}"
     comment: "{{ user_item.fullname | default(omit) }}"
     shell: "{{ user_item.shell | default('/bin/bash') }}"
-    append: true
+    groups: "{{ user_item.groups | default(omit) }}"
+    append: "{{ user_item.groups is defined and user_item.groups | length > 0 }}"
     create_home: true
     state: "{{ user_item.state | default('present') }}"
     system: "{{ user_item.system_account | default(false) }}"

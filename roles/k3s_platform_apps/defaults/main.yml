@@ -21,6 +21,12 @@ k3s_platform_apps_synology_enabled: false
 k3s_platform_apps_synology_address: 172.16.2.4
 k3s_platform_apps_synology_https_port: 443
 k3s_platform_apps_synology_domains: []
+k3s_platform_apps_opencloud_enabled: false
+k3s_platform_apps_opencloud_address: 10.30.30.23
+k3s_platform_apps_opencloud_domain: cloud.bus.lenmail.de
+k3s_platform_apps_opencloud_port: 9200
+k3s_platform_apps_collabora_domain: office.bus.lenmail.de
+k3s_platform_apps_collabora_port: 9980
 
 k3s_platform_apps_homepage_enabled: true
 k3s_platform_apps_homepage_image: "ghcr.io/gethomepage/homepage:latest"

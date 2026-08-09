@@ -446,6 +446,58 @@
     - k3s_platform_apps_authentik_server_replicas | int > 0
   tags: k3s_platform_apps
 
+- name: Reconcile OpenCloud OIDC application and access group
+  ansible.builtin.shell: |
+    set -euo pipefail
+    pod=$(kubectl -n {{ k3s_platform_apps_namespace }} get pod -l app.kubernetes.io/name=authentik-server -o name | head -n1 | cut -d/ -f2)
+    timeout 180s kubectl -n {{ k3s_platform_apps_namespace }} exec -i "$pod" -- env AUTHENTIK_LOG_LEVEL=warning python /manage.py shell <<'PY'
+    from authentik.core.models import Application, Group
+    from authentik.policies.models import PolicyBinding
+    from authentik.providers.oauth2.models import OAuth2Provider
+    template = OAuth2Provider.objects.get(name="Gitea OIDC")
+    provider, _ = OAuth2Provider.objects.get_or_create(
+        name="OpenCloud OIDC",
+        defaults={"authorization_flow": template.authorization_flow, "invalidation_flow": template.invalidation_flow, "client_id": "web", "client_type": "public"},
+    )
+    provider.authorization_flow = template.authorization_flow
+    provider.invalidation_flow = template.invalidation_flow
+    provider.client_id = "web"
+    provider.client_type = "public"
+    provider.grant_types = ["authorization_code", "refresh_token"]
+    provider.signing_key = template.signing_key
+    provider.sub_mode = "user_username"
+    provider._redirect_uris = [
+        {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_opencloud_domain }}/"},
+        {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_opencloud_domain }}/oidc-callback.html"},
+        {"matching_mode": "strict", "url": "https://{{ k3s_platform_apps_opencloud_domain }}/oidc-silent-redirect.html"},
+    ]
+    provider.save()
+    provider.property_mappings.set(template.property_mappings.all())
+    application, _ = Application.objects.get_or_create(slug="opencloud", defaults={"name": "OpenCloud", "provider": provider})
+    application.name = "OpenCloud"
+    application.provider = provider
+    application.group = "Workspace"
+    application.meta_launch_url = "https://{{ k3s_platform_apps_opencloud_domain }}/"
+    application.save()
+    access_group, _ = Group.objects.get_or_create(name="app-opencloud-users")
+    PolicyBinding.objects.get_or_create(target=application, group=access_group, defaults={"order": 0, "enabled": True})
+    admin_group = Group.objects.filter(name="authentik Admins").first()
+    if admin_group:
+        for user in admin_group.users.all():
+            access_group.users.add(user)
+    print("OPENCloud OIDC reconciled")
+    PY
+  args:
+    executable: /bin/bash
+  changed_when: false
+  become: true
+  when:
+    - k3s_platform_apps_authentik_enabled | bool
+    - k3s_platform_apps_opencloud_enabled | bool
+    - k3s_platform_apps_authentik_server_replicas | int > 0
+  tags: k3s_platform_apps
+
+
 - name: Remove legacy product alias ingresses
   ansible.builtin.command:
     cmd: >-
