@@ -5,6 +5,7 @@ k3s_platform_apps_ingress_class: traefik
 k3s_platform_apps_cluster_domain: k3s.lenmail.de
 k3s_platform_apps_product_domain: bus.lenmail.de
 k3s_platform_apps_mail_domain: "mail.{{ k3s_platform_apps_product_domain }}"
+k3s_platform_apps_webmail_domain: "webmail.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_acme_cluster_issuer: letsencrypt-hetzner
 k3s_platform_apps_network_policy_enabled: true
 k3s_platform_apps_forwardauth_enabled: true
@@ -201,3 +202,16 @@ k3s_platform_apps_netbox_replicas: 1
 k3s_platform_apps_netbox_worker_replicas: 1
 k3s_platform_apps_netbox_storage_size: 10Gi
 k3s_platform_apps_netbox_node_selector: {}
+
+k3s_platform_apps_bulwark_enabled: false
+k3s_platform_apps_bulwark_image: "ghcr.io/bulwarkmail/webmail:1.8.1"
+k3s_platform_apps_bulwark_replicas: 1
+k3s_platform_apps_bulwark_storage_size: 2Gi
+k3s_platform_apps_bulwark_session_secret: ""
+k3s_platform_apps_bulwark_admin_password: ""
+k3s_platform_apps_bulwark_oidc_client_id: bulwark
+k3s_platform_apps_bulwark_oidc_client_secret: ""
+k3s_platform_apps_bulwark_requests_cpu: 100m
+k3s_platform_apps_bulwark_requests_memory: 192Mi
+k3s_platform_apps_bulwark_limits_cpu: 750m
+k3s_platform_apps_bulwark_limits_memory: 768Mi

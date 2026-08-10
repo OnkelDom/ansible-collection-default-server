@@ -78,6 +78,12 @@ data:
             icon: stalwart-mail-server.svg
             href: https://{{ k3s_platform_apps_mail_domain }}/admin
             description: Mail- und Groupware-Plattform
+{% if k3s_platform_apps_bulwark_enabled | bool %}
+        - Webmail:
+            icon: mdi-email-outline
+            href: https://{{ k3s_platform_apps_webmail_domain }}
+            description: E-Mail, Kalender und Kontakte
+{% endif %}
         - CMDB:
             icon: netbox.svg
             href: https://cmdb.{{ k3s_platform_apps_product_domain }}

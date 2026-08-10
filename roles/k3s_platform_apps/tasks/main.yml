@@ -5,6 +5,9 @@
       - k3s_platform_apps_namespace | length > 0
       - k3s_platform_apps_homepage_domain | length > 0
       - k3s_platform_apps_ingress_class | length > 0
+      - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_session_secret | length >= 32
+      - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_admin_password | length >= 20
+      - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_oidc_client_secret | length >= 32
     fail_msg: "k3s_platform_apps requires namespace, homepage domain and ingress class."
   tags: k3s_platform_apps
 
@@ -61,6 +64,7 @@
     - 56-product-aliases.yaml
     - 57-external-services.yaml
     - 58-opencloud-monitoring.yaml
+    - 59-bulwark.yaml
   become: true
   tags: k3s_platform_apps
 
@@ -363,6 +367,85 @@
   when:
     - k3s_platform_apps_authentik_enabled | bool
     - k3s_platform_apps_authentik_worker_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Reconcile Bulwark OIDC application and access groups
+  ansible.builtin.shell: |
+    set -euo pipefail
+    pod=$(kubectl -n {{ k3s_platform_apps_namespace }} get pod -l app.kubernetes.io/name=authentik-server -o name | head -n1 | cut -d/ -f2)
+    timeout 180s kubectl -n {{ k3s_platform_apps_namespace }} exec -i "$pod" -- env AUTHENTIK_LOG_LEVEL=warning python /manage.py shell <<'PY'
+    from authentik.core.models import Application, Group
+    from authentik.policies.models import PolicyBinding
+    from authentik.providers.oauth2.models import OAuth2Provider
+
+    reference = OAuth2Provider.objects.get(name="Gitea OIDC")
+    provider, _ = OAuth2Provider.objects.get_or_create(
+        name="Bulwark OIDC",
+        defaults={"authorization_flow": reference.authorization_flow, "invalidation_flow": reference.invalidation_flow},
+    )
+    provider.authorization_flow = reference.authorization_flow
+    provider.invalidation_flow = reference.invalidation_flow
+    provider.client_type = "confidential"
+    provider.client_id = "{{ k3s_platform_apps_bulwark_oidc_client_id }}"
+    provider.client_secret = "{{ k3s_platform_apps_bulwark_oidc_client_secret }}"
+    provider.sub_mode = reference.sub_mode
+    provider.include_claims_in_id_token = True
+    provider.grant_types = reference.grant_types
+    provider.signing_key = reference.signing_key
+    provider._redirect_uris = [{
+        "matching_mode": "regex",
+        "url": r"^https://{{ k3s_platform_apps_webmail_domain }}/[a-zA-Z-]+/auth/callback$",
+    }]
+    provider.save()
+    provider.property_mappings.set(reference.property_mappings.all())
+
+    application, _ = Application.objects.update_or_create(
+        slug="webmail",
+        defaults={
+            "name": "Webmail",
+            "provider": provider,
+            "group": "Workspace",
+            "meta_launch_url": "https://{{ k3s_platform_apps_webmail_domain }}/",
+            "open_in_new_tab": True,
+            "policy_engine_mode": "any",
+        },
+    )
+    for name, order in (("mail-users", 100), ("mail-admins", 101)):
+        group, _ = Group.objects.get_or_create(name=name)
+        PolicyBinding.objects.update_or_create(
+            target=application,
+            group=group,
+            defaults={"enabled": True, "negate": False, "order": order},
+        )
+    admin_group = Group.objects.filter(name="authentik Admins").first()
+    mail_admins = Group.objects.get(name="mail-admins")
+    mail_users = Group.objects.get(name="mail-users")
+    if admin_group:
+        mail_admins.users.add(*admin_group.users.all())
+        mail_users.users.add(*admin_group.users.all())
+    print("Bulwark OIDC reconciled")
+    PY
+  args:
+    executable: /bin/bash
+  changed_when: false
+  no_log: true
+  become: true
+  when:
+    - k3s_platform_apps_bulwark_enabled | bool
+    - k3s_platform_apps_authentik_enabled | bool
+    - k3s_platform_apps_authentik_server_replicas | int > 0
+  tags: k3s_platform_apps
+
+- name: Wait for Bulwark rollout
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status deployment/bulwark --timeout=300s"
+  register: k3s_platform_apps_bulwark_rollout
+  until: k3s_platform_apps_bulwark_rollout.rc == 0
+  retries: 20
+  delay: 15
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_bulwark_enabled | bool
   tags: k3s_platform_apps
 
 - name: Reconcile Authentik redirect URIs for k3s app domains
