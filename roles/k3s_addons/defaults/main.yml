@@ -24,6 +24,7 @@ k3s_addons_traefik_node_selector:
   node-role.kubernetes.io/control-plane: "true"
 k3s_addons_traefik_git_ssh_enabled: true
 k3s_addons_traefik_git_ssh_port: 2222
+k3s_addons_traefik_tcp_entrypoints: []
 k3s_addons_primary_ingress_domain: ""
 k3s_addons_product_ingress_domain: ""
 k3s_addons_powerdns_enabled: false

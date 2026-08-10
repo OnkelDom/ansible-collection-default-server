@@ -70,6 +70,15 @@ spec:
         exposedPort: {{ k3s_addons_traefik_git_ssh_port | int }}
         protocol: TCP
 {% endif %}
+{% for entrypoint in k3s_addons_traefik_tcp_entrypoints %}
+      {{ entrypoint.name }}:
+        port: {{ entrypoint.port | int }}
+        hostPort: {{ entrypoint.host_port | default(entrypoint.port) | int }}
+        expose:
+          default: false
+        exposedPort: {{ entrypoint.port | int }}
+        protocol: TCP
+{% endfor %}
     providers:
       kubernetesCRD:
         enabled: true
