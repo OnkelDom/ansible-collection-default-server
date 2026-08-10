@@ -56,3 +56,4 @@ sshd_server_defaults:
 sshd_server_group_vars: {}
 sshd_server_host_vars: {}
 sshd_server_playbook: {}
+sshd_server_match_blocks: []

@@ -60,7 +60,7 @@ sshd_server_defaults:
   PrintLastLog: yes
   Ciphers: aes128-ctr,aes192-ctr,aes256-ctr,chacha20-poly1305@openssh.com
   MACs: hmac-sha2-256,hmac-sha2-512
-  KexAlgorithms: curve25519-sha256,diffie-hellman-group-exchange-sha256
+  KexAlgorithms: sntrup761x25519-sha512@openssh.com,sntrup761x25519-sha512,curve25519-sha256,diffie-hellman-group-exchange-sha256
   PermitUserEnvironment: no
   MaxSessions: 10
   TCPKeepAlive: yes
@@ -69,6 +69,7 @@ sshd_server_defaults:
 sshd_server_group_vars: {}
 sshd_server_host_vars: {}
 sshd_server_playbook: {}
+sshd_server_match_blocks: []
 ```
 
 ## Example Playbook

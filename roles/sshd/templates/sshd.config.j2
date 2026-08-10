@@ -30,3 +30,16 @@ ListenAddress 0.0.0.0
 ListenAddress ::
 {% endif %}
 {% endif %}
+{% for match_block in sshd_server_match_blocks %}
+
+Match {{ match_block.condition }}
+{%   for option, value in match_block.options.items()|sort %}
+{%     if value is sameas true %}
+    {{ option }} yes
+{%     elif value is sameas false %}
+    {{ option }} no
+{%     else %}
+    {{ option }} {{ value }}
+{%     endif %}
+{%   endfor %}
+{% endfor %}
