@@ -135,6 +135,7 @@ metadata:
     app.kubernetes.io/part-of: platform-bus
   annotations:
     cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ k3s_platform_apps_namespace }}-bulwark-public-origin@kubernetescrd"
 spec:
   ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
   tls:
@@ -148,4 +149,19 @@ spec:
             pathType: Prefix
             backend:
               service: {name: bulwark, port: {name: http}}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: bulwark-public-origin
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  labels:
+    app.kubernetes.io/name: bulwark
+    app.kubernetes.io/part-of: platform-bus
+spec:
+  headers:
+    customRequestHeaders:
+      Origin: "https://{{ k3s_platform_apps_webmail_domain }}"
+      X-Forwarded-Host: "{{ k3s_platform_apps_webmail_domain }}"
+      X-Forwarded-Proto: https
 {% endif %}
