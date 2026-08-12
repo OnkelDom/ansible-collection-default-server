@@ -215,3 +215,46 @@ k3s_platform_apps_bulwark_requests_cpu: 100m
 k3s_platform_apps_bulwark_requests_memory: 192Mi
 k3s_platform_apps_bulwark_limits_cpu: 750m
 k3s_platform_apps_bulwark_limits_memory: 768Mi
+
+k3s_platform_apps_piler_enabled: false
+k3s_platform_apps_piler_domain: "archive.{{ k3s_platform_apps_product_domain }}"
+k3s_platform_apps_piler_image: "docker.io/sutoj/piler:1.4.9@sha256:e94727da69f5ea3025452dc841b2b6606cfc8affee0bc6d9f9c4d7f20486b483"
+k3s_platform_apps_piler_mariadb_image: "docker.io/library/mariadb:12.0.2"
+k3s_platform_apps_piler_manticore_image: "docker.io/manticoresearch/manticore:13.11.0"
+k3s_platform_apps_piler_memcached_image: "docker.io/library/memcached:1.6-alpine"
+k3s_platform_apps_piler_database_password: ""
+k3s_platform_apps_piler_admin_password_hash: ""
+k3s_platform_apps_piler_ldap_password: ""
+k3s_platform_apps_piler_ldap_outpost_image: "ghcr.io/goauthentik/ldap:2026.5.3"
+k3s_platform_apps_piler_store_size: 25Gi
+k3s_platform_apps_piler_index_size: 8Gi
+k3s_platform_apps_piler_database_size: 5Gi
+k3s_platform_apps_piler_config_size: 1Gi
+
+k3s_platform_apps_matrix_enabled: false
+k3s_platform_apps_matrix_server_name: "matrix.{{ k3s_platform_apps_product_domain }}"
+k3s_platform_apps_matrix_domain: "matrix.{{ k3s_platform_apps_product_domain }}"
+k3s_platform_apps_matrix_element_domain: "chat.{{ k3s_platform_apps_product_domain }}"
+k3s_platform_apps_matrix_synapse_image: "docker.io/matrixdotorg/synapse:latest"
+k3s_platform_apps_matrix_element_image: "docker.io/vectorim/element-web:latest"
+k3s_platform_apps_matrix_postgres_image: "docker.io/library/postgres:16-alpine"
+k3s_platform_apps_matrix_database_password: ""
+k3s_platform_apps_matrix_registration_secret: ""
+k3s_platform_apps_matrix_macaroon_secret: ""
+k3s_platform_apps_matrix_form_secret: ""
+k3s_platform_apps_matrix_signing_key: ""
+k3s_platform_apps_matrix_oidc_client_id: matrix
+k3s_platform_apps_matrix_oidc_client_secret: ""
+k3s_platform_apps_matrix_oidc_issuer: "https://{{ k3s_platform_apps_authentik_app_domain }}/application/o/matrix/"
+k3s_platform_apps_matrix_media_size: 5Gi
+k3s_platform_apps_matrix_database_size: 5Gi
+k3s_platform_apps_matrix_metrics_enabled: true
+k3s_platform_apps_matrix_turn_enabled: true
+k3s_platform_apps_matrix_turn_domain: "turn.{{ k3s_platform_apps_product_domain }}"
+k3s_platform_apps_matrix_turn_secret: ""
+k3s_platform_apps_matrix_turn_port: 3478
+k3s_platform_apps_matrix_turn_relay_min_port: 49160
+k3s_platform_apps_matrix_turn_relay_max_port: 49200
+k3s_platform_apps_matrix_turn_image: "docker.io/coturn/coturn:4.7.0"
+k3s_platform_apps_matrix_turn_nodes: [k3s-mgr01, k3s-mgr02, k3s-mgr03]
+k3s_platform_apps_matrix_snapshot_enabled: true

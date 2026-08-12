@@ -8,6 +8,14 @@
       - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_session_secret | length >= 32
       - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_admin_password | length >= 20
       - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_oidc_client_secret | length >= 32
+      - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_database_password | length >= 24
+      - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_admin_password_hash | length >= 20
+      - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_ldap_password | length >= 24
+      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_database_password | length >= 24
+      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_registration_secret | length >= 32
+      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_macaroon_secret | length >= 32
+      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_form_secret | length >= 32
+      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_signing_key | length >= 40
     fail_msg: "k3s_platform_apps requires namespace, homepage domain and ingress class."
   tags: k3s_platform_apps
 
@@ -65,6 +73,9 @@
     - 57-external-services.yaml
     - 58-opencloud-monitoring.yaml
     - 59-bulwark.yaml
+    - 60-piler.yaml
+    - 61-matrix.yaml
+    - 62-matrix-dashboard.yaml
   become: true
   tags: k3s_platform_apps
 
@@ -74,6 +85,31 @@
   register: k3s_platform_apps_apply
   changed_when: "'configured' in k3s_platform_apps_apply.stdout or 'created' in k3s_platform_apps_apply.stdout"
   become: true
+  tags: k3s_platform_apps
+
+- name: Wait for MailPiler data services and application
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status {{ item }} --timeout=600s"
+  loop:
+    - statefulset/piler-mariadb
+    - statefulset/piler-manticore
+    - deployment/piler-memcached
+    - statefulset/piler
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_piler_enabled | bool
+  tags: k3s_platform_apps
+
+- name: Wait for Matrix data service and applications
+  ansible.builtin.command:
+    cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status {{ item }} --timeout=600s"
+  loop:
+    - statefulset/matrix-postgres
+    - statefulset/matrix-synapse
+    - deployment/matrix-element
+  changed_when: false
+  become: true
+  when: k3s_platform_apps_matrix_enabled | bool
   tags: k3s_platform_apps
 
 - name: Remove undeclared platform blackbox probes

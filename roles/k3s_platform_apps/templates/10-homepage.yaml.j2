@@ -84,6 +84,18 @@ data:
             href: https://{{ k3s_platform_apps_webmail_domain }}
             description: E-Mail, Kalender und Kontakte
 {% endif %}
+{% if k3s_platform_apps_piler_enabled | bool %}
+        - Mailarchiv:
+            icon: mdi-archive-outline
+            href: https://{{ k3s_platform_apps_piler_domain }}
+            description: Revisionssichere E-Mail-Archivierung
+{% endif %}
+{% if k3s_platform_apps_matrix_enabled | bool %}
+        - Chat:
+            icon: element.svg
+            href: https://{{ k3s_platform_apps_matrix_element_domain }}
+            description: Matrix Chat und Zusammenarbeit
+{% endif %}
         - CMDB:
             icon: netbox.svg
             href: https://cmdb.{{ k3s_platform_apps_product_domain }}
