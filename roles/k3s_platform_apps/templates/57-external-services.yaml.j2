@@ -159,6 +159,11 @@ kind: Service
 metadata:
   name: synology-external
   namespace: "{{ k3s_platform_apps_namespace }}"
+{% if not (k3s_platform_apps_synology_tls_passthrough | bool) %}
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: https
+    traefik.ingress.kubernetes.io/service.serverstransport: "{{ k3s_platform_apps_namespace }}-synology-external-insecure@kubernetescrd"
+{% endif %}
 spec:
   ports:
     - name: https
@@ -192,6 +197,7 @@ subsets:
       - name: https
         protocol: TCP
         port: {{ k3s_platform_apps_synology_https_port }}
+{% if k3s_platform_apps_synology_tls_passthrough | bool %}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -208,6 +214,45 @@ spec:
           port: https
   tls:
     passthrough: true
+{% else %}
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: synology-external-insecure
+  namespace: "{{ k3s_platform_apps_namespace }}"
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: synology-external
+  namespace: "{{ k3s_platform_apps_namespace }}"
+  annotations:
+    cert-manager.io/cluster-issuer: "{{ k3s_platform_apps_acme_cluster_issuer }}"
+spec:
+  ingressClassName: "{{ k3s_platform_apps_ingress_class }}"
+  tls:
+    - secretName: synology-external-tls
+      hosts:
+{% for domain in k3s_platform_apps_synology_domains %}
+        - "{{ domain }}"
+{% endfor %}
+  rules:
+{% for domain in k3s_platform_apps_synology_domains %}
+    - host: "{{ domain }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: synology-external
+                port:
+                  name: https
+{% endfor %}
+{% endif %}
 {% endif %}
 {% if k3s_platform_apps_ceph_dashboard_enabled | bool %}
 ---

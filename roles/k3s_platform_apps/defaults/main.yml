@@ -23,6 +23,7 @@ k3s_platform_apps_synology_enabled: false
 k3s_platform_apps_synology_address: 172.16.2.4
 k3s_platform_apps_synology_https_port: 443
 k3s_platform_apps_synology_domains: []
+k3s_platform_apps_synology_tls_passthrough: true
 k3s_platform_apps_opencloud_enabled: false
 k3s_platform_apps_opencloud_address: 10.30.30.23
 k3s_platform_apps_opencloud_domain: cloud.bus.lenmail.de

@@ -5,6 +5,8 @@
       - k3s_platform_apps_namespace | length > 0
       - k3s_platform_apps_homepage_domain | length > 0
       - k3s_platform_apps_ingress_class | length > 0
+      - not (k3s_platform_apps_synology_enabled | bool) or k3s_platform_apps_synology_address | length > 0
+      - not (k3s_platform_apps_synology_enabled | bool) or k3s_platform_apps_synology_domains | length > 0
       - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_session_secret | length >= 32
       - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_admin_password | length >= 20
       - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_oidc_client_secret | length >= 32
@@ -85,6 +87,34 @@
   register: k3s_platform_apps_apply
   changed_when: "'configured' in k3s_platform_apps_apply.stdout or 'created' in k3s_platform_apps_apply.stdout"
   become: true
+  tags: k3s_platform_apps
+
+- name: Remove obsolete Synology TLS passthrough route
+  ansible.builtin.command:
+    cmd: >-
+      kubectl -n {{ k3s_platform_apps_namespace }} delete
+      ingressroutetcp.traefik.io/synology-external --ignore-not-found=true
+  register: k3s_platform_apps_synology_passthrough_delete
+  changed_when: "'deleted' in k3s_platform_apps_synology_passthrough_delete.stdout"
+  become: true
+  when:
+    - k3s_platform_apps_synology_enabled | bool
+    - not (k3s_platform_apps_synology_tls_passthrough | bool)
+  tags: k3s_platform_apps
+
+- name: Remove obsolete Synology TLS termination objects
+  ansible.builtin.command:
+    cmd: >-
+      kubectl -n {{ k3s_platform_apps_namespace }} delete
+      ingress.networking.k8s.io/synology-external
+      serverstransport.traefik.io/synology-external-insecure
+      --ignore-not-found=true
+  register: k3s_platform_apps_synology_termination_delete
+  changed_when: "'deleted' in k3s_platform_apps_synology_termination_delete.stdout"
+  become: true
+  when:
+    - k3s_platform_apps_synology_enabled | bool
+    - k3s_platform_apps_synology_tls_passthrough | bool
   tags: k3s_platform_apps
 
 - name: Wait for MailPiler data services and application
