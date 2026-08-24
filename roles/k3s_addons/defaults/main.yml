@@ -63,6 +63,7 @@ k3s_addons_grafana_storage_size: 5Gi
 k3s_addons_prometheus_storage_size: 30Gi
 k3s_addons_alertmanager_storage_size: 2Gi
 k3s_addons_prometheus_retention: 30d
+k3s_addons_prometheus_retention_size: 28GB
 k3s_addons_alertmanager_email_enabled: false
 k3s_addons_alertmanager_email_to: ""
 k3s_addons_alertmanager_email_from: "noreply@lenmail.de"

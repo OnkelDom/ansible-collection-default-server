@@ -1161,6 +1161,7 @@ spec:
       prometheusSpec:
         serviceDiscoveryRole: EndpointSlice
         retention: "{{ k3s_addons_prometheus_retention }}"
+        retentionSize: "{{ k3s_addons_prometheus_retention_size }}"
         storageSpec:
           volumeClaimTemplate:
             spec:

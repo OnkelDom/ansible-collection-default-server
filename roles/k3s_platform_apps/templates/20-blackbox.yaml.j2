@@ -101,13 +101,19 @@ metadata:
 spec:
   interval: 30s
   module: http_2xx
+{% if target.hostname is defined %}
+  params:
+    - name: hostname
+      values:
+        - "{{ target.hostname }}"
+{% endif %}
   prober:
     url: platform-bus-blackbox-exporter.monitoring.svc.cluster.local:9115
     path: /probe
   targets:
     staticConfig:
       static:
-        - "{{ target.url }}"
+        - "{{ target.probe_url | default(target.url) }}"
       labels:
         platform: platform-bus
         environment: k3s
