@@ -43,6 +43,8 @@ sshd_server_defaults:
   GSSAPIAuthentication: true
   GSSAPICleanupCredentials: false
   HostKey:
+  - /etc/ssh/ssh_host_ed25519_key
+  - /etc/ssh/ssh_host_ecdsa_key
   - /etc/ssh/ssh_host_rsa_key
   PasswordAuthentication: no
   PermitRootLogin: no
@@ -58,7 +60,7 @@ sshd_server_defaults:
   X11Forwarding: true
   PrintMotd: yes
   PrintLastLog: yes
-  Ciphers: aes128-ctr,aes192-ctr,aes256-ctr,chacha20-poly1305@openssh.com
+  Ciphers: aes128-ctr,aes192-ctr,aes256-ctr,chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
   MACs: hmac-sha2-256,hmac-sha2-512
   KexAlgorithms: sntrup761x25519-sha512@openssh.com,sntrup761x25519-sha512,curve25519-sha256,diffie-hellman-group-exchange-sha256
   PermitUserEnvironment: no
