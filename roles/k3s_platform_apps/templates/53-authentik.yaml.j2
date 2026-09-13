@@ -147,8 +147,17 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: authentik-server
+        lenmail.de/storage-group: authentik
         app.kubernetes.io/part-of: platform-bus
     spec:
+      # Both workloads share RWO claims and must be scheduled on the same node.
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  lenmail.de/storage-group: authentik
+              topologyKey: kubernetes.io/hostname
 {% if k3s_platform_apps_authentik_node_selector | length > 0 %}
       nodeSelector:
 {{ k3s_platform_apps_authentik_node_selector | to_nice_yaml(indent=2) | indent(8, true) }}
@@ -210,8 +219,17 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: authentik-worker
+        lenmail.de/storage-group: authentik
         app.kubernetes.io/part-of: platform-bus
     spec:
+      # Both workloads share RWO claims and must be scheduled on the same node.
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  lenmail.de/storage-group: authentik
+              topologyKey: kubernetes.io/hostname
 {% if k3s_platform_apps_authentik_node_selector | length > 0 %}
       nodeSelector:
 {{ k3s_platform_apps_authentik_node_selector | to_nice_yaml(indent=2) | indent(8, true) }}
