@@ -17,6 +17,7 @@ common_platforms:
   versions:
   - "9"
 role_descriptions:
+  k3s_addons: Render and deploy configured Kubernetes addons onto an existing K3s cluster.
   alloy: Install and configure Grafana Alloy as a client-side telemetry agent.
   apache: Install and configure Apache HTTP Server and virtual hosts.
   apt_repos: Manage APT repository definitions and signing keys on Debian-based systems.

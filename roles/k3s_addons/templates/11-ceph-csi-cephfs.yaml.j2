@@ -8,6 +8,8 @@ type: Opaque
 data:
   userID: "{{ k3s_addons_ceph_user | b64encode }}"
   userKey: "{{ k3s_addons_ceph_user_key | b64encode }}"
+  adminID: "{{ k3s_addons_ceph_user | b64encode }}"
+  adminKey: "{{ k3s_addons_ceph_user_key | b64encode }}"
 ---
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
