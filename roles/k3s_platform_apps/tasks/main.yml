@@ -2,22 +2,23 @@
 - name: Validate k3s platform app inputs
   ansible.builtin.assert:
     that:
-      - k3s_platform_apps_namespace | length > 0
-      - k3s_platform_apps_homepage_domain | length > 0
-      - k3s_platform_apps_ingress_class | length > 0
-      - not (k3s_platform_apps_synology_enabled | bool) or k3s_platform_apps_synology_address | length > 0
-      - not (k3s_platform_apps_synology_enabled | bool) or k3s_platform_apps_synology_domains | length > 0
-      - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_session_secret | length >= 32
-      - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_admin_password | length >= 20
-      - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_oidc_client_secret | length >= 32
-      - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_database_password | length >= 24
-      - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_admin_password_hash | length >= 20
-      - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_ldap_password | length >= 24
-      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_database_password | length >= 24
-      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_registration_secret | length >= 32
-      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_macaroon_secret | length >= 32
-      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_form_secret | length >= 32
-      - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_signing_key | length >= 40
+    - ansible_os_family in ['Debian', 'RedHat']
+    - k3s_platform_apps_namespace | length > 0
+    - k3s_platform_apps_homepage_domain | length > 0
+    - k3s_platform_apps_ingress_class | length > 0
+    - not (k3s_platform_apps_synology_enabled | bool) or k3s_platform_apps_synology_address | length > 0
+    - not (k3s_platform_apps_synology_enabled | bool) or k3s_platform_apps_synology_domains | length > 0
+    - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_session_secret | length >= 32
+    - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_admin_password | length >= 20
+    - not (k3s_platform_apps_bulwark_enabled | bool) or k3s_platform_apps_bulwark_oidc_client_secret | length >= 32
+    - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_database_password | length >= 24
+    - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_admin_password_hash | length >= 20
+    - not (k3s_platform_apps_piler_enabled | bool) or k3s_platform_apps_piler_ldap_password | length >= 24
+    - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_database_password | length >= 24
+    - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_registration_secret | length >= 32
+    - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_macaroon_secret | length >= 32
+    - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_form_secret | length >= 32
+    - not (k3s_platform_apps_matrix_enabled | bool) or k3s_platform_apps_matrix_signing_key | length >= 40
     fail_msg: "k3s_platform_apps requires namespace, homepage domain and ingress class."
   tags: k3s_platform_apps
 
@@ -58,26 +59,26 @@
     group: root
     mode: "0600"
   loop:
-    - 00-namespace.yaml
-    - 01-network-policy.yaml
-    - 10-homepage.yaml
-    - 20-blackbox.yaml
-    - 30-grafana-dashboard.yaml
-    - 40-observability-runtime.yaml
-    - 41-data-services.yaml
-    - 50-n8n.yaml
-    - 51-outline.yaml
-    - 52-netbox.yaml
-    - 53-authentik.yaml
-    - 54-gitea.yaml
-    - 55-semaphore.yaml
-    - 56-product-aliases.yaml
-    - 57-external-services.yaml
-    - 58-opencloud-monitoring.yaml
-    - 59-bulwark.yaml
-    - 60-piler.yaml
-    - 61-matrix.yaml
-    - 62-matrix-dashboard.yaml
+  - 00-namespace.yaml
+  - 01-network-policy.yaml
+  - 10-homepage.yaml
+  - 20-blackbox.yaml
+  - 30-grafana-dashboard.yaml
+  - 40-observability-runtime.yaml
+  - 41-data-services.yaml
+  - 50-n8n.yaml
+  - 51-outline.yaml
+  - 52-netbox.yaml
+  - 53-authentik.yaml
+  - 54-gitea.yaml
+  - 55-semaphore.yaml
+  - 56-product-aliases.yaml
+  - 57-external-services.yaml
+  - 58-opencloud-monitoring.yaml
+  - 59-bulwark.yaml
+  - 60-piler.yaml
+  - 61-matrix.yaml
+  - 62-matrix-dashboard.yaml
   become: true
   tags: k3s_platform_apps
 
@@ -98,8 +99,8 @@
   changed_when: "'deleted' in k3s_platform_apps_synology_passthrough_delete.stdout"
   become: true
   when:
-    - k3s_platform_apps_synology_enabled | bool
-    - not (k3s_platform_apps_synology_tls_passthrough | bool)
+  - k3s_platform_apps_synology_enabled | bool
+  - not (k3s_platform_apps_synology_tls_passthrough | bool)
   tags: k3s_platform_apps
 
 - name: Remove obsolete Synology TLS termination objects
@@ -113,18 +114,18 @@
   changed_when: "'deleted' in k3s_platform_apps_synology_termination_delete.stdout"
   become: true
   when:
-    - k3s_platform_apps_synology_enabled | bool
-    - k3s_platform_apps_synology_tls_passthrough | bool
+  - k3s_platform_apps_synology_enabled | bool
+  - k3s_platform_apps_synology_tls_passthrough | bool
   tags: k3s_platform_apps
 
 - name: Wait for MailPiler data services and application
   ansible.builtin.command:
     cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status {{ item }} --timeout=600s"
   loop:
-    - statefulset/piler-mariadb
-    - statefulset/piler-manticore
-    - deployment/piler-memcached
-    - statefulset/piler
+  - statefulset/piler-mariadb
+  - statefulset/piler-manticore
+  - deployment/piler-memcached
+  - statefulset/piler
   changed_when: false
   become: true
   when: k3s_platform_apps_piler_enabled | bool
@@ -134,9 +135,9 @@
   ansible.builtin.command:
     cmd: "kubectl -n {{ k3s_platform_apps_namespace }} rollout status {{ item }} --timeout=600s"
   loop:
-    - statefulset/matrix-postgres
-    - statefulset/matrix-synapse
-    - deployment/matrix-element
+  - statefulset/matrix-postgres
+  - statefulset/matrix-synapse
+  - deployment/matrix-element
   changed_when: false
   become: true
   when: k3s_platform_apps_matrix_enabled | bool
@@ -199,8 +200,8 @@
   changed_when: "'deleted' in k3s_platform_apps_legacy_postgres_service_delete.stdout"
   become: true
   when:
-    - k3s_platform_apps_data_services_enabled | bool
-    - not (k3s_platform_apps_postgres_enabled | bool)
+  - k3s_platform_apps_data_services_enabled | bool
+  - not (k3s_platform_apps_postgres_enabled | bool)
   tags: k3s_platform_apps
 
 - name: Wait for homepage rollout
@@ -261,8 +262,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_data_services_enabled | bool
-    - k3s_platform_apps_postgres_enabled | bool
+  - k3s_platform_apps_data_services_enabled | bool
+  - k3s_platform_apps_postgres_enabled | bool
   tags: k3s_platform_apps
 
 - name: Reconcile platform PostgreSQL logical databases and roles
@@ -333,8 +334,8 @@
   become: true
   no_log: true
   when:
-    - k3s_platform_apps_data_services_enabled | bool
-    - k3s_platform_apps_postgres_enabled | bool
+  - k3s_platform_apps_data_services_enabled | bool
+  - k3s_platform_apps_postgres_enabled | bool
   tags: k3s_platform_apps
 
 - name: Wait for platform Redis rollout
@@ -347,8 +348,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_data_services_enabled | bool
-    - k3s_platform_apps_redis_enabled | bool
+  - k3s_platform_apps_data_services_enabled | bool
+  - k3s_platform_apps_redis_enabled | bool
   tags: k3s_platform_apps
 
 - name: Wait for n8n rollout
@@ -361,8 +362,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_n8n_enabled | bool
-    - k3s_platform_apps_n8n_replicas | int > 0
+  - k3s_platform_apps_n8n_enabled | bool
+  - k3s_platform_apps_n8n_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Outline rollout
@@ -375,8 +376,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_outline_enabled | bool
-    - k3s_platform_apps_outline_replicas | int > 0
+  - k3s_platform_apps_outline_enabled | bool
+  - k3s_platform_apps_outline_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for NetBox rollout
@@ -389,8 +390,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_netbox_enabled | bool
-    - k3s_platform_apps_netbox_replicas | int > 0
+  - k3s_platform_apps_netbox_enabled | bool
+  - k3s_platform_apps_netbox_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for NetBox worker rollout
@@ -403,8 +404,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_netbox_enabled | bool
-    - k3s_platform_apps_netbox_worker_replicas | int > 0
+  - k3s_platform_apps_netbox_enabled | bool
+  - k3s_platform_apps_netbox_worker_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Authentik server rollout
@@ -417,8 +418,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_authentik_enabled | bool
-    - k3s_platform_apps_authentik_server_replicas | int > 0
+  - k3s_platform_apps_authentik_enabled | bool
+  - k3s_platform_apps_authentik_server_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Authentik worker rollout
@@ -431,8 +432,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_authentik_enabled | bool
-    - k3s_platform_apps_authentik_worker_replicas | int > 0
+  - k3s_platform_apps_authentik_enabled | bool
+  - k3s_platform_apps_authentik_worker_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Reconcile Bulwark OIDC application and access groups
@@ -497,9 +498,9 @@
   no_log: true
   become: true
   when:
-    - k3s_platform_apps_bulwark_enabled | bool
-    - k3s_platform_apps_authentik_enabled | bool
-    - k3s_platform_apps_authentik_server_replicas | int > 0
+  - k3s_platform_apps_bulwark_enabled | bool
+  - k3s_platform_apps_authentik_enabled | bool
+  - k3s_platform_apps_authentik_server_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Bulwark rollout
@@ -592,8 +593,8 @@
   changed_when: "'CHANGED True' in k3s_platform_apps_authentik_redirects.stdout"
   become: true
   when:
-    - k3s_platform_apps_authentik_enabled | bool
-    - k3s_platform_apps_authentik_server_replicas | int > 0
+  - k3s_platform_apps_authentik_enabled | bool
+  - k3s_platform_apps_authentik_server_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Reconcile OpenCloud OIDC application and access group
@@ -646,9 +647,9 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_authentik_enabled | bool
-    - k3s_platform_apps_opencloud_enabled | bool
-    - k3s_platform_apps_authentik_server_replicas | int > 0
+  - k3s_platform_apps_authentik_enabled | bool
+  - k3s_platform_apps_opencloud_enabled | bool
+  - k3s_platform_apps_authentik_server_replicas | int > 0
   tags: k3s_platform_apps
 
 
@@ -658,9 +659,9 @@
       kubectl -n {{ item.namespace }} delete ingress {{ item.name }}
       --ignore-not-found=true
   loop:
-    - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-aliases}
-    - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-forwardauth-aliases}
-    - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-n8n-machine-endpoints}
+  - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-aliases}
+  - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-forwardauth-aliases}
+  - {namespace: "{{ k3s_platform_apps_namespace }}", name: product-n8n-machine-endpoints}
   register: k3s_platform_apps_legacy_alias_cleanup
   changed_when: "'deleted' in k3s_platform_apps_legacy_alias_cleanup.stdout"
   become: true
@@ -677,8 +678,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_gitea_enabled | bool
-    - k3s_platform_apps_gitea_replicas | int > 0
+  - k3s_platform_apps_gitea_enabled | bool
+  - k3s_platform_apps_gitea_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Reconcile Gitea OIDC discovery URL
@@ -697,8 +698,8 @@
   changed_when: "'Updated authentication source' in k3s_platform_apps_gitea_oidc_reconcile.stdout"
   become: true
   when:
-    - k3s_platform_apps_gitea_enabled | bool
-    - k3s_platform_apps_gitea_replicas | int > 0
+  - k3s_platform_apps_gitea_enabled | bool
+  - k3s_platform_apps_gitea_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Semaphore rollout
@@ -711,8 +712,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_semaphore_enabled | bool
-    - k3s_platform_apps_semaphore_replicas | int > 0
+  - k3s_platform_apps_semaphore_enabled | bool
+  - k3s_platform_apps_semaphore_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Reconcile Gitea runner registration token
@@ -728,9 +729,9 @@
   become: true
   no_log: true
   when:
-    - k3s_platform_apps_gitea_enabled | bool
-    - k3s_platform_apps_gitea_runner_enabled | bool
-    - k3s_platform_apps_gitea_replicas | int > 0
+  - k3s_platform_apps_gitea_enabled | bool
+  - k3s_platform_apps_gitea_runner_enabled | bool
+  - k3s_platform_apps_gitea_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Gitea runner rollout
@@ -743,8 +744,8 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_gitea_runner_enabled | bool
-    - k3s_platform_apps_gitea_runner_replicas | int > 0
+  - k3s_platform_apps_gitea_runner_enabled | bool
+  - k3s_platform_apps_gitea_runner_replicas | int > 0
   tags: k3s_platform_apps
 
 - name: Wait for Semaphore runner rollout
@@ -757,6 +758,6 @@
   changed_when: false
   become: true
   when:
-    - k3s_platform_apps_semaphore_runner_enabled | bool
-    - k3s_platform_apps_semaphore_runner_replicas | int > 0
+  - k3s_platform_apps_semaphore_runner_enabled | bool
+  - k3s_platform_apps_semaphore_runner_replicas | int > 0
   tags: k3s_platform_apps

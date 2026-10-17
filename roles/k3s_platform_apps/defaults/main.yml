@@ -3,7 +3,7 @@ k3s_platform_apps_work_dir: /root/k3s-platform-apps
 k3s_platform_apps_namespace: platform-bus
 k3s_platform_apps_ingress_class: traefik
 k3s_platform_apps_cluster_domain: k3s.lenmail.de
-k3s_platform_apps_product_domain: bus.lenmail.de
+k3s_platform_apps_product_domain: apps.example.invalid
 k3s_platform_apps_mail_domain: "mail.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_webmail_domain: "webmail.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_acme_cluster_issuer: letsencrypt-hetzner
@@ -16,7 +16,7 @@ k3s_platform_apps_homeassistant_domain: assi.lenmail.de
 k3s_platform_apps_homeassistant_address: 10.30.30.15
 k3s_platform_apps_homeassistant_port: 8123
 k3s_platform_apps_ceph_dashboard_enabled: false
-k3s_platform_apps_ceph_dashboard_domain: storage.bus.lenmail.de
+k3s_platform_apps_ceph_dashboard_domain: "storage.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_ceph_dashboard_addresses: []
 k3s_platform_apps_ceph_dashboard_port: 8443
 k3s_platform_apps_synology_enabled: false
@@ -26,9 +26,9 @@ k3s_platform_apps_synology_domains: []
 k3s_platform_apps_synology_tls_passthrough: true
 k3s_platform_apps_opencloud_enabled: false
 k3s_platform_apps_opencloud_address: 10.30.30.23
-k3s_platform_apps_opencloud_domain: cloud.bus.lenmail.de
+k3s_platform_apps_opencloud_domain: "cloud.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_opencloud_port: 9200
-k3s_platform_apps_collabora_domain: office.bus.lenmail.de
+k3s_platform_apps_collabora_domain: "office.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_collabora_port: 9980
 k3s_platform_apps_opencloud_node_exporter_port: 9100
 
@@ -41,14 +41,14 @@ k3s_platform_apps_homepage_title: "PlattformBUS k3s"
 k3s_platform_apps_blackbox_enabled: true
 k3s_platform_apps_blackbox_image: "prom/blackbox-exporter:latest"
 k3s_platform_apps_blackbox_targets:
-  - name: portal
-    url: "http://portal.k3s.lenmail.de"
-    tier: access
-    criticality: mid
-  - name: dash
-    url: "http://dash.k3s.lenmail.de"
-    tier: observability
-    criticality: high
+- name: portal
+  url: "http://portal.k3s.lenmail.de"
+  tier: access
+  criticality: mid
+- name: dash
+  url: "http://dash.k3s.lenmail.de"
+  tier: observability
+  criticality: high
 
 k3s_platform_apps_dashboard_enabled: true
 k3s_platform_apps_dashboard_name: platform-bus-k3s-operations.json
@@ -56,75 +56,75 @@ k3s_platform_apps_dashboard_name: platform-bus-k3s-operations.json
 k3s_platform_apps_runtime_secret_name: platform-bus-runtime-env
 k3s_platform_apps_runtime_env: {}
 k3s_platform_apps_runtime_env_keys:
-  - TZ
-  - POSTGRES_DB
-  - POSTGRES_SUPERUSER
-  - POSTGRES_SUPERPASS
-  - AUTHENTIK_DB
-  - AUTHENTIK_DB_USER
-  - AUTHENTIK_DB_PASS
-  - GITEA_DB
-  - GITEA_DB_USER
-  - GITEA_DB_PASS
-  - SEMAPHORE_DB
-  - SEMAPHORE_DB_USER
-  - SEMAPHORE_DB_PASS
-  - OUTLINE_DB
-  - OUTLINE_DB_USER
-  - OUTLINE_DB_PASS
-  - OUTLINE_OIDC_CLIENT_ID
-  - OUTLINE_OIDC_CLIENT_SECRET
-  - NETBOX_DB
-  - NETBOX_DB_USER
-  - NETBOX_DB_PASS
-  - NETBOX_ALLOWED_HOSTS
-  - NETBOX_BRANCHING_ENABLED
-  - NETBOX_OIDC_CLIENT_ID
-  - NETBOX_OIDC_CLIENT_SECRET
-  - GRAFANA_DB
-  - GRAFANA_DB_USER
-  - GRAFANA_DB_PASS
-  - PDNS_DB
-  - PDNS_DB_USER
-  - PDNS_DB_PASS
-  - PDNS_ADMIN_DB
-  - PDNS_ADMIN_DB_USER
-  - PDNS_ADMIN_DB_PASS
-  - N8N_DB
-  - N8N_DB_USER
-  - N8N_DB_PASS
-  - AUTHENTIK_SECRET_KEY
-  - AUTHENTIK_BOOTSTRAP_EMAIL
-  - AUTHENTIK_BOOTSTRAP_PASSWORD
-  - AUTHENTIK_BOOTSTRAP_TOKEN
-  - GITEA_SECRET_KEY
-  - GITEA_INTERNAL_TOKEN
-  - GITEA_LFS_JWT_SECRET
-  - GITEA_RUNNER_REGISTRATION_TOKEN
-  - SEMAPHORE_ACCESS_KEY_ENCRYPTION
-  - SEMAPHORE_ADMIN
-  - SEMAPHORE_ADMIN_PASSWORD
-  - SEMAPHORE_ADMIN_NAME
-  - SEMAPHORE_ADMIN_EMAIL
-  - SEMAPHORE_API_TOKEN
-  - SEMAPHORE_RUNNER_TOKEN
-  - SEMAPHORE_OIDC_CLIENT_ID
-  - SEMAPHORE_OIDC_CLIENT_SECRET
-  - OUTLINE_SECRET_KEY
-  - OUTLINE_UTILS_SECRET
-  - NETBOX_SECRET_KEY
-  - NETBOX_API_TOKEN_PEPPER
-  - NETBOX_SUPERUSER_NAME
-  - NETBOX_SUPERUSER_EMAIL
-  - NETBOX_SUPERUSER_PASSWORD
-  - NETBOX_API_TOKEN
-  - N8N_ENCRYPTION_KEY
-  - SMTP_HOST
-  - SMTP_PORT
-  - SMTP_FROM
-  - SMTP_USERNAME
-  - SMTP_PASSWORD
-  - SMTP_TLS
+- TZ
+- POSTGRES_DB
+- POSTGRES_SUPERUSER
+- POSTGRES_SUPERPASS
+- AUTHENTIK_DB
+- AUTHENTIK_DB_USER
+- AUTHENTIK_DB_PASS
+- GITEA_DB
+- GITEA_DB_USER
+- GITEA_DB_PASS
+- SEMAPHORE_DB
+- SEMAPHORE_DB_USER
+- SEMAPHORE_DB_PASS
+- OUTLINE_DB
+- OUTLINE_DB_USER
+- OUTLINE_DB_PASS
+- OUTLINE_OIDC_CLIENT_ID
+- OUTLINE_OIDC_CLIENT_SECRET
+- NETBOX_DB
+- NETBOX_DB_USER
+- NETBOX_DB_PASS
+- NETBOX_ALLOWED_HOSTS
+- NETBOX_BRANCHING_ENABLED
+- NETBOX_OIDC_CLIENT_ID
+- NETBOX_OIDC_CLIENT_SECRET
+- GRAFANA_DB
+- GRAFANA_DB_USER
+- GRAFANA_DB_PASS
+- PDNS_DB
+- PDNS_DB_USER
+- PDNS_DB_PASS
+- PDNS_ADMIN_DB
+- PDNS_ADMIN_DB_USER
+- PDNS_ADMIN_DB_PASS
+- N8N_DB
+- N8N_DB_USER
+- N8N_DB_PASS
+- AUTHENTIK_SECRET_KEY
+- AUTHENTIK_BOOTSTRAP_EMAIL
+- AUTHENTIK_BOOTSTRAP_PASSWORD
+- AUTHENTIK_BOOTSTRAP_TOKEN
+- GITEA_SECRET_KEY
+- GITEA_INTERNAL_TOKEN
+- GITEA_LFS_JWT_SECRET
+- GITEA_RUNNER_REGISTRATION_TOKEN
+- SEMAPHORE_ACCESS_KEY_ENCRYPTION
+- SEMAPHORE_ADMIN
+- SEMAPHORE_ADMIN_PASSWORD
+- SEMAPHORE_ADMIN_NAME
+- SEMAPHORE_ADMIN_EMAIL
+- SEMAPHORE_API_TOKEN
+- SEMAPHORE_RUNNER_TOKEN
+- SEMAPHORE_OIDC_CLIENT_ID
+- SEMAPHORE_OIDC_CLIENT_SECRET
+- OUTLINE_SECRET_KEY
+- OUTLINE_UTILS_SECRET
+- NETBOX_SECRET_KEY
+- NETBOX_API_TOKEN_PEPPER
+- NETBOX_SUPERUSER_NAME
+- NETBOX_SUPERUSER_EMAIL
+- NETBOX_SUPERUSER_PASSWORD
+- NETBOX_API_TOKEN
+- N8N_ENCRYPTION_KEY
+- SMTP_HOST
+- SMTP_PORT
+- SMTP_FROM
+- SMTP_USERNAME
+- SMTP_PASSWORD
+- SMTP_TLS
 
 k3s_platform_apps_data_services_enabled: false
 k3s_platform_apps_postgres_enabled: true
@@ -171,7 +171,7 @@ k3s_platform_apps_authentik_node_selector: {}
 k3s_platform_apps_gitea_enabled: false
 k3s_platform_apps_gitea_image: "docker.io/gitea/gitea:latest"
 k3s_platform_apps_gitea_domain: "git.k3s.lenmail.de"
-k3s_platform_apps_gitea_public_domain: "git.bus.lenmail.de"
+k3s_platform_apps_gitea_public_domain: "git.{{ k3s_platform_apps_product_domain }}"
 k3s_platform_apps_gitea_replicas: 1
 k3s_platform_apps_gitea_storage_size: 20Gi
 k3s_platform_apps_gitea_ssh_domain: "git.k3s.lenmail.de"
